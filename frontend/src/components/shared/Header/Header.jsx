@@ -8,7 +8,9 @@ const Header = () => {
         '/' : 'Dashboard',
         '/customer-list' : '<< Customer List',
         '/customer-detail' : '<< Customer List',
-        '/add-customer' : '<< Add Customer'
+        '/proposal' : '<< Proposal',
+        '/add-proposal' : '<< Add Proposal',
+        '/proposal-detail' : '<< Proposal',
     }
 
   return (

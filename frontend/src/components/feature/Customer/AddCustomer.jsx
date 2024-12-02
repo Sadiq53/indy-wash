@@ -153,7 +153,7 @@ const AddCustomer = () => {
                                     </div>
                                 </div>
                                 <div className="top-cs pt-3 gtc-equal">
-                                    <div className="grid-cs align-items-end">
+                                    <div className="grid-cs cs-align-end">
                                         <div>
                                             <div className="header">
                                                 <h5 className="font-1 fw-700 font-size-16">Additional info :</h5>
@@ -226,7 +226,6 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                         </div>
-
 
                     </div>
                 </div>

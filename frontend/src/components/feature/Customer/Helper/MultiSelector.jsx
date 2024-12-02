@@ -55,9 +55,16 @@ const MultiSelector = ({ onDataChange }) => {
     <div className="box-cs">
         {properties.map((property, index) => (
             <div key={index} className="mt-5">
+              {
+                (index + 1) !== 1 && (
+                  <div className={`py-4 ${(index + 1) !== 1 && 'cs-border'}`}>
+                    <h5 className="font-1 fw-700 pill-cs font-size-16">Company Details {index + 1} </h5>
+                  </div>
+                )
+              }
                 <div>
                     <div className="header">
-                    <h5 className="font-1 fw-700 font-size-16">Company Details :</h5>
+                      <h5 className="font-1 fw-700 font-size-16">Company Details :</h5>
                     </div>
                     <div className="input-section my-2">
                     <input

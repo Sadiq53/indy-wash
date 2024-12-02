@@ -2,6 +2,9 @@ import AddCustomer from '../../components/feature/Customer/AddCustomer'
 import CustomerDetail from '../../components/feature/Customer/CustomerDetail'
 import CustomerList from '../../components/feature/Customer/CustomerList'
 import Dashboard from'../../components/feature/Dashboard/Dashboard'
+import AddProposal from '../../components/feature/Proposal/AddProposal'
+import Proposal from '../../components/feature/Proposal/Proposal'
+import ProposalDetail from '../../components/feature/Proposal/ProposalDetail'
 
 const rootRoutes = [
     {
@@ -19,6 +22,18 @@ const rootRoutes = [
     {
         path : 'customer-detail',
         element : <CustomerDetail />
+    },
+    {
+        path : 'proposal',
+        element : <Proposal />
+    },
+    {
+        path : 'add-proposal',
+        element : <AddProposal />
+    },
+    {
+        path : 'proposal-detail',
+        element : <ProposalDetail />
     },
 ]
 
