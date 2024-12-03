@@ -167,14 +167,14 @@ const AddProposal = () => {
 
                           </div>
                           <div className="col-md-4">
-                            <div className="frequency-layout">
+                            <div className="frequency-layout ">
                               <div className='content'>
                                 <div className='gtc-3-1'>
                                   <div>
                                     <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
+                                    <h4 className="font-1 font-size-16 fw-700">Price</h4>
 
                                   </div>
-                                  <h4 className="font-1 font-size-16 fw-700">Price</h4>
                                 </div>
                                 <div>
                                   <div className="property">

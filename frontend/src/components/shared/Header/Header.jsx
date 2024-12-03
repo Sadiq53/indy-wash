@@ -11,6 +11,8 @@ const Header = () => {
         '/proposal' : '<< Proposal',
         '/add-proposal' : '<< Add Proposal',
         '/proposal-detail' : '<< Proposal',
+        '/services' : '<< Services',
+        '/add-service' : '<< Add Service',
     }
 
   return (

@@ -5,6 +5,9 @@ import Dashboard from'../../components/feature/Dashboard/Dashboard'
 import AddProposal from '../../components/feature/Proposal/AddProposal'
 import Proposal from '../../components/feature/Proposal/Proposal'
 import ProposalDetail from '../../components/feature/Proposal/ProposalDetail'
+import AddService from '../../components/feature/Service/AddService'
+import ServiceDetail from '../../components/feature/Service/ServiceDetail'
+import ServiceList from '../../components/feature/Service/ServiceList'
 
 const rootRoutes = [
     {
@@ -34,6 +37,18 @@ const rootRoutes = [
     {
         path : 'proposal-detail',
         element : <ProposalDetail />
+    },
+    {
+        path : 'service-detail',
+        element : <ServiceDetail />
+    },
+    {
+        path : 'add-service',
+        element : <AddService />
+    },
+    {
+        path : 'services',
+        element : <ServiceList />
     },
 ]
 

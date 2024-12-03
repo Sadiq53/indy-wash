@@ -1,10 +1,28 @@
 import { NavLink } from "react-router-dom"
 import ProposalTagCard from "./Helper/ProposalTagCard"
+import AgreedModal from "./Helper/AgreedModal"
+import { useState } from "react"
+import { useEffect } from "react"
 
 const ProposalDetail = () => {
+
+  const [popup, setPopup] = useState(false)
+
+  useEffect(()=>{
+    if(popup) {
+      document.querySelector('body').classList.add('fade-cs')
+    } else {
+      document.querySelector('body').classList.remove('fade-cs')
+    }
+  }, [popup])
+
+  const confirmation = () => {
+
+  }
+
   return (
     <>
-      <section>
+      <section className="position-rel">
         <div className="container py-4">
           <div className="row">
             <div className="col-md-12">
@@ -13,7 +31,7 @@ const ProposalDetail = () => {
                     <h4 className="font-1 fw-700">Company Name</h4>
                 </div>
                 <div className="part-1 gtc-4">
-                  <button className="filter-btn bg-theme-7-outline"><dic className="flex-cs"><input type="checkbox" className="cs-checkbox form-check-input mt-0" name="" id="" />&nbsp; Mark As Agreed</dic></button>
+                  <button onClick={()=>setPopup(true)} className="filter-btn bg-theme-7-outline"><div className="flex-cs"><input type="checkbox" className="cs-checkbox form-check-input mt-0" name="" id="" />&nbsp; Mark As Agreed</div></button>
                   <button className="filter-btn bg-theme-7"><i class="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} /> &nbsp; Download Agreement</button>
                   <button className="filter-btn bg-theme-2"><i class="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Conrtact Overview</button>
                   <NavLink to='/proposal-detail'  className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal</NavLink>
@@ -30,7 +48,7 @@ const ProposalDetail = () => {
                         <div className="services-view-card">
                           <div className="header">
                             <button className="btn"><i class="fa-sharp-duotone fa-light fa-angles-left" /> Leasing Office Sidewalks</button>
-                            <button className="btn"><i class="fa-regular fa-circle-plus" /> Add More Service</button>
+                            <NavLink to='/service-detail' className="btn"><i class="fa-regular fa-circle-plus" /> Add More Service</NavLink>
                             <button className="btn">Trash Room <i class="fa-light fa-angles-right" /></button>
                           </div>
                           <div className="section-1">
@@ -89,6 +107,11 @@ const ProposalDetail = () => {
           </div>
         </div>
       </section>
+
+    {
+      popup && (<AgreedModal onConfirmation={confirmation}/>)
+    }
+      
     </>
   )
 }
