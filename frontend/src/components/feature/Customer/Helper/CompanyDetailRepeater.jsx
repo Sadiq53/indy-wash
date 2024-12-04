@@ -3,7 +3,7 @@ const CompanyDetailRepeater = () => {
   return (
     <>
         <div className="content-layout mt-4">
-            <div className="head-filters">
+            <div className="head-filters mob">
                 <div className="part-1">
                     <h4 className="font-1 fw-700">Company Details</h4>
                 </div>

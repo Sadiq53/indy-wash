@@ -21,7 +21,7 @@ const AddProposal = () => {
                 <div className="row">
                     <div className="col-md-12">
                       <div className="head-filters">
-                          <div className="part-1">
+                          <div className="part-1 gtc-1">
                               <h4 className="font-1 fw-700">Add Proposal</h4>
                           </div>
                           <div className="part-1 gtc-equal">
@@ -30,7 +30,7 @@ const AddProposal = () => {
                           </div>
                       </div>
                       <div className="box-cs mt-4">
-                        <div className="row">
+                        <div className="row gap-20">
                           <div className="col-md-8">
                             
                             <div className="gtc-3 grid-cs">
@@ -170,9 +170,9 @@ const AddProposal = () => {
                             <div className="frequency-layout ">
                               <div className='content'>
                                 <div className='gtc-3-1'>
-                                  <div>
                                     <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
                                     <h4 className="font-1 font-size-16 fw-700">Price</h4>
+                                  <div>
 
                                   </div>
                                 </div>

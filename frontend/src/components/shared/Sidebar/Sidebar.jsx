@@ -12,7 +12,7 @@ const Sidebar = () => {
 
   return (
     <>
-        <aside className="background-white">
+        <aside id='cs-sidebar' className="background-white cs-sidebar">
                 <div className="sidebar">
                 <NavLink to='/'>
                     <div className="logo">

@@ -1026,26 +1026,35 @@ margin: 0;
 
 .cs-modal{
 	position: fixed;
-    top: 50%;
-    right: 50%;
-    transform: translate(50%, -50%);
-
+    top: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    right: 0;
+    left: 0;
+    bottom: 0;
 }
 .cs-modal .layout{
     border-radius: 20px;
     background: #FFF;
     height: 200px;
+	margin: 250px auto;
     width: 500px;
     padding: 30px;
 }
+
 .cs-modal .layout img{
     position: absolute;
     top: -50px;
     left: 50%;
     transform: translateX(-50%);
 }
+
 .position-rel{
 	position: relative;
+}
+
+.mob-show{
+	display: none !important;
 }
 /* .fade-cs{
 	background-color:#202224 !important;

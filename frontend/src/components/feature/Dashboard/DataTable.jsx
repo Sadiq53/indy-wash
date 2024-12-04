@@ -7,7 +7,7 @@ const DataTable = ({title}) => {
                 title && (<h5 className="font-1 fw-700 font-size-16">{title}</h5>)
             }
             <div className="custom-table py-4">
-                <table>
+                <table className="table">
                     <thead>
                         <tr>
                             <th>Name/Company</th>

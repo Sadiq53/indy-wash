@@ -11,7 +11,7 @@ const AddService = () => {
                             <div className="part-1">
                                 <h4 className="font-1 fw-700">Create Custom Services</h4>
                             </div>
-                            <div className="part-1 gtc-equal">
+                            <div className="part-1 gtc-equal mob">
                                 <button className="filter-btn bg-theme-2"><i class="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Reset All Fields</button>
                                 <NavLink to='/proposal-detail'  className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Service</NavLink>
                             </div>

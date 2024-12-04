@@ -22,14 +22,17 @@ const Header = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="main-header">
-                            <NavLink className='text-decoration-none' to='/'>
+                            <NavLink className='text-decoration-none desk-show' to='/'>
                                 <h4 className="font-1">{breadCrumbConverter[location?.pathname]}</h4>
                             </NavLink>
+                            <button onClick={()=>document.getElementById('cs-sidebar').classList.add("show-sidebar")} className="btn mob-show">
+                            <i class="fa-regular fa-lg fa-bars" />
+                            </button>
                             <div className="head-section">
                                 <div className="bell">
-                                    <button className="btn"><img src="/assets/img/bell.svg" alt="" /></button>
+                                    <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><img src="/assets/img/bell.svg" alt="" /></button>
                                 </div>
-                                <button className="btn">
+                                <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}>
                                 <div className="profile-btn">
                                     <div className="profile">
                                         <img src="/assets/img/head-profile.svg" alt="" />

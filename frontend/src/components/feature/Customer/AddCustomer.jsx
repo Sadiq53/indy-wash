@@ -102,7 +102,7 @@ const AddCustomer = () => {
                                         <div className="header">
                                             <h5 className="font-1 fw-700 font-size-16">Preferred Contact Method :</h5>
                                         </div>
-                                        <div className="input-section gtc-3 my-2">
+                                        <div className="input-section gtc-3 mob my-2">
                                             <div className="flex-cs">
                                                 <input className="form-check-input mt-0" type="checkbox" name="" id="" />
                                                 <label htmlFor="">Call</label>

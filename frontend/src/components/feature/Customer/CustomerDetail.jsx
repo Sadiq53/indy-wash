@@ -10,7 +10,7 @@ const CustomerDetail = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="head-filters">
-                            <div className="part-1">
+                            <div className="part-1 gtc-1">
                                 <h4 className="font-1 fw-700">Company Name</h4>
                             </div>
                             <div className="part-1  gtc-1">
@@ -23,8 +23,8 @@ const CustomerDetail = () => {
                                 <div className="row">
                                     <div className="col-md-6">
                                         <div className="content-layout">
-                                            <div className="head-filters">
-                                                <div className="part-1">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Personal Details</h4>
                                                 </div>
                                                 <div className="part-1  gtc-1">
@@ -40,8 +40,8 @@ const CustomerDetail = () => {
                                         </div>
 
                                         <div className="content-layout mt-4">
-                                            <div className="head-filters">
-                                                <div className="part-1">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Additional Contact info :</h4>
                                                 </div>
                                                 <div className="part-1  gtc-1">
@@ -61,8 +61,8 @@ const CustomerDetail = () => {
                                                 <div><p className="font-3">yasinwafaq@gmail.com</p></div>
                                             </div>
 
-                                            <div className="head-filters pt-4">
-                                                <div className="part-1">
+                                            <div className="head-filters mob pt-4">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Preferred Contact Method :</h4> 
                                                     <p className="font-3">Call</p>
                                                 </div>
@@ -73,8 +73,8 @@ const CustomerDetail = () => {
                                     </div>
                                     <div className="col-md-5 ">
                                         <div className="content-layout">
-                                            <div className="head-filters">
-                                                <div className="part-1">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Address, Property Type  & Feature</h4>
                                                 </div>
                                                 <div className="part-1  gtc-1">
@@ -99,8 +99,8 @@ const CustomerDetail = () => {
                                         </div>
 
                                         <div className="content-layout mt-4">
-                                            <div className="head-filters">
-                                                <div className="part-1">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Images/blueprint Uploaded</h4>
                                                 </div>
                                             </div> 
@@ -115,8 +115,8 @@ const CustomerDetail = () => {
                                         </div>
 
                                         <div className="content-layout mt-4">
-                                            <div className="head-filters">
-                                                <div className="part-1">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Additional Notes</h4>
                                                 </div>
                                             </div> 

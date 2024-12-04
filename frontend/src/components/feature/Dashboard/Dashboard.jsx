@@ -17,8 +17,19 @@ const Dashboard = () => {
                 <Analytics />
               </div>
 
+              {/* <div className="pt-4">
+                
+              </div> */}
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
               <div className="pt-4">
-                <DataTable title={'Current Projects'} />
+              <DataTable title={'Current Projects'} />
               </div>
             </div>
           </div>
