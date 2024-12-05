@@ -6,14 +6,14 @@ const ProposalCard = () => {
             <div className="head-filters mob">
                 <h4 className="font-1 text-light fw-700">Proposal Details</h4>
             </div>
-            {/* <div className="body my-4">
+            <div className="body cs my-4">
                 <img src="/assets/img/exclm.svg" alt="" />
                 <h4 className="font-1 text-light fw-700">No Proposal Found !!</h4>
-            </div> */}
-            <div className="body">
+            </div>
+            {/* <div className="body">
                 <div className="head-filters mob pt-3">
                     <div className="part-1 gtc-1">
-                        <h4 className="font-1 text-light fw-500">Company Name #1  :  --</h4>
+                        <h4>Company Name #1  :  --</h4>
                     </div>
                     <div className="part-1  gtc-1">
                         <button className="btn text-light">
@@ -25,7 +25,7 @@ const ProposalCard = () => {
                 </div> 
                 <div className="head-filters mob">
                     <div className="part-1 gtc-1">
-                        <h4 className="font-1 text-light fw-500">Company Name #2  :  --</h4>
+                        <h4>Company Name #2  :  --</h4>
                     </div>
                     <div className="part-1  gtc-1">
                         <button className="btn text-light">
@@ -37,7 +37,7 @@ const ProposalCard = () => {
                 </div> 
                 <div className="head-filters mob">
                     <div className="part-1 gtc-1">
-                        <h4 className="font-1 text-light fw-500">Company Name #3  :  --</h4>
+                        <h4>Company Name #3  :  --</h4>
                     </div>
                     <div className="part-1  gtc-1">
                         <button className="btn text-light">
@@ -47,7 +47,7 @@ const ProposalCard = () => {
                         </button>
                     </div>
                 </div> 
-            </div>
+            </div> */}
         </div>
     </>
   )

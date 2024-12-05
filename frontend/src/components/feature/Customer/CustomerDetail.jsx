@@ -1,8 +1,18 @@
 import ProposalCard from "./Helper/ProposalCard"
 import CustomerDetailRepeater from './Helper/CompanyDetailRepeater'
 import { NavLink } from 'react-router-dom'
+import { useSelector } from "react-redux"
+import { useEffect } from "react"
 
 const CustomerDetail = () => {
+
+    const customerDetail = useSelector(state => state.AdminDataSlice.addingCustomerDetail)
+    const { createDate, customerType, contactMethod, personalDetails, companyDetails, additionalContactInfo, additionalInfo, additionalNotes } = customerDetail
+
+    useEffect(()=>{
+        console.log(customerDetail)
+    }, [customerDetail])
+
   return (
     <>
         <section>
@@ -33,9 +43,9 @@ const CustomerDetail = () => {
                                             </div> 
 
                                             <div className="data py-4">
-                                                <div><p className="font-3">Full Name</p> : <p className="font-3">Full Name</p></div>
-                                                <div><p className="font-3">Phone No.</p> : <p className="font-3">Phone No.</p></div>
-                                                <div><p className="font-3">Email Address</p> : <p className="font-3">Email Address</p></div>
+                                                <div><p className="font-3">Full Name</p> : <p className="font-3">{personalDetails?.firstName}</p></div>
+                                                <div><p className="font-3">Phone No.</p> : <p className="font-3">{personalDetails?.phone}</p></div>
+                                                <div><p className="font-3">Email Address</p> : <p className="font-3">{personalDetails?.email}</p></div>
                                             </div>
                                         </div>
 
@@ -50,29 +60,61 @@ const CustomerDetail = () => {
                                             </div> 
 
                                             <div className="data cs-border-bottom py-4">
-                                                <div><p className="font-3">Yasin Wafaq</p></div>
-                                                <div><p className="font-3">999-999-000</p></div>
-                                                <div><p className="font-3">yasinwafaq@gmail.com</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail1?.fullname}</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail1?.phone}</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail1?.email}</p></div>
                                             </div>
 
                                             <div className="data py-4">
-                                                <div><p className="font-3">Yasin Wafaq</p></div>
-                                                <div><p className="font-3">999-999-000</p></div>
-                                                <div><p className="font-3">yasinwafaq@gmail.com</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail2?.fullname}</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail2?.phone}</p></div>
+                                                <div><p className="font-3">{additionalContactInfo?.detail2?.email}</p></div>
                                             </div>
 
                                             <div className="head-filters mob pt-4">
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Preferred Contact Method :</h4> 
-                                                    <p className="font-3">Call</p>
+                                                    {
+                                                        contactMethod?.map(value => (
+                                                            <p className="font-3" key={value += 1}>{value}</p>
+                                                        ))
+                                                    }
                                                 </div>
                                             </div> 
                                         </div>
 
-                                        <CustomerDetailRepeater />
+                                        <div className="content-layout mt-4">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
+                                                    <h4 className="font-1 fw-700">Images/blueprint Uploaded</h4>
+                                                </div>
+                                            </div> 
+
+                                            <div className="data py-4">
+                                                <div>
+                                                    <img src={additionalInfo?.image1} alt="" />
+                                                    <img src={additionalInfo?.image2} alt="" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div className="content-layout mt-4">
+                                            <div className="head-filters mob">
+                                                <div className="part-1 gtc-1">
+                                                    <h4 className="font-1 fw-700">Additional Notes</h4>
+                                                </div>
+                                            </div> 
+
+                                            <div className="data py-4">
+                                                <div><p className="font-3">Comment here</p></div>
+                                            </div>
+
+                                        </div>
+
                                     </div>
                                     <div className="col-md-5 ">
-                                        <div className="content-layout">
+                                        {/* <div className="content-layout">
                                             <div className="head-filters mob">
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Address, Property Type  & Feature</h4>
@@ -96,36 +138,9 @@ const CustomerDetail = () => {
                                                 <div><p className="font-3">Breezeways  |  Breezeways  |  Breezeways</p></div>
                                             </div>
 
-                                        </div>
+                                        </div> */}
 
-                                        <div className="content-layout mt-4">
-                                            <div className="head-filters mob">
-                                                <div className="part-1 gtc-1">
-                                                    <h4 className="font-1 fw-700">Images/blueprint Uploaded</h4>
-                                                </div>
-                                            </div> 
-
-                                            <div className="data py-4">
-                                                <div>
-                                                    <img src="/assets/img/demo.svg" alt="" />
-                                                    <img src="/assets/img/demo.svg" alt="" />
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <div className="content-layout mt-4">
-                                            <div className="head-filters mob">
-                                                <div className="part-1 gtc-1">
-                                                    <h4 className="font-1 fw-700">Additional Notes</h4>
-                                                </div>
-                                            </div> 
-
-                                            <div className="data py-4">
-                                                <div><p className="font-3">Comment here</p></div>
-                                            </div>
-
-                                        </div>
+                                        <CustomerDetailRepeater data={companyDetails} />
 
                                     </div>
 

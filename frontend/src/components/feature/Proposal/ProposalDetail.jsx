@@ -95,7 +95,7 @@ const ProposalDetail = () => {
                               standard dummy text ever since the 
                               1500s</p>
                           </div>
-                          <div className="grid-cs gtc-equal">
+                          <div className="grid-cs gtc-equal mob">
                             <div className="tab-cs">110,168 SQFT</div>
                             <div className="tab-cs">$6,610.08/Yr</div>
                           </div>

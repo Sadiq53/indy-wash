@@ -34,7 +34,7 @@ const ServiceTagCard = () => {
             </div>
 
             <div className="tag-card bg-theme-3 gap-cs-5">
-                    <h4 className="font-1 text-center"><i class="fa-sharp fa-regular fa-magnifying-glass-chart" style={{color: "#fff"}} />  Per Door Analysis</h4>
+                    <h4 className="font-1 text-center"><i class="fa-regular fa-magnifying-glass-chart" />  Per Door Analysis</h4>
                     <div className="inner-layout">
                     <p>275 Units</p>
                     <div className="form-check form-switch">

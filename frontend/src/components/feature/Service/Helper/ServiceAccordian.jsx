@@ -30,8 +30,8 @@ const ServiceAccordian = () => {
                         <h4>L1/Retail Parking Garage</h4>
                         <div className="table-profile">
                             <div className="gap-0">
-                                <button className="btn"><i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} /></button>
-                                <button className="btn"><i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} /></button>
+                            <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-solid ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-pen`} style={{ color: "#00b69b" }} /></button>
+                            <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-regular ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-trash-can`} style={{ color: "#f93c65" }} /></button>
                             </div>
                         </div>
                     </div>
@@ -138,8 +138,8 @@ const ServiceAccordian = () => {
                         <h4>Trash Room</h4>
                         <div className="table-profile">
                             <div className="gap-0">
-                                <button className="btn"><i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} /></button>
-                                <button className="btn"><i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} /></button>
+                                <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-solid ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-pen`} style={{ color: "#00b69b" }} /></button>
+                                <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-regular ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-trash-can`} style={{ color: "#f93c65" }} /></button>
                             </div>
                         </div>
                     </div>

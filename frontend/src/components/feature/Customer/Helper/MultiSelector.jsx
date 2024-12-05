@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const MultiSelector = ({ onDataChange }) => {
   const [properties, setProperties] = useState([
     { 
-      companyName: "", 
-      property: "", 
+      propertyName: "", 
+      propertyType: "", 
       numBuildings: "", 
       numUnits: "", 
       billingAddress: "", 
@@ -14,6 +14,25 @@ const MultiSelector = ({ onDataChange }) => {
       note: "" 
     },
   ]);
+
+  const [errors, setErrors] = useState([]);
+
+  const validateData = () => {
+    const validationErrors = properties.map((property, index) => {
+      const error = {};
+      if (!property.companyName) error.companyName = "Company name is required";
+      if (!property.property) error.property = "Property is required";
+      if (!property.numBuildings) error.numBuildings = "# of Buildings is required";
+      if (!property.numUnits) error.numUnits = "No. of Units is required";
+      if (!property.billingAddress) error.billingAddress = "Billing Address is required";
+      if (!property.serviceAddress) error.serviceAddress = "Service Address is required";
+      if (property.propertyType.length === 0) error.propertyType = "At least one property type is required";
+      if (property.propertyFeatures.length === 0) error.propertyFeatures = "At least one property feature is required";
+      return error;
+    });
+    setErrors(validationErrors);
+    return validationErrors.every((error) => Object.keys(error).length === 0);
+  };
 
   const setSelection = (index, type, value) => {
     const updatedProperties = [...properties];
@@ -31,14 +50,15 @@ const MultiSelector = ({ onDataChange }) => {
 
     setProperties(updatedProperties);
     onDataChange(updatedProperties); // Send updated data via props
+    // console.log(updatedProperties)
   };
 
   const addProperty = () => {
     setProperties([
       ...properties,
       {
-        companyName: "",
-        property: "",
+        propertyName: "",
+        propertyType: "",
         numBuildings: "",
         numUnits: "",
         billingAddress: "",
@@ -50,123 +70,134 @@ const MultiSelector = ({ onDataChange }) => {
     ]);
   };
 
+  useEffect(() => {
+    // Validate data and send validation errors to the parent
+    // validateData();
+  }, [properties]);
+
   return (
     <>
-    <div className="box-cs">
+      <div className="box-cs">
         {properties.map((property, index) => (
-            <div key={index} className="mt-5">
-              {
-                (index + 1) !== 1 && (
-                  <div className={`py-4 ${(index + 1) !== 1 && 'cs-border'}`}>
-                    <h5 className="font-1 fw-700 pill-cs font-size-16">Company Details {index + 1} </h5>
-                  </div>
-                )
-              }
-                <div>
-                    <div className="header">
-                      <h5 className="font-1 fw-700 font-size-16">Company Details :</h5>
-                    </div>
-                    <div className="input-section my-2">
-                    <input
-                        type="text"
-                        placeholder="Company Name"
-                        value={property.companyName}
-                        onChange={(e) => setSelection(index, "companyName", e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Property"
-                        value={property.property}
-                        onChange={(e) => setSelection(index, "property", e.target.value)}
-                    />
-                    <input
-                        type="email"
-                        placeholder="# of Buildings"
-                        value={property.numBuildings}
-                        onChange={(e) => setSelection(index, "numBuildings", e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        placeholder="No. Of Units"
-                        value={property.numUnits}
-                        onChange={(e) => setSelection(index, "numUnits", e.target.value)}
-                    />
-                    </div>
-                    <div className="input-section gtc-equal my-2">
-                    <input
-                        type="text"
-                        placeholder="Billing Address"
-                        value={property.billingAddress}
-                        onChange={(e) => setSelection(index, "billingAddress", e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Service Address"
-                        value={property.serviceAddress}
-                        onChange={(e) => setSelection(index, "serviceAddress", e.target.value)}
-                    />
-                    </div>
-                </div>
-
-                <div className="pt-3">
-                    <div className="header">
-                    <h5 className="font-1 fw-700 font-size-16">Property Type</h5>
-                    </div>
-                    <div className="grid-3-cs my-2 align-items-stretch">
-                    <div className="input-section gtc-3">
-                    {["2-Story Garden - Style", "4-Story Mid-rise", "High Rise", "3-Story Garden - Style", "5-Story Mid-rise", "Garden-rise"].map(
-                        (type) => (
-                        <div
-                            key={type}
-                            className={`checkbox-item ${property.propertyType.includes(type) ? "active" : ""}`}
-                            onClick={() => setSelection(index, "propertyType", type)}
-                        >
-                            {property.propertyType.includes(type) && (
-                            <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
-                            )}
-                            {type}
-                        </div>
-                        )
-                    )}
-                    </div>
-                        <div className="input-section gtc-1 my-2">
-                        <textarea
-                            rows={3}
-                            placeholder="Note"
-                            value={property.note}
-                            onChange={(e) => setSelection(index, "note", e.target.value)}
-                        ></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="pt-3">
-                    <div className="header">
-                    <h5 className="font-1 fw-700 font-size-16">Property Features</h5>
-                    </div>
-                    <div className="input-section">
-                    {["Vinyl Siding", "Hardie Board", "Ample Water Supply", "Ample Parking", "Brick Siding", "Breezeways", "Limited Water Supply", "Limited Parking"].map(
-                        (feature) => (
-                        <div
-                            key={feature}
-                            className={`checkbox-item ${property.propertyFeatures.includes(feature) ? "active" : ""}`}
-                            onClick={() => setSelection(index, "propertyFeatures", feature)}
-                        >
-                            {property.propertyFeatures.includes(feature) && (
-                            <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
-                            )}
-                            {feature}
-                        </div>
-                        )
-                    )}
-                    </div>
-                </div>
+          <div key={index} className="mt-5">
+            {(index + 1) !== 1 && (
+              <div className={`py-4 ${(index + 1) !== 1 && 'cs-border'}`}>
+                <h5 className="font-1 fw-700 pill-cs font-size-16">Property Details {index + 1}</h5>
+              </div>
+            )}
+            <div>
+              <div className="header">
+                <h5 className="font-1 fw-700 font-size-16">property Details :</h5>
+              </div>
+              <div className="input-section my-2">
+                <input
+                  type="text"
+                  placeholder="Property Name"
+                  value={property.propertyName}
+                  onChange={(e) => setSelection(index, "propertyName", e.target.value)}
+                />
+                {/* {errors[index]?.companyName && <div className="error text-danger">{errors[index].companyName}</div>} */}
+                <input
+                  type="text"
+                  placeholder="Property typr"
+                  value={property.propertyType}
+                  onChange={(e) => setSelection(index, "propertyType", e.target.value)}
+                />
+                {/* {errors[index]?.property && <div className="error text-danger">{errors[index].property}</div>} */}
+                <input
+                  type="text"
+                  placeholder="# of Buildings"
+                  value={property.numBuildings}
+                  onChange={(e) => setSelection(index, "numBuildings", e.target.value)}
+                />
+                {/* {errors[index]?.numBuildings && <div className="error text-danger">{errors[index].numBuildings}</div>} */}
+                <input
+                  type="number"
+                  placeholder="No. Of Units"
+                  value={property.numUnits}
+                  onChange={(e) => setSelection(index, "numUnits", e.target.value)}
+                />
+                {/* {errors[index]?.numUnits && <div className="error text-danger">{errors[index].numUnits}</div>} */}
+              </div>
+              <div className="input-section gtc-equal my-2">
+                <input
+                  type="text"
+                  placeholder="Billing Address"
+                  value={property.billingAddress}
+                  onChange={(e) => setSelection(index, "billingAddress", e.target.value)}
+                />
+                {/* {errors[index]?.billingAddress && <div className="error text-danger">{errors[index].billingAddress}</div>} */}
+                <input
+                  type="text"
+                  placeholder="Service Address"
+                  value={property.serviceAddress}
+                  onChange={(e) => setSelection(index, "serviceAddress", e.target.value)}
+                />
+                {/* {errors[index]?.serviceAddress && <div className="error text-danger">{errors[index].serviceAddress}</div>} */}
+              </div>
             </div>
+
+            <div className="pt-3">
+              <div className="header">
+                <h5 className="font-1 fw-700 font-size-16">Property Type</h5>
+              </div>
+              <div className="grid-3-cs my-2 align-items-stretch">
+                <div className="input-section gtc-3">
+                  {["2-Story Garden - Style", "4-Story Mid-rise", "High Rise", "3-Story Garden - Style", "5-Story Mid-rise", "Garden-rise"].map(
+                    (type) => (
+                      <div
+                        key={type}
+                        className={`checkbox-item ${property.propertyType.includes(type) ? "active" : ""}`}
+                        onClick={() => setSelection(index, "propertyType", type)}
+                      >
+                        {property.propertyType.includes(type) && (
+                          <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                        )}
+                        {type}
+                      </div>
+                    )
+                  )}
+                </div>
+                {/* {errors[index]?.propertyType && <div className="error text-danger">{errors[index].propertyType}</div>} */}
+                <div className="input-section gtc-1 my-2">
+                  <textarea
+                    rows={3}
+                    placeholder="Note"
+                    value={property.note}
+                    onChange={(e) => setSelection(index, "note", e.target.value)}
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <div className="header">
+                <h5 className="font-1 fw-700 font-size-16">Property Features</h5>
+              </div>
+              <div className="input-section">
+                {["Vinyl Siding", "Hardie Board", "Ample Water Supply", "Ample Parking", "Brick Siding", "Breezeways", "Limited Water Supply", "Limited Parking"].map(
+                  (feature) => (
+                    <div
+                      key={feature}
+                      className={`checkbox-item ${property.propertyFeatures.includes(feature) ? "active" : ""}`}
+                      onClick={() => setSelection(index, "propertyFeatures", feature)}
+                    >
+                      {property.propertyFeatures.includes(feature) && (
+                        <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                      )}
+                      {feature}
+                    </div>
+                  )
+                )}
+              </div>
+              {/* {errors[index]?.propertyFeatures && <div className="error text-danger">{errors[index].propertyFeatures}</div>} */}
+            </div>
+          </div>
         ))}
-    </div>
+      </div>
 
       <div className="my-3">
-        <button className="filter-btn bg-theme-2" onClick={addProperty}>
+        <button type="button" className="filter-btn bg-theme-2" onClick={addProperty}>
           <i className="fa-light fa-xl fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add More Property
         </button>
       </div>
