@@ -1,16 +1,24 @@
 import ProposalCard from "./Helper/ProposalCard"
 import CustomerDetailRepeater from './Helper/CompanyDetailRepeater'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { useSelector } from "react-redux"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const CustomerDetail = () => {
 
-    const customerDetail = useSelector(state => state.AdminDataSlice.addingCustomerDetail)
-    const { createDate, customerType, contactMethod, personalDetails, companyDetails, additionalContactInfo, additionalInfo, additionalNotes } = customerDetail
+    const param = useParams();
+    const { id } = param
 
+    const [displayData, setDisplayData] = useState({})
+
+    const customerDetail = useSelector(state => state.AdminDataSlice.customers)
+    
+    
     useEffect(()=>{
-        console.log(customerDetail)
+        if(customerDetail) {
+            const sanitizeCustomer = customerDetail?.filter(value => value.uniqueid === id)
+            setDisplayData(sanitizeCustomer[0])
+        }
     }, [customerDetail])
 
   return (
@@ -23,9 +31,9 @@ const CustomerDetail = () => {
                             <div className="part-1 gtc-1">
                                 <h4 className="font-1 fw-700">Company Name</h4>
                             </div>
-                            <div className="part-1  gtc-1">
+                            {/* <div className="part-1  gtc-1">
                                 <NavLink to='/add-proposal' className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</NavLink>
-                            </div>
+                            </div> */}
                         </div> 
 
                         <div className="pt-4">
@@ -43,9 +51,9 @@ const CustomerDetail = () => {
                                             </div> 
 
                                             <div className="data py-4">
-                                                <div><p className="font-3">Full Name</p> : <p className="font-3">{personalDetails?.firstName}</p></div>
-                                                <div><p className="font-3">Phone No.</p> : <p className="font-3">{personalDetails?.phone}</p></div>
-                                                <div><p className="font-3">Email Address</p> : <p className="font-3">{personalDetails?.email}</p></div>
+                                                <div><p className="font-3">Full Name</p> : <p className="font-3">{displayData?.personalDetails?.firstName}</p></div>
+                                                <div><p className="font-3">Phone No.</p> : <p className="font-3">{displayData?.personalDetails?.phone}</p></div>
+                                                <div><p className="font-3">Email Address</p> : <p className="font-3">{displayData?.personalDetails?.email}</p></div>
                                             </div>
                                         </div>
 
@@ -60,30 +68,26 @@ const CustomerDetail = () => {
                                             </div> 
 
                                             <div className="data cs-border-bottom py-4">
-                                                <div><p className="font-3">{additionalContactInfo?.detail1?.fullname}</p></div>
-                                                <div><p className="font-3">{additionalContactInfo?.detail1?.phone}</p></div>
-                                                <div><p className="font-3">{additionalContactInfo?.detail1?.email}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail1?.fullname}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail1?.phone}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail1?.email}</p></div>
                                             </div>
 
                                             <div className="data py-4">
-                                                <div><p className="font-3">{additionalContactInfo?.detail2?.fullname}</p></div>
-                                                <div><p className="font-3">{additionalContactInfo?.detail2?.phone}</p></div>
-                                                <div><p className="font-3">{additionalContactInfo?.detail2?.email}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail2?.fullname}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail2?.phone}</p></div>
+                                                <div><p className="font-3">{displayData?.additionalContact?.detail2?.email}</p></div>
                                             </div>
 
                                             <div className="head-filters mob pt-4">
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Preferred Contact Method :</h4> 
-                                                    {
-                                                        contactMethod?.map(value => (
-                                                            <p className="font-3" key={value += 1}>{value}</p>
-                                                        ))
-                                                    }
+                                                    <p className="font-3" >{displayData?.contactMethod}</p>
                                                 </div>
                                             </div> 
                                         </div>
 
-                                        <div className="content-layout mt-4">
+                                        {/* <div className="content-layout mt-4">
                                             <div className="head-filters mob">
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Images/blueprint Uploaded</h4>
@@ -97,7 +101,7 @@ const CustomerDetail = () => {
                                                 </div>
                                             </div>
 
-                                        </div>
+                                        </div> */}
 
                                         <div className="content-layout mt-4">
                                             <div className="head-filters mob">
@@ -107,7 +111,7 @@ const CustomerDetail = () => {
                                             </div> 
 
                                             <div className="data py-4">
-                                                <div><p className="font-3">Comment here</p></div>
+                                                <div><p className="font-3">{displayData?.additionalNotes}</p></div>
                                             </div>
 
                                         </div>
@@ -140,12 +144,12 @@ const CustomerDetail = () => {
 
                                         </div> */}
 
-                                        <CustomerDetailRepeater data={companyDetails} />
+                                        <CustomerDetailRepeater data={displayData?.property} customerId={{id}} />
 
                                     </div>
 
                                     <div className="col-md-6 pt-5">
-                                        <ProposalCard />
+                                        <ProposalCard proposalid={displayData?.proposal} customerid={displayData?.uniqueid} />
                                     </div>
                                 </div>
 

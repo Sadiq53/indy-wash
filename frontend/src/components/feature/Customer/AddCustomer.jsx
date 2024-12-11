@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import { useDispatch } from 'react-redux'
 import * as Yup from "yup";
 import { handleAddCustomerDetail } from "../../../redux/AdminDataSlice";
+import { addCustomer } from "../../../services/CustomerService";
+import { generateUniqueId } from '../../../utils/UniqueIdGenerator'
 
 const AddCustomer = () => {
   const navigate = useNavigate();
@@ -21,17 +23,18 @@ const AddCustomer = () => {
 
     const addCustomerForm = useFormik({
         initialValues: {
+          uniqueid: '',
         createDate,
         customerType: "",
-        contactMethod: [],
+        contactMethod: "",
         personalDetails: {
             firstName: "",
             lastName: "",
             email: "",
             phone: "",
         },
-        companyDetails: [],
-        additionalContactInfo: {
+        property: [],
+        additionalContact: {
             detail1: {
             fullname: "",
             title: "",
@@ -45,7 +48,7 @@ const AddCustomer = () => {
             phone: "",
             },
         },
-        additionalInfo: image,
+        // additionalInfo: image,
         additionalNotes: "",
         },
         // validationSchema: Yup.object({
@@ -72,9 +75,12 @@ const AddCustomer = () => {
         //   }),
         // }),
         onSubmit: async (formData) => {
-            // console.log(formData);
-            dispatch(handleAddCustomerDetail(formData))
-            navigate("/customer-detail");
+            formData.uniqueid = generateUniqueId()
+            const response = await addCustomer(formData)
+            if(response.success) {
+              dispatch(handleAddCustomerDetail(response.result))
+              navigate(`/customer-detail/${response.result?.uniqueid}`); 
+            }            
         },
     });
 
@@ -88,8 +94,8 @@ const AddCustomer = () => {
   };
 
   const handleMultiSelectorChange = (companyInfo) => {
-    addCustomerForm.setFieldValue("companyDetails", companyInfo);
-    console.log(companyInfo)
+    addCustomerForm.setFieldValue("property", companyInfo);
+    // console.log(companyInfo)
   };
 
   return (
@@ -195,35 +201,22 @@ const AddCustomer = () => {
                           </h5>
                         </div>
                         <div className="input-section gtc-3 mob my-2">
-                          {["Call", "Email", "Text"].map((method) => (
-                            <div className="flex-cs" key={method}>
-                              <input
-                                className="form-check-input mt-0"
-                                type="checkbox"
-                                value={method}
-                                checked={addCustomerForm.values.contactMethod.includes(
-                                  method
-                                )}
-                                onChange={(e) => {
-                                  const newMethods =
-                                    e.target.checked
-                                      ? [
-                                          ...addCustomerForm.values
-                                            .contactMethod,
-                                          method,
-                                        ]
-                                      : addCustomerForm.values.contactMethod.filter(
-                                          (m) => m !== method
-                                        );
-                                  addCustomerForm.setFieldValue(
-                                    "contactMethod",
-                                    newMethods
-                                  );
-                                }}
-                              />
-                              <label>{method}</label>
-                            </div>
-                          ))}
+                        {["Call", "Email", "Text"].map((method) => (
+                          <div className="flex-cs" key={method}>
+                            <input
+                              className="form-check-input mt-0"
+                              type="radio" // Changed to radio to reflect single selection
+                              value={method}
+                              checked={addCustomerForm.values.contactMethod === method}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  addCustomerForm.setFieldValue("contactMethod", method);
+                                }
+                              }}
+                            />
+                            <label>{method}</label>
+                          </div>
+                        ))}
                         </div>
                       </div>
                     </div>
@@ -285,13 +278,13 @@ const AddCustomer = () => {
                                     .join(" ")
                                     .replace(/\b\w/g, (c) => c.toUpperCase())}
                                     value={
-                                    addCustomerForm.values.additionalContactInfo[
+                                    addCustomerForm.values.additionalContact[
                                         detailKey
                                     ][field]
                                     }
                                     onChange={(e) =>
                                     addCustomerForm.setFieldValue(
-                                        `additionalContactInfo.${detailKey}.${field}`,
+                                        `additionalContact.${detailKey}.${field}`,
                                         e.target.value
                                     )
                                     }
@@ -303,7 +296,7 @@ const AddCustomer = () => {
                         </div>
                         <div className="top-cs pt-3 gtc-equal">
                             <div className="grid-cs cs-align-end">
-                                <div>
+                                {/* <div>
                                     <div className="header">
                                         <h5 className="font-1 fw-700 font-size-16">Additional info :</h5>
                                     </div>
@@ -361,7 +354,7 @@ const AddCustomer = () => {
                                             className="file-input"
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="grid-cs gtc-1">
                                 <div className="header">

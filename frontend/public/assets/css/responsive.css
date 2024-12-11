@@ -95,6 +95,9 @@
     .head-filters .part-1 .search-input{
         padding: 8px;
     }
+    .box-cs{
+        overflow: hidden;
+    }
     .box-cs .top-cs{
         grid-template-columns: 1fr;
     }
@@ -171,8 +174,8 @@
         flex-direction: column;
     }
     .custom-table{
-        width: 100%;
-        overflow-x: visible;
+        width: 100vw;
+        overflow-x: scroll;
     }
     .custom-table table{
         width: 100%;

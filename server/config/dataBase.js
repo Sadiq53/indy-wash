@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 require('dotenv').config();
 
-mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}/typingtest`);
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}/Indy-wash`);
 
 
 mongoose.connection.on("connected", ()=>{

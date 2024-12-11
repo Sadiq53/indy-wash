@@ -218,10 +218,10 @@ margin: 0;
 }
 
 .bg-theme-2{
-	background-color: #FF8214;
+	background-color: #FF8214 !important;
 }
 .bg-theme-1{
-	background-color: #388CFF;
+	background-color: #388CFF !important;
 }
 .bg-theme-3{
 	background-color: #FFB753;
@@ -298,7 +298,7 @@ margin: 0;
 }
 
 .custom-table table thead tr{
-	background: #F1F4F9;
+	background: #F1F4F9 !important;
 
 }
 .custom-table table thead tr th:first-child{
@@ -331,6 +331,7 @@ margin: 0;
 	font-weight: 400;
 	line-height: normal;
 	margin: 0 !important;
+	text-align: center;
 }
 .custom-table table td {
 	border-bottom: 1px solid #97979763;
@@ -676,6 +677,9 @@ line-height: normal;
   .cs-align-end{
 	align-items: flex-end !important;
   }
+  .cs-justify-end{
+	justify-content: flex-end !important;
+  }
 
   .frequency-layout{
 	border-radius: 11px;
@@ -742,15 +746,28 @@ line-height: normal;
   }
 
   .proposal-tag-cards{
-	display: grid;
+	display: flex;
+	flex-wrap: nowrap;
 	align-items: center;
-	grid-template-columns: 1fr 1fr 1fr;
+	/* grid-template-columns: 1fr 1fr 1fr; */
 	gap: 10px;
+	overflow: scroll;
+    cursor: grab;
+  }
+
+  .proposal-tag-cards.grabbing {
+	cursor: grabbing; /* Change cursor to grabbing when the user is dragging */
+  }
+
+  .proposal-tag-cards::-webkit-scrollbar{
+	display: none;
   }
 
   .proposal-tag-cards .tag-card{
 	border-radius: 6px;
 	padding: 15px;
+	width: 32%;
+	flex: none;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -804,15 +821,15 @@ margin: 0;
   }
 
 
-  .form-check-input.cs-blue:checked{
+  .form-check-input.bg-theme-4:checked{
 	background-color: #1E67CB !important;
 	border-color: #1E67CB;
 }
-.form-check-input.cs-orange:checked{
+.form-check-input.bg-theme-5:checked{
 	background-color: #CC6811 !important;
 	border-color: #CC6811;
 }
-.form-check-input.cs-yellow:checked{
+.form-check-input.bg-theme-6:checked{
 	background-color: #F9950B !important;
 	border-color: #F9950B;
 }
@@ -1053,6 +1070,7 @@ margin: 0;
 	width: 100%;
 	align-items: stretch;
 }
+
 .accordian-content .body .part-2 .keys{
     display: flex;
     flex-direction: column;
@@ -1078,6 +1096,7 @@ margin: 0;
     right: 0;
     left: 0;
     bottom: 0;
+	transition: 0.5s;
 }
 .cs-modal .layout{
     border-radius: 20px;
@@ -1086,6 +1105,7 @@ margin: 0;
 	margin: 250px auto;
     width: 500px;
     padding: 30px;
+	transition: 0.5s;
 }
 
 .cs-modal .layout img{
@@ -1105,3 +1125,26 @@ margin: 0;
 /* .fade-cs{
 	background-color:#202224 !important;
 } */
+
+.cs-proposal-btn{
+	border: none;
+	padding: 0 !important;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
+}
+.cs-justify-start{
+	justify-content: flex-start;
+}
+
+.input-disabled{
+	cursor: no-drop;
+}
+
+.modal-dialog.width-800{
+	max-width: 900px !important;
+}
+
+.cs-flex-column{
+	flex-direction: column !important;
+}

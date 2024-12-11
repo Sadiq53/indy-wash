@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom"
 import { handleSidebar } from "../../../redux/AdminDataSlice";
+import { ToastContainer } from "react-toastify";
 
 const Header = () => {
 
@@ -78,6 +79,7 @@ const Header = () => {
                 </div>
             </div>
         </header>
+        <ToastContainer />
     </>
   )
 }

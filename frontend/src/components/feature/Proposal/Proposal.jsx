@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import DataTable from '../Dashboard/DataTable'
+import DataTable from './Helper/DataTable'
 
 const Proposal = () => {
   return (

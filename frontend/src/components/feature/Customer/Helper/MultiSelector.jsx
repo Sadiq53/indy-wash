@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import { generateUniqueId } from "../../../../utils/UniqueIdGenerator";
 
 const MultiSelector = ({ onDataChange }) => {
   const [properties, setProperties] = useState([
     { 
       propertyName: "", 
-      propertyType: "", 
-      numBuildings: "", 
-      numUnits: "", 
+      uniqueid: generateUniqueId(),
+      property: "", 
+      buildings: "", 
+      units: "", 
       billingAddress: "", 
       serviceAddress: "", 
       propertyType: [], 
@@ -22,8 +24,8 @@ const MultiSelector = ({ onDataChange }) => {
       const error = {};
       if (!property.companyName) error.companyName = "Company name is required";
       if (!property.property) error.property = "Property is required";
-      if (!property.numBuildings) error.numBuildings = "# of Buildings is required";
-      if (!property.numUnits) error.numUnits = "No. of Units is required";
+      if (!property.buildings) error.buildings = "# of Buildings is required";
+      if (!property.units) error.units = "No. of Units is required";
       if (!property.billingAddress) error.billingAddress = "Billing Address is required";
       if (!property.serviceAddress) error.serviceAddress = "Service Address is required";
       if (property.propertyType.length === 0) error.propertyType = "At least one property type is required";
@@ -58,9 +60,10 @@ const MultiSelector = ({ onDataChange }) => {
       ...properties,
       {
         propertyName: "",
-        propertyType: "",
-        numBuildings: "",
-        numUnits: "",
+        uniqueid: generateUniqueId(),
+        property: "",
+        buildings: "",
+        units: "",
         billingAddress: "",
         serviceAddress: "",
         propertyType: [],
@@ -99,25 +102,25 @@ const MultiSelector = ({ onDataChange }) => {
                 {/* {errors[index]?.companyName && <div className="error text-danger">{errors[index].companyName}</div>} */}
                 <input
                   type="text"
-                  placeholder="Property typr"
-                  value={property.propertyType}
-                  onChange={(e) => setSelection(index, "propertyType", e.target.value)}
+                  placeholder="Property"
+                  value={property.property}
+                  onChange={(e) => setSelection(index, "property", e.target.value)}
                 />
                 {/* {errors[index]?.property && <div className="error text-danger">{errors[index].property}</div>} */}
                 <input
                   type="text"
                   placeholder="# of Buildings"
-                  value={property.numBuildings}
-                  onChange={(e) => setSelection(index, "numBuildings", e.target.value)}
+                  value={property.buildings}
+                  onChange={(e) => setSelection(index, "buildings", e.target.value)}
                 />
-                {/* {errors[index]?.numBuildings && <div className="error text-danger">{errors[index].numBuildings}</div>} */}
+                {/* {errors[index]?.buildings && <div className="error text-danger">{errors[index].buildings}</div>} */}
                 <input
                   type="number"
                   placeholder="No. Of Units"
-                  value={property.numUnits}
-                  onChange={(e) => setSelection(index, "numUnits", e.target.value)}
+                  value={property.units}
+                  onChange={(e) => setSelection(index, "units", e.target.value)}
                 />
-                {/* {errors[index]?.numUnits && <div className="error text-danger">{errors[index].numUnits}</div>} */}
+                {/* {errors[index]?.units && <div className="error text-danger">{errors[index].units}</div>} */}
               </div>
               <div className="input-section gtc-equal my-2">
                 <input

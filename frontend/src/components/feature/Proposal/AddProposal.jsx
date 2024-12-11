@@ -1,25 +1,182 @@
 import { useFormik } from 'formik';
-import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'
-
+import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { generateUniqueId } from '../../../utils/UniqueIdGenerator';
+import { addProposal } from '../../../services/ProposalService';
+import { handleAddProposal, handleAddServices } from '../../../redux/ServiceDataSlice';
+import { handleUpdateCustomerProperty } from '../../../redux/AdminDataSlice';
+import { frequencyDigitConverter } from '../../../utils/frequencyDigitConverter'
 
 const AddProposal = () => {
 
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
+  const param = useParams()
+  const {customerId, propertyId} = param
+  
+  const customerData = useSelector(state => state.AdminDataSlice.customers)
+  const adminData = useSelector(state => state.AdminDataSlice.admin)
+  
+  const [displayData, setDisplayData] = useState({customer: {}, property: {}})
+  const [isParam, setIsParam] = useState(false)
+  const [services, setServices] = useState([])
   const [image, setImage] = useState({image1: '', image2: ''});
+  const [propertyData, setPropertyData] = useState([])
+  const [createDate, setCreateDate] = useState(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  });
   const [initialValues, setInitialValues] = useState({
-    createdate: Date.now(),
+    createDate,
+    uniqueid: generateUniqueId(),
     customer: '',
     property: '',
     serviceItem: '',
+    serviceUniqueid: generateUniqueId(),
     type: '',
     quantity: '',
     sqft: '',
     description: '',
     additionalInfo: image,
-    frequency: ''
+    frequency: []
   })
+  const [frequencies, setFrequencies] = useState([
+    {
+      name: 'one-off',
+      price: 0
+    },
+    {
+      name: 'annual',
+      price: 0
+    },
+    {
+      name: 'bi-annual',
+      price: 0
+    },
+    {
+      name: 'bi-quarterly',
+      price: 0
+    },
+    {
+      name: 'monthly',
+      price: 0
+    },
+    {
+      name: 'bi-weekly',
+      price: 0
+    },
+    {
+      name: 'quarterly',
+      price: 0
+    }
+  ])
+
+  // const validationSchema = Yup.object({
+  //   createDate: Yup.date().required('Date is required'),
+  //   customer: Yup.string().required('Customer is required'),
+  //   property: Yup.string().required('Property is required'),
+  //   serviceItem: Yup.string().required('Service Item is required'),
+  //   quantity: Yup.number().required('Quantity is required').positive(),
+  //   description: Yup.string().optional(),
+  // });
+
+  const proposalForm = useFormik({
+    // validationSchema: ,
+    initialValues,
+    onSubmit: async(formData) => {
+      const response = await addProposal(formData)
+      if(response?.success) {
+        const {proposal, service} = response;
+        dispatch(handleAddProposal(proposal))
+        dispatch(handleAddServices(service))
+        const dataObject = {
+          serviceid: service?.uniqueid,
+          proposalid: proposal?.uniqueid,
+          propertyid: proposal?.property,
+          customerid: proposal?.customer
+        }
+        dispatch(handleUpdateCustomerProperty(dataObject))
+        navigate(`/proposal-detail/${proposal?.uniqueid}`)
+      }
+    }
+  })
+
+  const handleFrequencyChange = (name, value) => {
+    const updatedFrequencies = frequencies.map((freq) =>
+      freq.name === name ? { ...freq, price: parseFloat(value) || 0, frequencyDigit: frequencyDigitConverter[name] } : freq
+    );
+  // console.log(updatedFrequencies)
+    // Filter frequencies where price is greater than 0
+    const validFrequencies = updatedFrequencies.filter((freq) => freq.price > 0);
+  
+    // Update the form field with valid frequencies only
+    proposalForm.setFieldValue("frequency", validFrequencies);
+  
+    // Update the state with all frequencies
+    setFrequencies(updatedFrequencies);
+  };
+  
+  
+
+
+  useEffect(()=>{
+    if(adminData) {
+      setServices(adminData?.customServices)
+    }
+  }, [adminData])
+  
+  useEffect(() => {
+    if (customerId && propertyId) {
+      setIsParam(true)
+      const customer = customerData.find((value) => value.uniqueid === customerId);
+      const property = customer?.property?.find((value) => value.uniqueid === propertyId);
+      setDisplayData({customer, property});
+      proposalForm.setFieldValue('customer', customer?.uniqueid)
+      proposalForm.setFieldValue('property', property?.uniqueid)
+      setInitialValues((prev) => ({
+        ...prev,
+        customer: customer?.personalDetails?.firstName || "",
+        property: property?.name || "",
+      }));
+    }
+  }, [customerId, propertyId, customerData]);
+  
+
+  const toggleProperty = (event) => {
+    if(customerData) {
+      setPropertyData(customerData?.find(value => value.uniqueid === event)?.property)
+    }
+  }
+  
+  const toggleService = (event) => {
+    if (adminData) {
+      const data = services?.find((service) => service.name === event);
+      if (data) {
+        
+  
+        // Map through frequencies and update `price` for matching frequencies in `data.frequency`
+        const updatedFrequencies = frequencies.map((freq) => {
+          const matchedFrequency = data?.frequency?.find((item) => item.name === freq.name);
+          return {
+            ...freq,
+            price: matchedFrequency ? matchedFrequency.price : freq.price,
+          };
+        });
+        console.log(data?.frequency)
+        proposalForm.setFieldValue('type', data?.type)
+        proposalForm.setFieldValue('description', data?.description )
+        proposalForm.setFieldValue("frequency", data?.frequency);
+  
+        // Optionally update `frequencies` in state if needed
+        setFrequencies(updatedFrequencies);
+      }
+    }
+  };
+  
 
     const handleImageUpload = (event, type) => {
         const file = event.target.files[0];
@@ -29,14 +186,7 @@ const AddProposal = () => {
         }
     };
 
-    const proposalForm = useFormik({
-      // validationSchema: ,
-      initialValues,
-      onSubmit: async(formData) => {
-        // navigate('/proposal-detail')
-        console.log(formData)
-      }
-    })
+    
 
   return (
     <>
@@ -64,7 +214,7 @@ const AddProposal = () => {
                                       <h5 className="font-1 fw-700 font-size-16">Select Date</h5>
                                   </div>
                                   <div className="input-section gtc-1 my-2">
-                                      <input type="date" onChange={proposalForm.handleChange}  name="createdate" id="" />
+                                      <input type="date" value={proposalForm.values.createDate} onChange={proposalForm.handleChange}  name="createDate" id="" />
                                   </div>
                                 </div>
 
@@ -73,9 +223,25 @@ const AddProposal = () => {
                                       <h5 className="font-1 fw-700 font-size-16">Select Customer</h5>
                                   </div>
                                   <div className="input-section gtc-1 my-2">
-                                      <select onChange={proposalForm.handleChange}  name="customer" id="">
+                                  {
+                                    isParam ? (
+                                      <input type="text" className='input-disabled' value={displayData?.customer?.personalDetails?.firstName} name="customer" disabled id="" />
+                                    ) : (
+                                      <select
+                                        value={proposalForm.values.customer}
+                                        onChange={(event)=>{proposalForm.handleChange(event), toggleProperty(event.target.value)}}
+                                        name="customer"
+                                      >
                                         <option value="">Select Customer</option>
+                                        {customerData &&
+                                          customerData.map((value, index) => (
+                                            <option value={value.uniqueid} key={index}>
+                                              {value.personalDetails?.firstName}
+                                            </option>
+                                          ))}
                                       </select>
+                                    )
+                                  }
                                   </div>
                                 </div>
 
@@ -84,10 +250,32 @@ const AddProposal = () => {
                                       <h5 className="font-1 fw-700 font-size-16">Select Property</h5>
                                   </div>
                                   <div className="input-section gtc-1 my-2">
-                                      <select onChange={proposalForm.handleChange} name="property" id="">
+                                    {isParam ? (
+                                      <input
+                                        type="text"
+                                        className="input-disabled"
+                                        value={displayData?.property?.propertyName}
+                                        name="customer"
+                                        disabled
+                                        id=""
+                                      />
+                                    ) : (
+                                      <select
+                                        value={proposalForm.values.property} // Directly bind to the uniqueid stored in Formik
+                                        onChange={(e) => proposalForm.setFieldValue("property", e.target.value)} // Update only the uniqueid in Formik
+                                        name="property"
+                                      >
                                         <option value="">Select Property</option>
+                                        {propertyData &&
+                                          propertyData.map((value, index) => (
+                                            <option value={value?.uniqueid} key={index}>
+                                              {value?.propertyName}
+                                            </option>
+                                          ))}
                                       </select>
+                                    )}
                                   </div>
+
                                 </div>
                               </div>
 
@@ -98,15 +286,22 @@ const AddProposal = () => {
                                       <h5 className="font-1 fw-700 font-size-16">Details :</h5>
                                     </div>
                                     <div className="input-section gtc-1 my-2">
-                                      <select onChange={proposalForm.handleChange}  name="serviceItem" id="">
+                                      <select onChange={(event)=>{proposalForm.handleChange(event), toggleService(event.target.value)}}  name="serviceItem" id="">
                                         <option value="">Service item</option>
+                                        {
+                                          services && services?.map((value, index) => {
+                                            return (
+                                              <option key={index}>{value.name}</option>
+                                            )
+                                          })
+                                        }
                                       </select>
                                     </div>
                                   </div>
 
                                   <div>
                                     <div className="input-section gtc-1 my-2">
-                                        <input type="text" onChange={proposalForm.handleChange} placeholder='Type' name="type" id="" />
+                                        <input type="text" onChange={proposalForm.handleChange} disabled className='input-disabled' value={proposalForm.values.type} placeholder='Type' name="type" id="" />
                                     </div>
                                   </div>
 
@@ -121,7 +316,7 @@ const AddProposal = () => {
                                     <input type="text" onChange={proposalForm.handleChange} placeholder='SQFT' name="sqft" id="" />
                                   </div>
                                   <div className="input-section gtc-1 my-2">
-                                    <input type="text" onChange={proposalForm.handleChange} placeholder='Description' name="description" id="" />
+                                    <input type="text" onChange={proposalForm.handleChange} disabled className='input-disabled' value={proposalForm.values.description} placeholder='Description' name="description" id="" />
                                   </div>
                                 </div>
                               </div>
@@ -192,7 +387,7 @@ const AddProposal = () => {
 
                             </div>
                             <div className="col-md-4">
-                              <div className="frequency-layout ">
+                              {/* <div className="frequency-layout ">
                                 <div className='content'>
                                   <div className='gtc-3-1 width-100'>
                                       <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
@@ -202,49 +397,72 @@ const AddProposal = () => {
                                     <div className="property">
                                       <p>One-Off</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="one-off" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Annual</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="annual" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Bi-Annual</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="bi-annual" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Quarterly</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="quarterly" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Bi-Quarterly</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="bi-quarterly" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Monthly</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="monthly" id="" />
                                   </div>
                                   <div>
                                     <div className="property">
                                       <p>Bi-weekly</p>
                                     </div>
-                                    <input type="text" placeholder='$' name="" id="" />
+                                    <input type="text" placeholder='$' name="bi-weekly" id="" />
                                   </div>
                                 </div>
                               <button className="filter-btn bg-theme-2" >
                                 <i className="fa-light fa-xl fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add More Property
                               </button>
+                              </div> */}
+                              <div className="frequency-layout">
+                                <div className="content">
+                                  <div className="gtc-3-1 width-100">
+                                    <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
+                                    <h4 className="font-1 font-size-16 fw-700">Price</h4>
+                                  </div>
+                                  {frequencies?.map((freq) => (
+                                    <div key={freq}>
+                                      <div className="property">
+                                        <p>{freq?.name?.replace(/([A-Z])/g, ' $1')?.replace(/^./, str => str.toUpperCase())}</p>
+                                      </div>
+                                      <input
+                                        type="number"
+                                        placeholder="$"
+                                        name={freq.name}
+                                        value={freq.price || ''}
+                                        onChange={(e) => handleFrequencyChange(freq.name, e.target.value)}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
+
                             </div>
                           </div>
                         </div>

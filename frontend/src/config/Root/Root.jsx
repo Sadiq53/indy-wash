@@ -23,7 +23,7 @@ const rootRoutes = [
         element : <AddCustomer />
     },
     {
-        path : 'customer-detail',
+        path : 'customer-detail/:id',
         element : <CustomerDetail />
     },
     {
@@ -35,11 +35,15 @@ const rootRoutes = [
         element : <AddProposal />
     },
     {
-        path : 'proposal-detail',
+        path : 'add-proposal/:customerId/:propertyId',
+        element : <AddProposal />
+    },
+    {
+        path : 'proposal-detail/:proposalid',
         element : <ProposalDetail />
     },
     {
-        path : 'service-detail',
+        path : 'service-detail/:proposalid',
         element : <ServiceDetail />
     },
     {
