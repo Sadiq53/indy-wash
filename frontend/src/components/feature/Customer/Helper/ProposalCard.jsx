@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const ProposalCard = ({ proposalid, customerid }) => {
+const ProposalCard = ({  customerid }) => {
+
+    const navigate = useNavigate();
 
     // Safely extracting data from Redux store with optional chaining
     const customerDetail = useSelector((state) => state.AdminDataSlice.customers) || [];
@@ -12,62 +15,72 @@ const ProposalCard = ({ proposalid, customerid }) => {
  
     // Ensure proposalDetail is updated correctly
     useEffect(() => {
-        if (proposalDetail.length >= 1 && proposalid && customerid) {
-            const filteredCustomer = customerDetail?.find(value => value.uniqueid === customerid)
-            const filteredProposal = proposalDetail?.find(value => proposalid?.includes(value.uniqueid))
-            setDisplayData(filteredProposal);
-            setCustomerData(filteredCustomer)
-        }
-    }, [proposalDetail, proposalid, customerid]);
+        // Find the customer with the given customerid
+        const filteredCustomer = customerDetail.find((customer) => customer.uniqueid === customerid);
 
+        if (filteredCustomer) {
+            // Extract all proposal IDs from the customer's property array
+            const proposalIds = filteredCustomer.property.reduce((ids, property) => {
+                if (property.proposal && Array.isArray(property.proposal)) {
+                    return [...ids, ...property.proposal]; // Combine all proposal IDs
+                }
+                return ids;
+            }, []);
+
+            // Filter proposals based on the collected proposal IDs
+            const filteredProposals = proposalDetail.filter((proposal) =>
+                proposalIds.includes(proposal.uniqueid)
+            );
+            // console.log(filteredProposals)
+            // Update state with proposals and customer data
+            setDisplayData(filteredProposals);
+            setCustomerData(filteredCustomer);
+        } else {
+            setDisplayData([]); // No proposals found
+            setCustomerData(null);
+        }
+    }, [customerDetail, proposalDetail, customerid]);
+
+    const extractProperty = (id) => {
+        const allProperty = customerData?.property?.find(value => value.uniqueid === id)
+        return allProperty
+    }
 
   return (
     <>
         <div className="proposal-card">
-            {/* <div className="head-filters mob">
+            <div className="head-filters mob">
                 <h4 className="font-1 text-light fw-700">Proposal Details</h4>
             </div>
             <div className="body cs my-4">
-                <img src="/assets/img/exclm.svg" alt="" />
-                <h4 className="font-1 text-light fw-700">No Proposal Found !!</h4>
-            </div> */}
-            <div className="body">
-                <div className="head-filters mob pt-3">
-                    <div className="part-1 gtc-1">
-                        <h4>Company Name #1  :  --</h4>
-                    </div>
-                    <div className="part-1  gtc-1">
-                        <button className="btn text-light">
-                            <div className="flex-cs">
-                                <div className="cs-status status-bg-draft"></div> Draft  <i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} />
+                {
+                    displayData?.length >= 1 ? (
+                        displayData?.map((value, index) => {
+                            const property = extractProperty(value?.property)
+                            return (
+                                <div className="head-filters mob pt-3">
+                                    <div className="part-1 gtc-1">
+                                        <h4>{property?.propertyName} #1  :  --</h4>
+                                    </div>
+                                    <div className="part-1  gtc-1">
+                                        <button className="btn text-light" onClick={()=>navigate(`/add-proposal/${customerid}/${value.uniqueid}`)}>
+                                            <div className="flex-cs">
+                                                {value?.status === 'draft' ? (<div className="cs-status status-bg-draft"></div>) : (<div className="cs-status status-bg-active"></div>)} {value?.status}  <i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} />
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div> 
+                            )
+                        })
+                    ) : (
+                        <>
+                            <div className="body cs my-4">
+                                <img src="/assets/img/exclm.svg" alt="" />
+                                <h4 className="font-1 text-light fw-700">No Proposal Found !!</h4>
                             </div>
-                        </button>
-                    </div>
-                </div> 
-                <div className="head-filters mob">
-                    <div className="part-1 gtc-1">
-                        <h4>Company Name #2  :  --</h4>
-                    </div>
-                    <div className="part-1  gtc-1">
-                        <button className="btn text-light">
-                            <div className="flex-cs">
-                                <div className="cs-status status-bg-draft"></div> Draft  <i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} />
-                            </div>
-                        </button>
-                    </div>
-                </div> 
-                <div className="head-filters mob">
-                    <div className="part-1 gtc-1">
-                        <h4>Company Name #3  :  --</h4>
-                    </div>
-                    <div className="part-1  gtc-1">
-                        <button className="btn text-light">
-                            <div className="flex-cs">
-                                <div className="cs-status status-bg-active"></div> Active  <i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} />
-                            </div>
-                        </button>
-                    </div>
-                </div> 
+                        </>
+                    )
+                }
             </div>
         </div>
     </>

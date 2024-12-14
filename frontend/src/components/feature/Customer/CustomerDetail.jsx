@@ -3,6 +3,7 @@ import CustomerDetailRepeater from './Helper/CompanyDetailRepeater'
 import { NavLink, useParams } from 'react-router-dom'
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
+import CreateProposalModal from "./Helper/CreateProposalModal"
 
 const CustomerDetail = () => {
 
@@ -10,6 +11,7 @@ const CustomerDetail = () => {
     const { id } = param
 
     const [displayData, setDisplayData] = useState({})
+    const [addProposalPopup, setAddProposalPopup] = useState(false)
 
     const customerDetail = useSelector(state => state.AdminDataSlice.customers)
     
@@ -17,9 +19,14 @@ const CustomerDetail = () => {
     useEffect(()=>{
         if(customerDetail) {
             const sanitizeCustomer = customerDetail?.filter(value => value.uniqueid === id)
+            // console.log("sanitizeCustomer",sanitizeCustomer[0] )
             setDisplayData(sanitizeCustomer[0])
         }
     }, [customerDetail])
+
+    const onConfirmation = () => {
+        setAddProposalPopup(false)
+    }
 
   return (
     <>
@@ -31,9 +38,9 @@ const CustomerDetail = () => {
                             <div className="part-1 gtc-1">
                                 <h4 className="font-1 fw-700">Company Name</h4>
                             </div>
-                            {/* <div className="part-1  gtc-1">
-                                <NavLink to='/add-proposal' className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</NavLink>
-                            </div> */}
+                            <div className="part-1  gtc-1">
+                                <button onClick={()=>setAddProposalPopup(true)} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</button>
+                            </div>
                         </div> 
 
                         <div className="pt-4">
@@ -118,38 +125,11 @@ const CustomerDetail = () => {
 
                                     </div>
                                     <div className="col-md-5 ">
-                                        {/* <div className="content-layout">
-                                            <div className="head-filters mob">
-                                                <div className="part-1 gtc-1">
-                                                    <h4 className="font-1 fw-700">Address, Property Type  & Feature</h4>
-                                                </div>
-                                                <div className="part-1  gtc-1">
-                                                    <button className="btn edit-btn"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
-                                                </div>
-                                            </div> 
-
-                                            <div className="data cs-border-bottom py-4">
-                                                <div><p className="font-3">Property Manager</p></div>
-                                                <div><p className="font-3">Property Name</p></div>
-                                                <div><p className="font-3">Service Address</p></div>
-                                                <div><p className="font-3">Breezeways  |  Breezeways  |  Breezeways</p></div>
-                                            </div>
-
-                                            <div className="data py-4">
-                                                <div><p className="font-3">Property Manager</p></div>
-                                                <div><p className="font-3">Property Name</p></div>
-                                                <div><p className="font-3">Service Address</p></div>
-                                                <div><p className="font-3">Breezeways  |  Breezeways  |  Breezeways</p></div>
-                                            </div>
-
-                                        </div> */}
-
                                         <CustomerDetailRepeater data={displayData?.property} customerId={{id}} />
-
                                     </div>
 
                                     <div className="col-md-6 pt-5">
-                                        <ProposalCard proposalid={displayData?.proposal} customerid={displayData?.uniqueid} />
+                                        <ProposalCard customerid={displayData?.uniqueid} />
                                     </div>
                                 </div>
 
@@ -159,6 +139,7 @@ const CustomerDetail = () => {
                 </div>
             </div>
         </section>
+        { addProposalPopup && (<CreateProposalModal customerid={id} property={displayData?.property} onConfirmation={onConfirmation} />) }
     </>
   )
 }

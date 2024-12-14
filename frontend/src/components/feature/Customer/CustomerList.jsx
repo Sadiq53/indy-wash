@@ -1,8 +1,17 @@
 import CustomButton from "../../shared/Buttons/CustomButton"
 import DataTable from "../Dashboard/DataTable"
 import {NavLink} from 'react-router-dom'
+import DeleteCustomerModal from "./Helper/DeleteCustomerModal"
+import { useState } from "react"
 
 const CustomerList = () => {
+
+    const [selectedCustomer, setSelectedCustomer] = useState({})
+
+    const onDelete = (customer) => {
+        setSelectedCustomer(customer)
+    }
+
   return (
     <>
         <section>
@@ -24,12 +33,13 @@ const CustomerList = () => {
                         </div>
 
                         <div className="pt-4">
-                            <DataTable />
+                            <DataTable onDelete={onDelete} />
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        <DeleteCustomerModal customerData={selectedCustomer} />
     </>
   )
 }

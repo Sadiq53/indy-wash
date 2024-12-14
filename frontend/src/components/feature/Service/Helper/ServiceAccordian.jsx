@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { frequencyDigit, frequencyDigitConverter } from '../../../../utils/frequencyDigitConverter'
+import DeleteServiceModal from './DeleteServiceModal'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';  // Import the default CSS for Toastify
 
 
-const ServiceAccordian = ({ property, service, onChangeData }) => {
+const ServiceAccordian = ({ property, service, onChangeData, getServiceid }) => {
 
   const [servicesData, setServicesData] = useState(
     service?.reduce((acc, curr) => {
@@ -158,7 +159,7 @@ useEffect(()=>{
 
         return (
           <div className="accordion-item cs-accordian" key={value.uniqueid}>
-            <h2 className="accordion-header" id={`heading-${value.uniqueid}`}>
+            <h2 className="accordion-header cs-accordian-head" id={`heading-${value.uniqueid}`}>
               <button
                 className="accordion-button cs-accordian-button"
                 type="button"
@@ -171,18 +172,18 @@ useEffect(()=>{
                   <h4>{value?.name}</h4>
                   <div className="table-profile">
                     <div className="gap-0">
-                      <button className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}>
+                      {/* <button className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}>
                         <i
                           className={`fa-solid ${window.innerWidth > 767 ? "fa-lg" : "fal-sm"} fa-pen`}
                           style={{ color: "#00b69b" }}
                         />
-                      </button>
-                      <button className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}>
-                        <i
-                          className={`fa-regular ${window.innerWidth > 767 ? "fa-lg" : "fal-sm"} fa-trash-can`}
-                          style={{ color: "#f93c65" }}
-                        />
-                      </button>
+                      </button> */}
+                    <button className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`} onClick={()=>getServiceid(value.uniqueid)} data-bs-toggle="modal" data-bs-target="#delete" >
+                      <i
+                        className={`fa-regular ${window.innerWidth > 767 ? "fa-lg" : "fal-sm"} fa-trash-can`}
+                        style={{ color: "#f93c65" }}
+                      />
+                    </button>
                     </div>
                   </div>
                 </div>

@@ -1,8 +1,11 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { formatDate } from '../../../utils/formatDate'
+import { useState } from "react";
 
-const DataTable = ({ title }) => {
+const DataTable = ({ title, onDelete }) => {
+
+
   const customerDetail = useSelector((state) => state.AdminDataSlice.customers);
 
 
@@ -58,10 +61,10 @@ const DataTable = ({ title }) => {
                   <td>
                     <div className="table-profile gap-0">
                         <div>
-                          <button className="btn">
+                          <NavLink to={`/customer-detail/${value.uniqueid}`} className="btn">
                             <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
-                          </button>
-                          <button className="btn">
+                          </NavLink>
+                          <button data-bs-toggle="modal" data-bs-target="#delete" onClick={()=>onDelete(value)} className="btn">
                             <i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} />
                           </button>
                         </div>

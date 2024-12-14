@@ -107,10 +107,41 @@ const AdminDataSlice = createSlice({
                     state.customers = updatedCustomers;
                 }
             }
-        }
+        },
+        handleDeleteServiceFromCustomer: (state, action) => {
+            const { serviceid, customerid, propertyid } = action.payload;
         
+            // Find the customer by `customerid`
+            state.customers = state.customers?.map((customer) => {
+                if (customer.uniqueid === customerid) {
+                    return {
+                        ...customer,
+                        property: customer.property?.map((property) => {
+                            if (property.uniqueid === propertyid) {
+                                return {
+                                    ...property,
+                                    services: property.services?.filter((service) => service !== serviceid),
+                                };
+                            }
+                            return property;
+                        }),
+                    };
+                }
+                return customer;
+            });
+        },
+        handleDeleteCustomer: (state, action) => {
+            const { payload } = action;
+            state.customers = state.customers?.filter(value => value.uniqueid !== payload);
+        },
+        handleDeleteCustomService: (state, action) => {
+            const { payload } = action;
+            state.admin.customServices = state.admin.customServices?.filter(
+                (value) => value.uniqueid !== payload
+            );
+        }                
     }
 })
 
 export default AdminDataSlice.reducer;
-export const { resetState, handleAddCustomerDetail, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions
+export const { resetState, handleAddCustomerDetail, handleDeleteCustomer, handleDeleteCustomService, handleDeleteServiceFromCustomer, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions

@@ -241,9 +241,57 @@ route.put('/status', async (req, res) => {
     }
 });
 
-route.delete('/', async(req, res) => {
+route.post('/delete', async (req, res) => {
+    const { serviceid, customerid, propertyid, proposalid } = req.body;
 
-})
+    if (!serviceid || !customerid || !propertyid || !proposalid) {
+        return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    try {
+        // Delete the service from the serviceModel
+        await serviceModel.deleteOne({ uniqueid: serviceid });
+
+        // Remove the service ID from the services array in proposalModel
+        await proposalModel.updateOne(
+            { uniqueid: proposalid },
+            { $pull: { service: serviceid } }
+        );
+
+        // Remove the service ID from the services array in customerModel's property
+        await customerModel.updateOne(
+            { uniqueid: customerid, 'property.uniqueid': propertyid },
+            { $pull: { 'property.$.services': serviceid } }
+        );
+
+        return res.status(200).json({ success: true, message: 'Service deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+route.delete('/:id', async (req, res) => {
+    const serviceid = req.params.id;
+
+    try {
+        // Use $pull to remove the customService that matches the uniqueid
+        const result = await adminModel.updateOne(
+            { username: 'admin' }, // Filter to find the admin document
+            { $pull: { customServices: { uniqueid: serviceid } } } // Remove service by uniqueid
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).send({ message: 'Service deleted successfully.', success: true });
+        } else {
+            res.status(404).send({ message: 'Service not found or already deleted.' });
+        }
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        res.status(500).send({ message: 'Internal server error.' });
+    }
+});
+
 
 
 

@@ -1,3 +1,4 @@
+import ActiveOverview from '../../components/feature/ActiveOverview/ActiveOverview'
 import AddCustomer from '../../components/feature/Customer/AddCustomer'
 import CustomerDetail from '../../components/feature/Customer/CustomerDetail'
 import CustomerList from '../../components/feature/Customer/CustomerList'
@@ -29,6 +30,10 @@ const rootRoutes = [
     {
         path : 'proposal',
         element : <Proposal />
+    },
+    {
+        path : 'active-overview',
+        element : <ActiveOverview />
     },
     {
         path : 'add-proposal',

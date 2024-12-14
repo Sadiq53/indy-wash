@@ -7,6 +7,7 @@ import { formatDate } from '../../../utils/formatDate'
 import ServiceViewCrad from "./Helper/ServiceViewCrad";
 import { toggleStatus } from '../../../services/ProposalService'
 import { handleToggleStatus } from "../../../redux/ServiceDataSlice";
+import { toast } from "react-toastify";
 
 const ProposalDetail = () => {
   const { proposalid } = useParams();
@@ -35,6 +36,7 @@ const ProposalDetail = () => {
       const response = await toggleStatus(dataObject)
       if(response?.success) {
         dispatch(handleToggleStatus(dataObject))
+        toast.success(`Your is Proposal Active and Added to Active Overview`);
       }
     }
     setPopup(false);
@@ -125,10 +127,10 @@ const ProposalDetail = () => {
                     <i className="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} />
                     &nbsp; Download Agreement
                   </button>
-                  <button className="filter-btn bg-theme-2">
+                  <NavLink to={`/service-detail/${proposalid}`} className="filter-btn txt-deco-none bg-theme-2">
                     <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
                     &nbsp; Contract Overview
-                  </button>
+                  </NavLink>
                   <NavLink to='/proposal-detail' className="filter-btn txt-deco-none bg-theme-1">
                     <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
                     &nbsp; Save Proposal

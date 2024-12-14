@@ -101,9 +101,54 @@ const ServiceDataSlice = createSlice({
                 // If the proposal is found, update the status
                 proposal.status = status ? "active" : "draft";
             }
+        },
+        handleDeleteService: (state, action) => {
+            const { serviceid, proposalid } = action.payload;
+        
+            // Remove the service from the `services` array
+            state.services = state.services?.filter((value) => value?.uniqueid !== serviceid);
+        
+            // Update the `proposal` array by removing the `serviceid` from the corresponding proposal
+            state.proposal = state.proposal?.map((proposal) => {
+                if (proposal.uniqueid === proposalid) {
+                    return {
+                        ...proposal,
+                        service: proposal.service?.filter((item) => item !== serviceid),
+                    };
+                }
+                return proposal;
+            });
+        },
+        handleDeleteCustomerData: (state, action) => {
+            const { property } = action.payload;
+
+                // Extract all proposal IDs and service IDs from the property array
+                const allProposalIds = [];
+                const allServiceIds = [];
+                
+                property?.forEach((item) => {
+                    if (item.proposal?.length > 0) {
+                        allProposalIds.push(...item.proposal);
+                    }
+                    if (item.services?.length > 0) {
+                        allServiceIds.push(...item.services);
+                    }
+                });
+                
+                console.log("i am property",property?.services)
+                // Filter proposals in state.proposal that are not in the extracted proposal IDs
+                state.proposal = state.proposal?.filter(
+                    (proposal) => !allProposalIds.includes(proposal.uniqueid)
+                );
+        
+                // Filter services in state.services that are not in the extracted service IDs
+                state.services = state.services?.filter(
+                    (service) => !allServiceIds.includes(service.uniqueid)
+                );
         }
+        
     }
 })
 
 export default ServiceDataSlice.reducer;
-export const { resetState, handleAddProposal, handleToggleStatus, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions
+export const { resetState, handleAddProposal, handleDeleteCustomerData, handleToggleStatus, handleDeleteService, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions

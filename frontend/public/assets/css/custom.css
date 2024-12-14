@@ -968,6 +968,11 @@ margin: 0;
 	gap: 5px !important;
 }
 
+.cs-accordian-head{
+	display: flex;
+	align-items: center;
+}
+
 .cs-accordian{
 	border: 1px solid #000 !important;
 	border-radius: 10px !important;
@@ -1129,7 +1134,7 @@ margin: 0;
 .cs-proposal-btn{
 	border: none;
 	padding: 0 !important;
-    border-radius: 50%;
+    border-radius: 11px;
     height: 35px;
     width: 35px;
 }
@@ -1147,4 +1152,31 @@ margin: 0;
 
 .cs-flex-column{
 	flex-direction: column !important;
+}
+
+.proposal-modal-btn{
+	padding: 10px 20px;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+}
+
+.selection-proposal{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 0px;
+	border-bottom: 1px solid #ddd;
+}
+.selection-proposal p{
+	flex: 1;
+	margin: 0;
+	color: #202224;
+	font-family: "DM Sans";
+	font-size: 20px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	letter-spacing: -0.114px;
+	text-decoration: none;
 }

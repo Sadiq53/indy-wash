@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { handleToggleStatus } from "../../../../redux/ServiceDataSlice";
 import { toggleStatus } from "../../../../services/ProposalService";
 
-const DataTable = ({ title }) => {
+const DataTable = ({ title, onDelete }) => {
 
     const dispatch = useDispatch()
 
@@ -99,9 +99,9 @@ const DataTable = ({ title }) => {
                                         <td>
                                             <div className="table-profile gap-0">
                                                 <div>
-                                                    <button className="btn">
+                                                    <NavLink to={`/proposal-detail/${value.uniqueid}`} className="btn">
                                                         <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
-                                                    </button>
+                                                    </NavLink>
                                                     <button className="btn">
                                                         <i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} />
                                                     </button>

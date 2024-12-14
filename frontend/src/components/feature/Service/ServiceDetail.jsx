@@ -7,6 +7,7 @@ import { formatDate } from "../../../utils/formatDate";
 import AddServiceModal from './Helper/AddServiceModal'
 import { updateServices } from "../../../services/ServicesService";
 import { handleUpdateServices } from "../../../redux/ServiceDataSlice";
+import DeleteServiceModal from "./Helper/DeleteServiceModal";
 
 const ServiceDetail = () => {
 
@@ -24,6 +25,7 @@ const ServiceDetail = () => {
     const [customerData, setCustomerData] = useState({})
     const [propertyData, setPropertyData] = useState({})
     const [updatedData, setUpdatedData] = useState([])
+    const [deleteServiceId, setDeleteServiceId] = useState([])
 
 
     useEffect(()=>{
@@ -37,7 +39,7 @@ const ServiceDetail = () => {
             setCustomerData(filteredCustomer)
             setProposalData(filteredProposal)
         }
-    }, [rawServiceData])
+    }, [rawServiceData, rawProposalData, rawCustomerData])
 
     function convertObjectToArray(inputObject) {
         return Object.values(inputObject);
@@ -56,6 +58,10 @@ const ServiceDetail = () => {
             dispatch(handleUpdateServices(updatedData))
             navigate(`/proposal-detail/${proposalid}`)
         }
+    }
+
+    const getServiceid = (id) => {
+        setDeleteServiceId(id)
     }
 
     // useEffect(()=>{
@@ -108,7 +114,7 @@ return (
                                     <div className="pt-2 ">
                                         {
                                             propertyData && serviceData?.length >= 1 && (
-                                                <ServiceAccordian onChangeData={getServiceData} property={propertyData} service={serviceData} />
+                                                <ServiceAccordian onChangeData={getServiceData} getServiceid={getServiceid} property={propertyData} service={serviceData} />
                                             )
                                         }
                                         <div className="flex-cs cs-justify-end">
@@ -128,6 +134,7 @@ return (
                 </div>
             </div>
         </section>
+        <DeleteServiceModal proposalid={proposalid} serviceid={deleteServiceId} />
         <AddServiceModal proposalId={proposalid} customerId={proposalData?.customer} propertyId={proposalData?.property} />
     </>
 )

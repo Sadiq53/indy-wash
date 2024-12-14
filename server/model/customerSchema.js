@@ -15,6 +15,7 @@ const propertySchema = new mongoose.Schema({
     propertyFeatures: { type: Array, default: [] },
     proposal: { type: Array, default: [] },
     services: { type: Array, default: [] },
+
 })
 
 // const proposalSchema = new mongoose.Schema({

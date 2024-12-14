@@ -14,6 +14,9 @@ const getCustomer = async() => {
     return response.data
 }
 
+const deleteCustomer = async(formData) => {
+    const response = await axios.delete(`${API_URL}/customer/${formData}`)
+    return response.data
+}
 
-
-export { addCustomer, getCustomer }
+export { addCustomer, getCustomer, deleteCustomer }

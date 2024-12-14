@@ -1,9 +1,18 @@
+import { useState } from "react"
+import DeleteCustomerModal from "../Customer/Helper/DeleteCustomerModal"
 import Analytics from "./Analytics"
 import DataTable from "./DataTable"
 import Tags from "./Tags"
 import TotalEarning from "./TotalEarning"
 
 const Dashboard = () => {
+
+  const [selectedCustomer, setSelectedCustomer] = useState({})
+
+  const onDelete = (customer) => {
+    setSelectedCustomer(customer)
+  }
+
   return (
     <>
       <section>
@@ -29,12 +38,13 @@ const Dashboard = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="pt-4">
-              <DataTable title={'Current Projects'} />
+              <DataTable onDelete={onDelete} title={'Current Projects'} />
               </div>
             </div>
           </div>
         </div>
       </section>
+      <DeleteCustomerModal customerData={selectedCustomer} />
     </>
   )
 }
