@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { getSumOfTotalCostYearly } from "../../../../utils/ArithematicCalculation";
 
 
 const ServiceTagCard = ({ service, property }) => {
 
-    const [totalSqft, setTotalSqft] = useState(0)
+    const [totalSqft, setTotalSqft] = useState(null)
+    const [totalCost, setTotalCost] = useState(null)
 
     useEffect(() => {    
+        console.log(service)
         if (Array.isArray(service)) {
             // Calculate totalSqft by summing up the sqft values of all objects in the service array
             const totalSqft = service.reduce(
@@ -13,6 +16,7 @@ const ServiceTagCard = ({ service, property }) => {
                 0 // Initialize the accumulator as 0
             );
             setTotalSqft(totalSqft);
+            setTotalCost(getSumOfTotalCostYearly(service))
         }
     }, [service]);    
 
@@ -30,21 +34,21 @@ const ServiceTagCard = ({ service, property }) => {
                     </div>
                     <div className="inner-layout">
                     <h4>Avg Cost per SQFT</h4>
-                    <p>$0.13/SQFT</p>
+                    <p>${totalCost / totalSqft}/SQFT</p>
                     </div>
             </div>
 
             <div className="tag-card bg-theme-2 gap-cs-5">
                     <h4 className="font-1 text-center"><i class="fa-solid fa-hand-holding-circle-dollar" style={{color: "#fff"}} />  Investment</h4>
                     <div className="inner-layout">
-                    <p>$19,705.08 Annually</p>
+                    <p>${totalCost} Annually</p>
                     {/* <div className="form-check form-switch">
                         <input className="form-check-input cs-orange" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
                     </div> */}
                     </div>
                     <div className="inner-layout">
                     <h4>Monthly Payment</h4>
-                    <p>$1,642.09 PM</p>
+                    <p>${(totalCost / 12)?.toFixed(2)} PM</p>
                     </div>
             </div>
 
@@ -58,7 +62,7 @@ const ServiceTagCard = ({ service, property }) => {
                     </div>
                     <div className="inner-layout">
                     <h4>Per Door Investment</h4>
-                    <p>$1.55 / Unit PM</p>
+                    <p>${(totalCost / [property?.units])?.toFixed(2)} / Unit PM</p>
                     </div>
             </div>
 

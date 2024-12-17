@@ -8,7 +8,10 @@ const proposalSchema = new mongoose.Schema({
     createDate: { type: Date, default: Date.now() },
     customer: { type: String, default: '' },
     property: { type: String, default: '' },
-    status: { type: String, default: 'draft' },
+    status: {
+        type: { type: String, default: 'draft' },
+        date: { type: Date, default: Date.now() }
+    },
     service: { type: Array, default: [] },
 }, { collection : "proposalData" });
 

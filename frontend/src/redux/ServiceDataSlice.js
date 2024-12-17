@@ -27,6 +27,8 @@ const ServiceDataSlice = createSlice({
         },
         handleToggleActivePlan: (state, action) => {
             const { service, frequency } = action.payload;
+            // console.log("jijih",state.services?.map(value => value?.uniqueid === service))
+            // console.log("action",action.payload)
         
             // Validate the payload
             if (!service || !frequency) {
@@ -39,7 +41,6 @@ const ServiceDataSlice = createSlice({
                 console.error("Invalid state structure:", state);
                 return;
             }
-        // console.log(state.services?.map(value => value?.uniqueid === service))
             // Update the services
             state.services = state.services.map(value => {
                 if (value.uniqueid === service) {
@@ -66,7 +67,7 @@ const ServiceDataSlice = createSlice({
                 }
                 return proposal;
             });
-        } ,
+        },
         handleUpdateServices: (state, action) => {
             const updatedServices = action.payload; // Array of updated service objects
         
@@ -92,16 +93,30 @@ const ServiceDataSlice = createSlice({
             });
         },        
         handleToggleStatus: (state, action) => {
-            const { status, proposalid } = action?.payload;
+            const { status, proposalid, date } = action.payload;
         
-            // Find the proposal with the given proposalid
-            const proposal = state?.proposal?.find((value) => value?.uniqueid === proposalid);
+            if (!state.proposal) return; // Safeguard in case proposals are undefined
         
-            if (proposal) {
-                // If the proposal is found, update the status
-                proposal.status = status ? "active" : "draft";
+            // Find the index of the proposal with the given proposalid
+            const proposalIndex = state.proposal.findIndex((value) => value.uniqueid === proposalid);
+        
+            if (proposalIndex !== -1) {
+                // Create a new proposal array with the updated status
+                state.proposal = state.proposal.map((proposal, index) =>
+                    index === proposalIndex
+                        ? {
+                            ...proposal,
+                            status: {
+                                ...proposal.status,
+                                type: status ? "active" : "draft",
+                                date,
+                            },
+                        }
+                        : proposal
+                );
             }
         },
+        
         handleDeleteService: (state, action) => {
             const { serviceid, proposalid } = action.payload;
         
@@ -145,10 +160,19 @@ const ServiceDataSlice = createSlice({
                 state.services = state.services?.filter(
                     (service) => !allServiceIds.includes(service.uniqueid)
                 );
-        }
+        },
+        handleDeleteProposal: (state, action) => {
+            const { proposalid, serviceid } = action.payload;
+            console.log("i am servicedataslice", state.proposal?.filter(value => value !== proposalid))
         
+            // Remove the proposal from the state
+            state.proposal = state.proposal?.filter(value => value.uniqueid !== proposalid);
+        
+            // Remove the services from the state
+            state.services = state.services?.filter(service => !serviceid.includes(service.uniqueid));
+        }        
     }
 })
 
 export default ServiceDataSlice.reducer;
-export const { resetState, handleAddProposal, handleDeleteCustomerData, handleToggleStatus, handleDeleteService, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions
+export const { resetState, handleAddProposal, handleDeleteProposal, handleDeleteCustomerData, handleToggleStatus, handleDeleteService, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions

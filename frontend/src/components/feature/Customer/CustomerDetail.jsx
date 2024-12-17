@@ -1,17 +1,19 @@
 import ProposalCard from "./Helper/ProposalCard"
 import CustomerDetailRepeater from './Helper/CompanyDetailRepeater'
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import CreateProposalModal from "./Helper/CreateProposalModal"
+import AddPropertyModal from "./Helper/AddPropertyModal"
 
 const CustomerDetail = () => {
 
     const param = useParams();
     const { id } = param
+    const navigate = useNavigate()
 
     const [displayData, setDisplayData] = useState({})
-    const [addProposalPopup, setAddProposalPopup] = useState(false)
+    const [addProposalPopup, setAddProposalPopup] = useState({state: false, type: ''})
 
     const customerDetail = useSelector(state => state.AdminDataSlice.customers)
     
@@ -38,8 +40,11 @@ const CustomerDetail = () => {
                             <div className="part-1 gtc-1">
                                 <h4 className="font-1 fw-700">Company Name</h4>
                             </div>
-                            <div className="part-1  gtc-1">
-                                <button onClick={()=>setAddProposalPopup(true)} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</button>
+                            <div className="part-1  gtc-4">
+                                <button onClick={()=>navigate(`/add-customer/${id}`)} className="filter-btn txt-deco-none bg-theme-7"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit {displayData?.personalDetails?.firstName}</button>
+                                <button data-bs-toggle="modal" data-bs-target="#addProperty" className="filter-btn txt-deco-none bg-theme-3"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add Property</button>
+                                <button onClick={()=>setAddProposalPopup({state: true, type: 'edit'})} className="filter-btn txt-deco-none bg-theme-2"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit Proposal</button>
+                                <button onClick={()=>setAddProposalPopup({state: true, type: 'create'})} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</button>
                             </div>
                         </div> 
 
@@ -52,9 +57,9 @@ const CustomerDetail = () => {
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Personal Details</h4>
                                                 </div>
-                                                <div className="part-1  gtc-1">
+                                                {/* <div className="part-1  gtc-1">
                                                     <button className="btn edit-btn"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
-                                                </div>
+                                                </div> */}
                                             </div> 
 
                                             <div className="data py-4">
@@ -69,9 +74,9 @@ const CustomerDetail = () => {
                                                 <div className="part-1 gtc-1">
                                                     <h4 className="font-1 fw-700">Additional Contact info :</h4>
                                                 </div>
-                                                <div className="part-1  gtc-1">
+                                                {/* <div className="part-1  gtc-1">
                                                     <button className="btn edit-btn"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
-                                                </div>
+                                                </div> */}
                                             </div> 
 
                                             <div className="data cs-border-bottom py-4">
@@ -139,7 +144,8 @@ const CustomerDetail = () => {
                 </div>
             </div>
         </section>
-        { addProposalPopup && (<CreateProposalModal customerid={id} property={displayData?.property} onConfirmation={onConfirmation} />) }
+        { addProposalPopup?.state && (<CreateProposalModal customerid={id} property={displayData?.property} type={addProposalPopup?.type} onConfirmation={onConfirmation} />) }
+        <AddPropertyModal customerid={id} />
     </>
   )
 }

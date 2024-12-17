@@ -18,25 +18,6 @@ const propertySchema = new mongoose.Schema({
 
 })
 
-// const proposalSchema = new mongoose.Schema({
-//     createDate: { type: Date, default: Date.now() },
-    
-// })
-
-// const serviceSchema = new mongoose.Schema({
-//     propertyDetails: {
-//         propertyName: { type: String, default: '' },
-//         property: { type: String, default: '' },
-//         buildings: { type: Number, default: 0 },
-//         units: { type: Number, default: 0 },
-//     },
-//     propertyType: {
-//         types: { type: Array, default: [] },
-//         note: { type: String, default: '' },
-//     },
-//     propertyFeatures: { type: Array, default: [] },
-// })
-
 const customerSchema = new mongoose.Schema({
 
 uniqueid: { type: String, default: '' },

@@ -28,9 +28,14 @@ const deleteService = async(formData) => {
 }
 
 const deleteCustomService = async(formData) => {
-    const response = await axios.post(`${API_URL}/service/${formData}`)
+    const response = await axios.delete(`${API_URL}/service/${formData}`)
+    return response.data
+}
+
+const updateCustomService = async(formData) => {
+    const response = await axios.put(`${API_URL}/service/custom`, formData)
     return response.data
 }
 
 
-export { addCustomService, toggleActivePlan, addExtraService, deleteCustomService, updateServices, deleteService }
+export { addCustomService, toggleActivePlan, updateCustomService, addExtraService, deleteCustomService, updateServices, deleteService }

@@ -1,12 +1,35 @@
 import { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteProposal } from "../../../../services/ProposalService";
+import { handleDeleteProposal } from "../../../../redux/ServiceDataSlice";
+import { handleDeleteProposalFromCustomer } from "../../../../redux/AdminDataSlice";
+import { toast } from "react-toastify";
 
 const DeleteProposalModal = ({ proposalData }) => {
 
     const [loading, setLoading] = useState(false); // State for managing loader
-    const clsModal = useRef();
+    const clsModal = useRef()
     const dispatch = useDispatch();
 
+
+    const deleteProposalFunc = async() => {
+        const { customer, property, service } = proposalData
+        const dataObject = {
+            customerid: customer,
+            propertyid: property,
+            proposalid: proposalData?.uniqueid,
+            serviceid: service
+        }
+        setLoading(true)
+        const response = await deleteProposal(dataObject)
+        if(response.success) {
+            dispatch(handleDeleteProposal(dataObject))
+            dispatch(handleDeleteProposalFromCustomer(dataObject))
+            setLoading(false)
+            toast.success(`Proposal Deleted Successfully!`);
+            clsModal.current.click()
+        }
+    }
 
   return (
     <>
@@ -21,7 +44,7 @@ const DeleteProposalModal = ({ proposalData }) => {
                 <div className="modal-content box-cs">
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id="exampleModalLabel">
-                        Are you sure you want to delete this service?
+                        Are you sure you want to delete this Proposal?
                         </h1>
                         <button
                         type="button"
@@ -33,7 +56,7 @@ const DeleteProposalModal = ({ proposalData }) => {
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <p>Deleting this service is permanent and cannot be undone.</p>
+                        <p>Deleting this proposal is permanent and cannot be undone.</p>
                     </div>
                     <div className="modal-footer">
                         <button
@@ -48,7 +71,7 @@ const DeleteProposalModal = ({ proposalData }) => {
                         <button
                         type="button"
                         className="filter-btn bg-theme-1"
-                        onClick={deleteServiceFunc}
+                        onClick={deleteProposalFunc}
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (

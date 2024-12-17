@@ -4,10 +4,15 @@ import Analytics from "./Analytics"
 import DataTable from "./DataTable"
 import Tags from "./Tags"
 import TotalEarning from "./TotalEarning"
+import { useSelector } from "react-redux"
 
 const Dashboard = () => {
 
   const [selectedCustomer, setSelectedCustomer] = useState({})
+
+  const rawCustomerData = useSelector(state => state.AdminDataSlice.customers)
+  const rawProposalData = useSelector(state => state.ServiceDataSlice.proposal)
+  const rawServiceData = useSelector(state => state.ServiceDataSlice.services)
 
   const onDelete = (customer) => {
     setSelectedCustomer(customer)
@@ -19,11 +24,11 @@ const Dashboard = () => {
         <div className="container py-4">
           <div className="row">
             <div className="col-md-12">
-              <Tags />
+              <Tags customerData={rawCustomerData} proposalData={rawProposalData} />
 
               <div className="analysis pt-4">
-                <TotalEarning />
-                <Analytics />
+                <TotalEarning serviceData={rawServiceData} proposalData={rawProposalData} />
+                <Analytics proposalData={rawProposalData} serviceData={rawServiceData} />
               </div>
 
               {/* <div className="pt-4">
@@ -38,7 +43,7 @@ const Dashboard = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="pt-4">
-              <DataTable onDelete={onDelete} title={'Current Projects'} />
+              <DataTable customerDetail={rawCustomerData} onDelete={onDelete} title={'Current Projects'} />
               </div>
             </div>
           </div>

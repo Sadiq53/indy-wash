@@ -35,7 +35,7 @@ const DataTable = ({ title, onDelete }) => {
                 displayData.map((value) => (
                     <tr key={value._id}>
                     <td>
-                        <NavLink className="txt-deco-none" to={`/customer-detail/${value.uniqueid}`}>
+                        <NavLink className="txt-deco-none" to={`/add-service/${value.uniqueid}/${'view'}`}>
                         <div className="table-profile">
                             <div>
                             <img src="/assets/img/person.svg" alt="Profile" />
@@ -65,7 +65,7 @@ const DataTable = ({ title, onDelete }) => {
                     <td>
                         <div className="table-profile gap-0">
                             <div>
-                            <NavLink to={`/customer-detail/${value.uniqueid}`} className="btn">
+                            <NavLink to={`/add-service/${value.uniqueid}/${'edit'}`} className="btn">
                                 <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
                             </NavLink>
                             <button data-bs-toggle="modal" data-bs-target="#delete" onClick={()=>onDelete(value?.uniqueid)} className="btn">

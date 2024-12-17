@@ -1,18 +1,23 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import MultiSelector from "./Helper/MultiSelector";
 import { useFormik } from "formik";
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as Yup from "yup";
-import { handleAddCustomerDetail } from "../../../redux/AdminDataSlice";
-import { addCustomer } from "../../../services/CustomerService";
+import { handleAddCustomerDetail, handleUpdateCustomer } from "../../../redux/AdminDataSlice";
+import { addCustomer, editCustomer } from "../../../services/CustomerService";
 import { generateUniqueId } from '../../../utils/UniqueIdGenerator'
 
 const AddCustomer = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const param = useParams();
+  const { customerid } = param;
+
+  const customerDetail = useSelector(state => state.AdminDataSlice.customers)
 
   const [image, setImage] = useState({ image1: "", image2: "" });
+  const [getPropertyData, setGetPropertyData] = useState([])
   const [createDate, setCreateDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -75,14 +80,62 @@ const AddCustomer = () => {
         //   }),
         // }),
         onSubmit: async (formData) => {
-            formData.uniqueid = generateUniqueId()
-            const response = await addCustomer(formData)
-            if(response.success) {
-              dispatch(handleAddCustomerDetail(response.result))
-              navigate(`/customer-detail/${response.result?.uniqueid}`); 
+            if(customerid) {
+              const response = await editCustomer(formData)
+              if(response.success) {
+                console.dir(response.result, {depth: null})
+                dispatch(handleUpdateCustomer(response.result))
+                navigate(`/customer-detail/${response.result?.uniqueid}`); 
+              }
+            } else {
+              formData.uniqueid = generateUniqueId()
+              const response = await addCustomer(formData)
+              if(response.success) {
+                dispatch(handleAddCustomerDetail(response.result))
+                navigate(`/customer-detail/${response.result?.uniqueid}`); 
+              }
             }            
         },
     });
+
+    // Fetch existing customer details and set form values
+useEffect(() => {
+  if (customerid && customerDetail?.length >= 1) {
+    const filteredCustomerData = customerDetail?.find((value) => value.uniqueid === customerid);
+    if (filteredCustomerData) {
+      // Set form values using Formik's setValues method
+      addCustomerForm.setValues({
+        uniqueid: filteredCustomerData?.uniqueid || "",
+        createDate: filteredCustomerData?.createDate || createDate,
+        customerType: filteredCustomerData?.customerType || "",
+        contactMethod: filteredCustomerData?.contactMethod || "",
+        personalDetails: {
+          firstName: filteredCustomerData?.personalDetails?.firstName || "",
+          lastName: filteredCustomerData?.personalDetails?.lastName || "",
+          email: filteredCustomerData?.personalDetails?.email || "",
+          phone: filteredCustomerData?.personalDetails?.phone || "",
+        },
+        // property: filteredCustomerData?.property || [],
+        additionalContact: {
+          detail1: {
+            fullname: filteredCustomerData?.additionalContact?.detail1?.fullname || "",
+            title: filteredCustomerData?.additionalContact?.detail1?.title || "",
+            email: filteredCustomerData?.additionalContact?.detail1?.email || "",
+            phone: filteredCustomerData?.additionalContact?.detail1?.phone || "",
+          },
+          detail2: {
+            fullname: filteredCustomerData?.additionalContact?.detail2?.fullname || "",
+            title: filteredCustomerData?.additionalContact?.detail2?.title || "",
+            email: filteredCustomerData?.additionalContact?.detail2?.email || "",
+            phone: filteredCustomerData?.additionalContact?.detail2?.phone || "",
+          },
+        },
+        additionalNotes: filteredCustomerData?.additionalNotes || "",
+      });
+      setGetPropertyData(filteredCustomerData?.property || [])
+    }
+  }
+}, [customerid, customerDetail]);
 
   const handleImageUpload = (event, type) => {
     const file = event.target.files[0];
@@ -253,6 +306,7 @@ const AddCustomer = () => {
                 <div className="pt-4">
                     <MultiSelector
                         onDataChange={handleMultiSelectorChange}
+                        paramData={getPropertyData}
                     />
                 </div>
 
@@ -362,7 +416,7 @@ const AddCustomer = () => {
                                     
                                 </div>
                                 <div className="input-section gtc-1">
-                                    <textarea name="additionalNotes" onChange={(e) => {addCustomerForm.setFieldValue("additionalNotes", e.target.value)}} rows={4} placeholder="Note" id=""></textarea>
+                                    <textarea name="additionalNotes" value={addCustomerForm?.values?.additionalNotes} onChange={(e) => {addCustomerForm.setFieldValue("additionalNotes", e.target.value)}} rows={4} placeholder="Note" id=""></textarea>
                                 </div>
                             </div>
                         </div>

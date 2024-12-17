@@ -19,4 +19,14 @@ const deleteCustomer = async(formData) => {
     return response.data
 }
 
-export { addCustomer, getCustomer, deleteCustomer }
+const addProperty = async(formData) => {
+    const response = await axios.post(`${API_URL}/customer/property`, formData)
+    return response.data
+}
+
+const editCustomer = async(formData) => {
+    const response = await axios.put(`${API_URL}/customer`, formData)
+    return response.data
+}
+
+export { addCustomer, getCustomer, deleteCustomer, addProperty, editCustomer }

@@ -17,6 +17,7 @@ const AddProposal = () => {
   
   const customerData = useSelector(state => state.AdminDataSlice.customers)
   const adminData = useSelector(state => state.AdminDataSlice.admin)
+  const rawProposalData = useSelector(state => state.ServiceDataSlice.proposal)
   
   const [displayData, setDisplayData] = useState({customer: {}, property: {}})
   const [isParam, setIsParam] = useState(false)
@@ -42,7 +43,8 @@ const AddProposal = () => {
     sqft: '',
     description: '',
     additionalInfo: image,
-    frequency: []
+    frequency: [],
+    status: 'draft'  
   })
   const [frequencies, setFrequencies] = useState([
     {
@@ -120,7 +122,32 @@ const AddProposal = () => {
     setFrequencies(updatedFrequencies);
   };
   
-  
+  // useEffect(()=>{
+  //   if(customerId && propertyId && type) {
+  //     if(type === 'edit') {
+  //       setIsParam(true)
+  //       const customer = customerData.find((value) => value.uniqueid === customerId);
+  //       const property = customer?.property?.find((value) => value.uniqueid === propertyId);
+  //       const proposalId = property?.proposal[0]
+  //       const proposal = rawProposalData?.find((value) => value.uniqueid === proposalId);
+  //       console.log(proposal)
+  //       setDisplayData({customer, property});
+        
+  //     } else {
+  //       setIsParam(true)
+  //       const customer = customerData.find((value) => value.uniqueid === customerId);
+  //       const property = customer?.property?.find((value) => value.uniqueid === propertyId);
+  //       setDisplayData({customer, property});
+  //       proposalForm.setFieldValue('customer', customer?.uniqueid)
+  //       proposalForm.setFieldValue('property', property?.uniqueid)
+  //       setInitialValues((prev) => ({
+  //         ...prev,
+  //         customer: customer?.personalDetails?.firstName || "",
+  //         property: property?.name || "",
+  //       }));
+  //     }
+  //   }
+  // }, [type, customerId, propertyId, customerData, rawProposalData])
 
 
   useEffect(()=>{

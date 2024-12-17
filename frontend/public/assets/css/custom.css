@@ -353,6 +353,19 @@ margin: 0;
     padding: 10px 10px;
 }
 
+.filter-btn.bg-theme-1:hover{
+	background-color: #2b7ae6 !important;
+}
+.filter-btn.bg-theme-2:hover{
+	background-color: #eb8021 !important;
+}
+.filter-btn.bg-theme-3:hover{
+	background-color: #f7aa40 !important;
+}
+.filter-btn.bg-theme-7:hover{
+	background-color: #039b84 !important;
+}
+
 
 .head-filters .part-1{
 	display: grid;

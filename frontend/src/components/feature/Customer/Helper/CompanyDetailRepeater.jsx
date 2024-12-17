@@ -34,6 +34,9 @@ const CompanyDetailRepeater = ({ data, customerId }) => {
                             <div className="grid-cs mt-3 gtc-1">
                                 {value.propertyType?.map(item=><p className="font-3">{item}</p>)}
                             </div>
+                            <div className="data py-4">
+                                <div><p className="font-3 text-dark">Note</p> : <p className="font-3">{value.note}</p></div>
+                            </div>
                         </div>      
                         <div className="mt-3">
                             <div className="head-filters mob">
@@ -44,8 +47,13 @@ const CompanyDetailRepeater = ({ data, customerId }) => {
                             </div>
                         </div>
                         <div className="mt-3 flex-cs cs-justify-start">
-                            <button className="cs-proposal-btn bg-theme-6 "><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
-                            <button onClick={()=>navigate(`/add-proposal/${id}/${value.uniqueid}`)} className="cs-proposal-btn  bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#fff" }} /></button>
+                            {
+                                value.proposal?.length === 0 ? (
+                                    <button onClick={()=>navigate(`/add-proposal/${id}/${value.uniqueid}`)} className="cs-proposal-btn  bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#fff" }} /></button>
+                                ) : (
+                                    <button className="cs-proposal-btn bg-theme-6 "><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
+                                )
+                            }
                         </div>
                     </div>
                 )

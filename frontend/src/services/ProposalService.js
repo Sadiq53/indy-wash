@@ -17,4 +17,9 @@ const toggleStatus = async(formData) => {
     return response.data
 }
 
-export { addProposal, getServiceAndProposal, toggleStatus }
+const deleteProposal = async(formData) => {
+    const response = await axios.post(`${API_URL}/service/proposal/delete`, formData)
+    return response.data
+}
+
+export { addProposal, getServiceAndProposal, toggleStatus, deleteProposal }

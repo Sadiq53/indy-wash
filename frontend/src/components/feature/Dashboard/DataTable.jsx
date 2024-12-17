@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 import { formatDate } from '../../../utils/formatDate'
 import { useState } from "react";
 
-const DataTable = ({ title, onDelete }) => {
+const DataTable = ({ title, onDelete, customerDetail }) => {
 
 
-  const customerDetail = useSelector((state) => state.AdminDataSlice.customers);
+  // const customerDetail = useSelector((state) => state.AdminDataSlice.customers);
 
 
   return (
@@ -48,7 +48,7 @@ const DataTable = ({ title, onDelete }) => {
                   <td>
                     <p>
                       {value.property?.length
-                        ? value.property.map((item, index) => <span key={index}>{item?.propertyName}</span>)
+                        ? value.property.map((item, index) => item?.propertyName || "").join(", ")
                         : "No Properties"}
                     </p>
                   </td>
@@ -61,7 +61,7 @@ const DataTable = ({ title, onDelete }) => {
                   <td>
                     <div className="table-profile gap-0">
                         <div>
-                          <NavLink to={`/customer-detail/${value.uniqueid}`} className="btn">
+                          <NavLink to={`/add-customer/${value.uniqueid}`} className="btn">
                             <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
                           </NavLink>
                           <button data-bs-toggle="modal" data-bs-target="#delete" onClick={()=>onDelete(value)} className="btn">

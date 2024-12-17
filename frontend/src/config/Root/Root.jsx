@@ -9,6 +9,7 @@ import ProposalDetail from '../../components/feature/Proposal/ProposalDetail'
 import AddService from '../../components/feature/Service/AddService'
 import ServiceDetail from '../../components/feature/Service/ServiceDetail'
 import ServiceList from '../../components/feature/Service/ServiceList'
+import DownloadAgreement from '../../components/shared/Agreement/DownloadAgreement'
 
 const rootRoutes = [
     {
@@ -21,6 +22,10 @@ const rootRoutes = [
     },
     {
         path : 'add-customer',
+        element : <AddCustomer />
+    },
+    {
+        path : 'add-customer/:customerid',
         element : <AddCustomer />
     },
     {
@@ -56,8 +61,16 @@ const rootRoutes = [
         element : <AddService />
     },
     {
+        path : 'add-service/:serviceid/:role',
+        element : <AddService />
+    },
+    {
         path : 'services',
         element : <ServiceList />
+    },
+    {
+        path : 'test',
+        element : <DownloadAgreement />
     },
 ]
 

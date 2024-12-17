@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { generateUniqueId } from "../../../../utils/UniqueIdGenerator";
 
-const MultiSelector = ({ onDataChange }) => {
+const MultiSelector = ({ onDataChange, paramData }) => {
   const [properties, setProperties] = useState([
     { 
       propertyName: "", 
@@ -16,6 +16,25 @@ const MultiSelector = ({ onDataChange }) => {
       note: "" 
     },
   ]);
+
+ // On paramData update, set properties if paramData exists and is not empty
+ useEffect(() => {
+  if (paramData?.length >= 1) {
+    const formattedProperties = paramData.map((item) => ({
+      propertyName: item.propertyName || "",
+      uniqueid: item.uniqueid || generateUniqueId(),
+      property: item.property || "",
+      buildings: item.buildings || 0,
+      units: item.units || 0,
+      billingAddress: item.billingAddress || "",
+      serviceAddress: item.serviceAddress || "",
+      propertyType: item.propertyType || [],
+      propertyFeatures: item.propertyFeatures || [],
+      note: item.note || "",
+    }));
+    setProperties(formattedProperties);
+  }
+}, [paramData]);
 
   const [errors, setErrors] = useState([]);
 
@@ -38,22 +57,27 @@ const MultiSelector = ({ onDataChange }) => {
 
   const setSelection = (index, type, value) => {
     const updatedProperties = [...properties];
-    const property = updatedProperties[index];
-
+  
+    // Create a new updated property object instead of mutating directly
+    const updatedProperty = { ...updatedProperties[index] };
+  
     if (type === "propertyType" || type === "propertyFeatures") {
-      if (property[type].includes(value)) {
-        property[type] = property[type].filter((item) => item !== value);
+      if (updatedProperty[type].includes(value)) {
+        updatedProperty[type] = updatedProperty[type].filter((item) => item !== value);
       } else {
-        property[type].push(value);
+        updatedProperty[type] = [...updatedProperty[type], value];
       }
     } else {
-      property[type] = value;
+      updatedProperty[type] = value;
     }
-
+  
+    // Replace the updated property in the array
+    updatedProperties[index] = updatedProperty;
+  
     setProperties(updatedProperties);
     onDataChange(updatedProperties); // Send updated data via props
-    // console.log(updatedProperties)
   };
+  
 
   const addProperty = () => {
     setProperties([

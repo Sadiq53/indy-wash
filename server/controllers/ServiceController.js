@@ -182,6 +182,25 @@ route.post('/custom', async(req, res) => {
     res.status(200).send({ success: true, result: customServices })
 })
 
+route.put('/custom', async (req, res) => {
+    const customService = req.body;
+    const { uniqueid } = customService;
+
+    try {
+        // Find and update the specific customService entry by uniqueid
+        const result = await adminModel.updateOne(
+            { username: 'admin', 'customServices.uniqueid': uniqueid }, // Match admin and the customService with uniqueid
+            { $set: { 'customServices.$': customService } } // Update the matched customService
+        );
+
+        res.status(200).send({ success: true, result: customService });
+    } catch (error) {
+        console.error('Error updating custom service:', error);
+        res.status(500).send({ success: false, message: 'Internal server error' });
+    }
+});
+
+
 route.put('/plan', async(req, res) => {
     const { service, frequency } = req.body
     await serviceModel.updateOne({ uniqueid: service }, { $set: { activePlan: frequency } })
@@ -216,28 +235,33 @@ route.put('/', async (req, res) => {
 });
 
 route.put('/status', async (req, res) => {
-    const { status, proposalid } = req.body;
-    
+    const { status, proposalid, date } = req.body;
+
+    // Validate input
+    if (typeof status !== "boolean" || !proposalid || !date) {
+        return res.status(400).send({ message: 'Invalid input data', success: false });
+    }
+
     const getStatus = status ? 'active' : 'draft';
 
     try {
         // Update the proposal status in the database
         const result = await proposalModel.updateOne(
             { uniqueid: proposalid },
-            { $set: { status: getStatus } }
+            { $set: { 'status.type': getStatus, 'status.date': date } }
         );
 
         // Check if any document was updated
-        if (result.nModified === 0) {
-            return res.status(404).send({ message: 'Proposal not found or status is already set' });
+        if (result.modifiedCount === 0) { // Use modifiedCount instead of nModified
+            return res.status(404).send({ message: 'Proposal not found or status is already set', success: false });
         }
 
         // Send success response
         res.status(200).send({ message: 'Proposal status updated successfully', success: true });
     } catch (error) {
         // Catch any errors and send a 500 response
-        console.error(error);
-        res.status(500).send({ message: 'Error updating proposal status' });
+        console.error("Error updating proposal status:", error.message);
+        res.status(500).send({ message: 'Error updating proposal status', success: false });
     }
 });
 
@@ -291,6 +315,44 @@ route.delete('/:id', async (req, res) => {
         res.status(500).send({ message: 'Internal server error.' });
     }
 });
+
+route.post('/proposal/delete', async (req, res) => {
+    const { serviceid, customerid, propertyid, proposalid } = req.body;
+
+    if (!Array.isArray(serviceid) || serviceid.length === 0 || !customerid || !propertyid || !proposalid) {
+        return res.status(400).json({ success: false, message: 'Missing required fields or invalid input' });
+    }
+
+    try {
+        await proposalModel.deleteOne({ uniqueid: proposalid });
+
+        await serviceModel.deleteMany({ uniqueid: { $in: serviceid } });
+
+        const customerUpdateResult = await customerModel.updateOne(
+            {
+                uniqueid: customerid,
+                'property.uniqueid': propertyid, // Find the specific property in the customer
+            },
+            {
+                $pull: {
+                    'property.$.proposal': proposalid, // Remove the proposalid from the proposals array
+                    'property.$.services': { $in: serviceid } // Remove all service IDs in the serviceid array
+                }
+            }
+        );
+
+        // Check if the customer and property were found and updated
+        if (customerUpdateResult.matchedCount === 0) {
+            return res.status(404).send({ success: false, message: 'Customer or property not found' });
+        }
+
+        return res.status(200).send({ success: true, message: 'Proposal and related services deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting proposal and services:', error);
+        return res.status(500).send({ success: false, message: 'Internal server error' });
+    }
+});
+
 
 
 

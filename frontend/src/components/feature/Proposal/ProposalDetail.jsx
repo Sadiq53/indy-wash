@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import ProposalTagCard from "./Helper/ProposalTagCard";
 import AgreedModal from "./Helper/AgreedModal";
 import { useState, useEffect, useRef } from "react";
@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 const ProposalDetail = () => {
   const { proposalid } = useParams();
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const rawServiceData = useSelector(state => state.ServiceDataSlice.services);
   const rawProposalData = useSelector(state => state.ServiceDataSlice.proposal);
@@ -26,17 +27,19 @@ const ProposalDetail = () => {
   const [totalSqft, setTotalSqft] = useState(null)
   const [perCleaning, setPerCleaning] = useState(null)
   const [selectedFrequency, setSelectedFrequency] = useState({})
+  const [tabHeader, setTabHeader] = useState({next: '', prev: ''})
 
   const confirmation = async(state) => {
     if (state) {
       const dataObject = {
         status: state,
-        proposalid
+        proposalid,
+        date: Date.now()
       }
       const response = await toggleStatus(dataObject)
       if(response?.success) {
         dispatch(handleToggleStatus(dataObject))
-        toast.success(`Your is Proposal Active and Added to Active Overview`);
+        toast.success(`Your Proposal is Active and Added to Active Overview`);
       }
     }
     setPopup(false);
@@ -78,25 +81,62 @@ const ProposalDetail = () => {
   }, [selectedServiceData]);
 
 
-  const currentIndexRef = useRef(serviceData.findIndex(service => service.id === selectedServiceData.id));
+  const currentIndexRef = useRef();
+  // Find the initial index of the selected service
+let getIndex = serviceData.findIndex(service => service.uniqueid === selectedServiceData.uniqueid) || 0;
 
-  const handleNextService = () => {
-    // Increment index, loop back to the beginning if at the last item
-    currentIndexRef.current = (currentIndexRef.current + 1) % serviceData.length;
+// Initialize tabHeader with initial `next` and `prev` names
+useEffect(() => {
+  const nextIndex = (getIndex + 1) % serviceData.length;
+  const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
 
-    // Update the selected service based on the new index
-    const nextService = serviceData[currentIndexRef.current];
-    setSelectedServiceData(nextService);
-  };
+  setTabHeader({
+    next: serviceData[nextIndex]?.name || serviceData[0]?.name,
+    prev: serviceData[prevIndex]?.name || serviceData[serviceData.length - 1]?.name,
+  });
+}, [serviceData, getIndex]);
 
-  const handlePreviousService = () => {
-    // Decrement index, loop back to the last item if at the first item
-    currentIndexRef.current = (currentIndexRef.current - 1 + serviceData.length) % serviceData.length;
+const handleNextService = () => {
+  // Increment index and loop back to the beginning if at the last item
+  getIndex = (getIndex + 1) % serviceData.length;
 
-    // Update the selected service based on the new index
-    const prevService = serviceData[currentIndexRef.current];
-    setSelectedServiceData(prevService);
-  };
+  // Update tabHeader with the next and previous names
+  const nextIndex = (getIndex + 1) % serviceData.length;
+  const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
+
+  setTabHeader({
+    next: serviceData[nextIndex]?.name || serviceData[0]?.name,
+    prev: serviceData[prevIndex]?.name || serviceData[serviceData.length - 1]?.name,
+  });
+
+  // Update the selected service based on the new index
+  const nextService = serviceData[getIndex];
+  setSelectedServiceData(nextService);
+};
+
+const handlePreviousService = () => {
+  // Decrement index and loop back to the last item if at the first item
+  getIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
+
+  // Update tabHeader with the next and previous names
+  const nextIndex = (getIndex + 1) % serviceData.length;
+  const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
+
+  setTabHeader({
+    next: serviceData[nextIndex]?.name || serviceData[0]?.name,
+    prev: serviceData[prevIndex]?.name || serviceData[serviceData.length - 1]?.name,
+  });
+
+  // Update the selected service based on the new index
+  const prevService = serviceData[getIndex];
+  setSelectedServiceData(prevService);
+};
+
+const navigateRoute = () => {
+  toast.success("Proposal Saved Successfully!")
+  navigate('/proposal')
+}
+
 
 
   return (
@@ -110,7 +150,7 @@ const ProposalDetail = () => {
                   <h4 className="font-1 fw-700">{propertyData?.propertyName || "N/A"}</h4>
                 </div>
                 <div className="part-1 gtc-4">
-                  {proposalData?.status === 'active' ? (
+                  {proposalData?.status?.type === 'active' ? (
                     <button className="filter-btn txt-deco-none bg-theme-1">
                       <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
                       &nbsp; Mark As Agreed
@@ -131,10 +171,10 @@ const ProposalDetail = () => {
                     <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
                     &nbsp; Contract Overview
                   </NavLink>
-                  <NavLink to='/proposal-detail' className="filter-btn txt-deco-none bg-theme-1">
+                  <button onClick={navigateRoute}  className="filter-btn txt-deco-none bg-theme-1">
                     <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
                     &nbsp; Save Proposal
-                  </NavLink>
+                  </button>
                 </div>
               </div>
 
@@ -144,7 +184,7 @@ const ProposalDetail = () => {
                     <div className="col-md-8">
                       <ProposalTagCard service={selectedServiceData} units={propertyData?.units}/>
                       <div className="pt-4">
-                        <ServiceViewCrad handlePreviousService={handlePreviousService} handleNextService={handleNextService} proposalid={proposalid} selectedServiceData={selectedServiceData} />
+                        <ServiceViewCrad header={tabHeader} handlePreviousService={handlePreviousService} handleNextService={handleNextService} proposalid={proposalid} selectedServiceData={selectedServiceData} />
                       </div>
                     </div>
                     <div className="col-md-4">

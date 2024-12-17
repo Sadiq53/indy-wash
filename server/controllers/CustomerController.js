@@ -19,9 +19,82 @@ route.post('/', async(req, res) => {
     // } else res.status(401).send({message: 'Unauthorised !'})
 })
 
-route.put('/', async(req, res) => {
+route.post('/property', async (req, res) => {
+    try {
+        const data = req.body;
+        const {
+            customerid,
+            uniqueid,
+            propertyName,
+            property,
+            buildings,
+            units,
+            billingAddress,
+            propertyFeatures,
+            serviceAddress,
+            propertyType,
+            note
+        } = data;
 
-})
+        // Ensure required fields are present
+        if (!customerid || !uniqueid || !propertyName || !property) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const propertyData = {
+            uniqueid,
+            propertyName,
+            property,
+            billingAddress,
+            serviceAddress,
+            note,
+            buildings,
+            units,
+            propertyType,
+            propertyFeatures,
+        };
+
+        // Add the property to the customer record
+        const result = await customerModel.updateOne(
+            { uniqueid: customerid },
+            { $push: { property: propertyData } }
+        );
+
+        return res.status(200).send({ message: 'Property added successfully', success: true });
+    } catch (error) {
+        console.error('Error adding property:', error);
+        return res.status(500).send({ error: 'Internal server error', success: false });
+    }
+});
+
+route.put('/', async (req, res) => {
+    try {
+        const { uniqueid, ...updateFields } = req.body; // Extract 'uniqueid' and other fields
+    
+        if (!uniqueid) {
+            return res.status(400).send({ message: "uniqueid is required" });
+        }
+    
+        // Perform the update
+        const result = await customerModel.updateMany(
+            { uniqueid }, 
+            { $set: updateFields }
+        );
+    
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: "No records found to update" });
+        }
+    
+        // Retrieve updated documents
+        const updatedData = await customerModel.find({ uniqueid });
+    
+        res.status(200).send({ message: "Update successful", result: updatedData[0], success: true });
+        } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).send({ message: "Internal server error" });
+        }
+  });
+  
 
 route.delete('/:id', async (req, res) => {
     const customerid = req.params.id;

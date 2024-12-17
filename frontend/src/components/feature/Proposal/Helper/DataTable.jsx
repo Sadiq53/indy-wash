@@ -17,23 +17,24 @@ const DataTable = ({ title, onDelete }) => {
 
     // Ensure proposalDetail is updated correctly
     useEffect(() => {
-        if (proposalDetail.length >= 1) {
+        if (proposalDetail?.length >= 0) {
             setDisplayData(proposalDetail);
         }
-    }, [proposalDetail]);
+    }, [proposalDetail, customerDetail]);
 
     // Extract customer details by matching uniqueid
     const extractCustomerDetail = (proposal) => {
         if (customerDetail?.length >= 1 && proposal?.customer) {
-            return customerDetail.find(value => value.uniqueid === proposal.customer) || {};
+            return customerDetail?.find(value => value.uniqueid === proposal?.customer) || {};
         }
         return {};
     };
 
     const changeStatus = async(status, proposalid) => {
         const dataObject = {
-            status: status === 'active' ? true : false,
-            proposalid
+            status: status?.type === 'active' ? true : false,
+            proposalid,
+            date: Date.now()
         }
         const response = await toggleStatus(dataObject)
         if(response?.success) {
@@ -89,9 +90,9 @@ const DataTable = ({ title, onDelete }) => {
                                         </td>
                                         <td>
                                             <div className="input-section gtc-1">
-                                                <select name="status" value={value?.status} onChange={(event)=>changeStatus(event.target.value, value?.uniqueid)} className="width-100" id={`status-select-${value.uniqueid}`}>
-                                                    <option value="active">Active</option>
+                                                <select name="status" value={value?.status?.type} onChange={(event)=>changeStatus(event.target.value, value?.uniqueid)} className="width-100" id={`status-select-${value.uniqueid}`}>
                                                     <option value="draft">Draft</option>
+                                                    <option value="active">Active</option>
                                                     {/* More status options */}
                                                 </select>
                                             </div>
@@ -102,7 +103,7 @@ const DataTable = ({ title, onDelete }) => {
                                                     <NavLink to={`/proposal-detail/${value.uniqueid}`} className="btn">
                                                         <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
                                                     </NavLink>
-                                                    <button className="btn">
+                                                    <button className="btn" data-bs-toggle="modal" data-bs-target="#delete" onClick={()=>onDelete(value)}>
                                                         <i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} />
                                                     </button>
                                                 </div>

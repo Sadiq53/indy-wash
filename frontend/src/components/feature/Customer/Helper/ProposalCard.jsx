@@ -53,34 +53,40 @@ const ProposalCard = ({  customerid }) => {
                 <h4 className="font-1 text-light fw-700">Proposal Details</h4>
             </div>
             <div className="body cs my-4">
-                {
-                    displayData?.length >= 1 ? (
-                        displayData?.map((value, index) => {
-                            const property = extractProperty(value?.property)
-                            return (
-                                <div className="head-filters mob pt-3">
-                                    <div className="part-1 gtc-1">
-                                        <h4>{property?.propertyName} #1  :  --</h4>
-                                    </div>
-                                    <div className="part-1  gtc-1">
-                                        <button className="btn text-light" onClick={()=>navigate(`/add-proposal/${customerid}/${value.uniqueid}`)}>
-                                            <div className="flex-cs">
-                                                {value?.status === 'draft' ? (<div className="cs-status status-bg-draft"></div>) : (<div className="cs-status status-bg-active"></div>)} {value?.status}  <i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} />
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div> 
-                            )
-                        })
-                    ) : (
-                        <>
-                            <div className="body cs my-4">
-                                <img src="/assets/img/exclm.svg" alt="" />
-                                <h4 className="font-1 text-light fw-700">No Proposal Found !!</h4>
+            {
+                displayData && displayData.length >= 1 ? (
+                    displayData.map((value, index) => {
+                        const property = extractProperty(value.property); // Assuming extractProperty is defined
+                        return (
+                            <div className="head-filters mob pt-3" key={value.uniqueid}>
+                                <div className="part-1 gtc-1">
+                                    <h4>{property?.propertyName} #{index + 1} : --</h4>
+                                </div>
+                                <div className="part-1 gtc-1">
+                                    <button
+                                        className="btn text-light"
+                                        onClick={() => navigate(`/add-proposal/${customerid}/${value.uniqueid}`)}
+                                    >
+                                        <div className="flex-cs">
+                                            {value?.status?.type === 'draft' ? (
+                                                <div className="cs-status status-bg-draft"></div>
+                                            ) : (
+                                                <div className="cs-status status-bg-active"></div>
+                                            )}
+                                            {value?.status?.type} <i className="fa-solid fa-sm fa-pen" style={{ color: "#fff" }} />
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
-                        </>
-                    )
-                }
+                        );
+                    })
+                ) : (
+                    <div className="body cs my-4">
+                        <img src="/assets/img/exclm.svg" alt="No proposals found" />
+                        <h4 className="font-1 text-light fw-700">No Proposal Found !!</h4>
+                    </div>
+                )
+            }
             </div>
         </div>
     </>

@@ -139,9 +139,86 @@ const AdminDataSlice = createSlice({
             state.admin.customServices = state.admin.customServices?.filter(
                 (value) => value.uniqueid !== payload
             );
-        }                
+        },
+        handleDeleteProposalFromCustomer: (state, action) => {
+            const { customerid, propertyid, serviceid, proposalid } = action.payload;
+            // console.log("i am admindataslice", action.payload)
+
+        
+            // Find the customer
+            const customer = state.customers?.find(customer => customer.uniqueid === customerid);
+            if (customer) {
+                // Find the property
+                const property = customer.property?.find(property => property.uniqueid === propertyid);
+                if (property) {
+                    // Remove the proposal ID from the proposals array
+                    property.proposal = property.proposal?.filter(id => id !== proposalid);
+        
+                    // Remove the service IDs from the services array
+                    property.services = property.services?.filter(service => !serviceid.includes(service));
+                }
+            }
+        },
+        handleAddProperty: (state, action) => {
+            const {
+                customerid,
+                uniqueid,
+                propertyName,
+                property,
+                buildings,
+                units,
+                billingAddress,
+                propertyFeatures,
+                serviceAddress,
+                propertyType,
+                note
+            } = action.payload;
+        
+            const propertyData = {
+                uniqueid,
+                propertyName,
+                property,
+                billingAddress,
+                serviceAddress,
+                note,
+                buildings,
+                units,
+                propertyType,
+                propertyFeatures,
+                proposal: [],
+                services: []
+            };
+        
+            // Update the customer with the new property without mutating the state directly
+            state.customers = state.customers.map(customer => 
+                customer.uniqueid === customerid
+                    ? {
+                        ...customer, // Spread the existing customer data
+                        property: customer.property ? [...customer.property, propertyData] : [propertyData] // Push new property to property array
+                    }
+                    : customer // Return other customers unchanged
+            );
+        },
+        handleUpdateCustomer: (state, action) => {
+            const { uniqueid, ...updatedData } = action.payload; // Destructure payload
+            state.customers = state.customers.map((customer) =>
+                customer.uniqueid === uniqueid
+                    ? { ...customer, ...updatedData } // Update matching customer
+                    : customer // Keep others unchanged
+            );
+        },
+        handleUpdateCustomService: (state, action) => {
+            const updatedService = action.payload; // The new service data from the action payload
+            const { uniqueid } = updatedService; // Extract uniqueid from the payload
+        
+            if (state.admin?.customServices) {
+                state.admin.customServices = state.admin.customServices.map(service =>
+                    service.uniqueid === uniqueid ? { ...service, ...updatedService } : service
+                );
+            }
+        }                                         
     }
 })
 
 export default AdminDataSlice.reducer;
-export const { resetState, handleAddCustomerDetail, handleDeleteCustomer, handleDeleteCustomService, handleDeleteServiceFromCustomer, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions
+export const { resetState, handleAddCustomerDetail, handleUpdateCustomService, handleUpdateCustomer, handleAddProperty, handleDeleteProposalFromCustomer, handleDeleteCustomer, handleDeleteCustomService, handleDeleteServiceFromCustomer, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions

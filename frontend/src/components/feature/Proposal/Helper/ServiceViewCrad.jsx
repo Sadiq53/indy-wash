@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom"
 
-const ServiceViewCrad = ({ handlePreviousService, handleNextService, proposalid, selectedServiceData }) => {
+const ServiceViewCrad = ({ handlePreviousService, handleNextService, header, proposalid, selectedServiceData }) => {
   return (
     <>
         <div className="services-view-card">
@@ -10,7 +10,7 @@ const ServiceViewCrad = ({ handlePreviousService, handleNextService, proposalid,
                     <button 
                         className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`} 
                         onClick={handlePreviousService}>
-                        <i className="fa-sharp-duotone fa-light fa-angles-left" /> Previous
+                        <i className="fa-sharp-duotone fa-light fa-angles-left" /> {header?.prev}
                     </button>
 
                     <NavLink to={`/service-detail/${proposalid}`} className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}>
@@ -21,7 +21,7 @@ const ServiceViewCrad = ({ handlePreviousService, handleNextService, proposalid,
                     <button 
                         className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`} 
                         onClick={handleNextService}>
-                        Next <i className="fa-sharp-duotone fa-light fa-angles-right" />
+                        {header?.next} <i className="fa-sharp-duotone fa-light fa-angles-right" />
                     </button>
                 </div>
             </div>
