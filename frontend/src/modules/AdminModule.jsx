@@ -1,6 +1,6 @@
 import Sidebar from '../components/shared/Sidebar/Sidebar'
 import Header from '../components/shared/Header/Header'
-import {Outlet} from 'react-router-dom'
+import {Outlet, useNavigate} from 'react-router-dom'
 import { useEffect } from 'react'
 import { getCustomer } from '../services/CustomerService'
 import { useDispatch } from 'react-redux'
@@ -12,6 +12,7 @@ import { handleGetProposal, handleGetServices } from '../redux/ServiceDataSlice'
 const AdminModule = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
 const fetchCustomers = async() => {
   const response = await getCustomer()
@@ -31,10 +32,18 @@ const fetchServiceAndProposal = async() => {
 }
 
 useEffect(()=>{
+  if(!localStorage.getItem('ddlj')) {
+    navigate('/signin')
+  }
+}, [])
+
+useEffect(()=>{
   fetchAdmin()
   fetchCustomers()
   fetchServiceAndProposal()
 }, [])
+
+
 
 
   return (

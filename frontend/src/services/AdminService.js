@@ -6,6 +6,11 @@ const getAdmin = async() => {
     return response.data
 }
 
+const login = async(formData) => {
+    const response = await axios.post(`${API_URL}/admin`, formData)
+    return response.data
+}
 
 
-export { getAdmin }
+
+export { getAdmin, login }

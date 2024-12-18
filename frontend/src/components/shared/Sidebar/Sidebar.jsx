@@ -80,7 +80,7 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li>
-                        <NavLink onClick={closeSidebar} to="logout">
+                        <NavLink onClick={closeSidebar} to="/logout">
                         <img src="assets/img/logout.svg" />
                         Logout
                         </NavLink>

@@ -154,6 +154,10 @@ margin: 0;
 	color: #202224 !important;
 }
 
+.w-90{
+	width: 90%;
+}
+
 .font-3{
 	color: #979797;
 	font-family: "DM Sans";
@@ -1192,4 +1196,27 @@ margin: 0;
 	line-height: normal;
 	letter-spacing: -0.114px;
 	text-decoration: none;
+}
+.w-15{
+	width: 15%;
+}
+
+.height-100vh{
+	height: 100vh;
+}
+
+.login-img{
+	object-fit: cover;
+    height: 100vh;
+    filter: brightness(0.8);
+	width: 100%;
+	border-top-left-radius: 12px;
+	border-bottom-left-radius: 12px;
+}
+
+.login-layout{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
 }

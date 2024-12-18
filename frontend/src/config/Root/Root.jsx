@@ -1,4 +1,5 @@
 import ActiveOverview from '../../components/feature/ActiveOverview/ActiveOverview'
+import Logout from '../../components/feature/Auth/Logout'
 import AddCustomer from '../../components/feature/Customer/AddCustomer'
 import CustomerDetail from '../../components/feature/Customer/CustomerDetail'
 import CustomerList from '../../components/feature/Customer/CustomerList'
@@ -15,6 +16,10 @@ const rootRoutes = [
     {
         path : '',
         element : <Dashboard />
+    },
+    {
+        path : 'logout',
+        element : <Logout />
     },
     {
         path : 'customer-list',

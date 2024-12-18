@@ -1,6 +1,6 @@
 import { NavLink, useNavigate, useParams } from "react-router-dom"
 import ServiceTagCard from "./Helper/ServiceTagCard"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ServiceAccordian from "./Helper/ServiceAccordian";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../../utils/formatDate";
@@ -40,6 +40,7 @@ const ServiceDetail = () => {
             setProposalData(filteredProposal)
         }
     }, [rawServiceData, rawProposalData, rawCustomerData])
+
 
     function convertObjectToArray(inputObject) {
         return Object.values(inputObject);
@@ -124,7 +125,7 @@ return (
                                 </div>
 
 
-                                <div className="pt-4">
+                                <div className="pt-4" >
                                     <ServiceTagCard property={propertyData} service={updatedData} />
                                 </div>
                             </div>
@@ -136,6 +137,7 @@ return (
         </section>
         <DeleteServiceModal proposalid={proposalid} serviceid={deleteServiceId} />
         <AddServiceModal proposalId={proposalid} customerId={proposalData?.customer} propertyId={proposalData?.property} />
+        
     </>
 )
 }

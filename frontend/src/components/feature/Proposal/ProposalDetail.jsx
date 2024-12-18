@@ -8,11 +8,15 @@ import ServiceViewCrad from "./Helper/ServiceViewCrad";
 import { toggleStatus } from '../../../services/ProposalService'
 import { handleToggleStatus } from "../../../redux/ServiceDataSlice";
 import { toast } from "react-toastify";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import DownloadAgreement from "../../shared/Agreement/DownloadAgreement";
 
 const ProposalDetail = () => {
   const { proposalid } = useParams();
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const agreementRef = useRef(null)
 
   const rawServiceData = useSelector(state => state.ServiceDataSlice.services);
   const rawProposalData = useSelector(state => state.ServiceDataSlice.proposal);
@@ -86,15 +90,33 @@ const ProposalDetail = () => {
 let getIndex = serviceData.findIndex(service => service.uniqueid === selectedServiceData.uniqueid) || 0;
 
 // Initialize tabHeader with initial `next` and `prev` names
-useEffect(() => {
-  const nextIndex = (getIndex + 1) % serviceData.length;
-  const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
+  useEffect(() => {
+    const nextIndex = (getIndex + 1) % serviceData.length;
+    const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
 
-  setTabHeader({
-    next: serviceData[nextIndex]?.name || serviceData[0]?.name,
-    prev: serviceData[prevIndex]?.name || serviceData[serviceData.length - 1]?.name,
-  });
-}, [serviceData, getIndex]);
+    setTabHeader({
+      next: serviceData[nextIndex]?.name || serviceData[0]?.name,
+      prev: serviceData[prevIndex]?.name || serviceData[serviceData.length - 1]?.name,
+    });
+  }, [serviceData, getIndex]);
+
+  const handleDownloadAgreement = () => {
+    const input = agreementRef.current;
+
+    if (input) {
+      html2canvas(input).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("agreement.pdf");
+      }).catch((error) => {
+        console.error("Error generating PDF:", error);
+      });
+    }
+  };
 
 const handleNextService = () => {
   // Increment index and loop back to the beginning if at the last item
@@ -163,7 +185,7 @@ const navigateRoute = () => {
                       </div>
                     </button>
                   )}
-                  <button className="filter-btn bg-theme-7">
+                  <button onClick={handleDownloadAgreement} className="filter-btn bg-theme-7">
                     <i className="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} />
                     &nbsp; Download Agreement
                   </button>
@@ -220,6 +242,9 @@ const navigateRoute = () => {
       </section>
 
       {popup && <AgreedModal onConfirmation={confirmation} />}
+        <div ref={agreementRef} style={{position : 'absolute', left : '-260%', top : '28%' }}>
+          <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
+        </div>
     </>
   );
 };
