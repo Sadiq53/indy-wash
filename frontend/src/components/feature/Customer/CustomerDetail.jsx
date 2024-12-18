@@ -40,10 +40,10 @@ const CustomerDetail = () => {
                             <div className="part-1 gtc-1">
                                 <h4 className="font-1 fw-700">Company Name</h4>
                             </div>
-                            <div className="part-1  gtc-4">
+                            <div className="part-1  gtc-3">
                                 <button onClick={()=>navigate(`/add-customer/${id}`)} className="filter-btn txt-deco-none bg-theme-7"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit {displayData?.personalDetails?.firstName}</button>
                                 <button data-bs-toggle="modal" data-bs-target="#addProperty" className="filter-btn txt-deco-none bg-theme-3"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add Property</button>
-                                <button onClick={()=>setAddProposalPopup({state: true, type: 'edit'})} className="filter-btn txt-deco-none bg-theme-2"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit Proposal</button>
+                                {/* <button onClick={()=>setAddProposalPopup({state: true, type: 'edit'})} className="filter-btn txt-deco-none bg-theme-2"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit Proposal</button> */}
                                 <button onClick={()=>setAddProposalPopup({state: true, type: 'create'})} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Create Proposal</button>
                             </div>
                         </div> 

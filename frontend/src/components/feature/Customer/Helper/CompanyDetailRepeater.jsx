@@ -46,7 +46,7 @@ const CompanyDetailRepeater = ({ data, customerId }) => {
                                 {value.propertyFeatures?.map(item=><p className="font-3">{item}</p>)}
                             </div>
                         </div>
-                        <div className="mt-3 flex-cs cs-justify-start">
+                        {/* <div className="mt-3 flex-cs cs-justify-start">
                             {
                                 value.proposal?.length === 0 ? (
                                     <button onClick={()=>navigate(`/add-proposal/${id}/${value.uniqueid}`)} className="cs-proposal-btn  bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#fff" }} /></button>
@@ -54,7 +54,7 @@ const CompanyDetailRepeater = ({ data, customerId }) => {
                                     <button className="cs-proposal-btn bg-theme-6 "><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
                                 )
                             }
-                        </div>
+                        </div> */}
                     </div>
                 )
             })
