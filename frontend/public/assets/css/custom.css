@@ -218,6 +218,10 @@ margin: 0;
     flex: none;
 }
 
+.h-100{
+	height: 100%;
+}
+
 .font-size-35{
 	font-size: 35px !important;
 }
@@ -1205,8 +1209,8 @@ margin: 0;
 	letter-spacing: -0.114px;
 	text-decoration: none;
 }
-.w-15{
-	width: 15%;
+.w-25{
+	width: 25%;
 }
 
 .height-100vh{
@@ -1225,10 +1229,19 @@ margin: 0;
 .login-layout{
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
+	gap: 30px;
 }
 
 .is-invalid{
 	border: 1px solid red !important;
+}
+
+.cs-placeholder{
+	padding: 15px 30px !important;
+}
+
+.cs-placeholder::placeholder {
+	font-size: 16px;
 }

@@ -48,22 +48,22 @@ const AdminLogin = () => {
         <div className="container-fluid p-0">
             <div className="row m-0">
               <div className="col-md-4 p-0">
-                <form onSubmit={loginForm.handleSubmit}>
-                  <div className="login-layout">
+                <form className="h-100" onSubmit={loginForm.handleSubmit}>
+                  <div className="login-layout h-100 w-100">
                     <div className="flex-cs justify-center w-100">
                         <img src="assets/img/logo.svg" alt="" />
                     </div>
-                    <div className="pt-5 box-cs w-90 bg-theme-7">
+                    
                       {errMsg?.state && (<small className="text-danger">{errMsg?.message}</small>)}
                       {(loginForm?.errors.password && loginForm.touched.password) ? (<small className="text-danger">{loginForm?.errors.password}</small>) : (loginForm?.errors.email && loginForm.touched.email) && (<small className="text-danger">{loginForm?.errors.email}</small>)}
-                      <div className="input-section gtc-1">
-                        <input type="email" required placeholder="Enter Email Address" name="email" id="" onChange={loginForm.handleChange} />
-                        <input type="text" placeholder="Enter Password" name="password" id="" onChange={loginForm.handleChange} />
+                      <div className="input-section w-90 gtc-1">
+                        <input type="email" className="cs-placeholder" required placeholder="Enter Email Address" name="email" id="" onChange={loginForm.handleChange} />
+                        <input type="text" placeholder="Enter Password" className="cs-placeholder" name="password" id="" onChange={loginForm.handleChange} />
                       </div>
-                      <div className="pt-3 flex-cs ">
-                        <button type="submit" className="filter-btn w-15 bg-theme-1">Login {loading && <Spinner />}</button>
+                      <div className="pt-3 w-90 flex-cs ">
+                        <button type="submit" className="filter-btn w-25 bg-theme-1">Login {loading && <Spinner />}</button>
                       </div>
-                    </div>
+                    
                   </div>
                 </form>
                 </div>
