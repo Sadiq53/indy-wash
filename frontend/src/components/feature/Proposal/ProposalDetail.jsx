@@ -32,6 +32,7 @@ const ProposalDetail = () => {
   const [perCleaning, setPerCleaning] = useState(null)
   const [selectedFrequency, setSelectedFrequency] = useState({})
   const [tabHeader, setTabHeader] = useState({next: '', prev: ''})
+  const [historyIndex, setHistoryIndex] = useState(0)
 
   const confirmation = async(state) => {
     if (state) {
@@ -61,20 +62,32 @@ const ProposalDetail = () => {
       const filteredServices = rawServiceData?.filter(service => allServices?.includes(service?.uniqueid));
       const filteredProperty = filteredCustomer?.property?.find(value => value.uniqueid === property);
       
+      if (Array.isArray(filteredServices)) {
+        // Calculate totalSqft by summing up the sqft values of all objects in the service array
+        const totalSqft = filteredServices?.reduce(
+            (acc, curr) => acc + (parseFloat(curr.sqft) || 0),
+            0 // Initialize the accumulator as 0
+        );
+        setTotalSqft(totalSqft) 
+      }
+
       setProposalData(filteredProposal)
       setCustomerData(filteredCustomer || {});
       setPropertyData(filteredProperty || {});
       setServiceData(filteredServices || []);
-      setSelectedServiceData(filteredServices[0])
+      setSelectedServiceData(filteredServices[historyIndex])
+
+      const sqftSum = filteredServices.reduce((acc, curr) => acc + (parseFloat(curr.sqft) || 0), 0);
+      setTotalSqft(sqftSum);
     }
   }, [proposalid, rawCustomerData, rawProposalData, rawServiceData]);
 
-  useEffect(() => {
-    if (Array.isArray(serviceData) && serviceData.length > 0) {
-      const totalSqft = serviceData.reduce((acc, curr) => acc + (curr.sqft || 0), 0);
-      setTotalSqft(totalSqft);
-    }
-  }, [serviceData]);
+  // useEffect(() => {
+  //   if (Array.isArray(serviceData) && serviceData.length > 0) {
+  //     const totalSqft = serviceData.reduce((acc, curr) => acc + (curr.sqft || 0), 0);
+  //     setTotalSqft(totalSqft);
+  //   }
+  // }, [serviceData, rawServiceData]);
 
   useEffect(() => {
     if(selectedServiceData) {
@@ -84,8 +97,6 @@ const ProposalDetail = () => {
     }
   }, [selectedServiceData]);
 
-
-  const currentIndexRef = useRef();
   // Find the initial index of the selected service
 let getIndex = serviceData.findIndex(service => service.uniqueid === selectedServiceData.uniqueid) || 0;
 
@@ -121,7 +132,7 @@ let getIndex = serviceData.findIndex(service => service.uniqueid === selectedSer
 const handleNextService = () => {
   // Increment index and loop back to the beginning if at the last item
   getIndex = (getIndex + 1) % serviceData.length;
-
+  setHistoryIndex(getIndex)
   // Update tabHeader with the next and previous names
   const nextIndex = (getIndex + 1) % serviceData.length;
   const prevIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
@@ -139,6 +150,7 @@ const handleNextService = () => {
 const handlePreviousService = () => {
   // Decrement index and loop back to the last item if at the first item
   getIndex = (getIndex - 1 + serviceData.length) % serviceData.length;
+  setHistoryIndex(getIndex)
 
   // Update tabHeader with the next and previous names
   const nextIndex = (getIndex + 1) % serviceData.length;
@@ -158,8 +170,6 @@ const navigateRoute = () => {
   toast.success("Proposal Saved Successfully!")
   navigate('/proposal')
 }
-
-
 
   return (
     <>

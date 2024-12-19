@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MultiSelector from "./Helper/MultiSelector";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from 'react-redux'
-import * as Yup from "yup";
+import { validationSchema } from '../../../schemas/addCustomerSchema'
 import { handleAddCustomerDetail, handleUpdateCustomer } from "../../../redux/AdminDataSlice";
 import { addCustomer, editCustomer } from "../../../services/CustomerService";
 import { generateUniqueId } from '../../../utils/UniqueIdGenerator'
@@ -27,6 +27,7 @@ const AddCustomer = () => {
   });
 
     const addCustomerForm = useFormik({
+      validationSchema,
         initialValues: {
           uniqueid: '',
         createDate,
@@ -56,29 +57,6 @@ const AddCustomer = () => {
         // additionalInfo: image,
         additionalNotes: "",
         },
-        // validationSchema: Yup.object({
-        //   personalDetails: Yup.object({
-        //     firstName: Yup.string().required("First Name is required"),
-        //     lastName: Yup.string().required("Last Name is required"),
-        //     email: Yup.string()
-        //       .email("Invalid email address")
-        //       .required("Email is required"),
-        //     phone: Yup.number()
-        //       .typeError("Phone must be a number")
-        //       .required("Phone is required"),
-        //   }),
-        //   additionalContactInfo: Yup.object({
-        //     detail1: Yup.object({
-        //       fullname: Yup.string().required("Full Name is required"),
-        //       email: Yup.string()
-        //         .email("Invalid email address")
-        //         .required("Email is required"),
-        //       phone: Yup.number()
-        //         .typeError("Phone must be a number")
-        //         .required("Phone is required"),
-        //     }),
-        //   }),
-        // }),
         onSubmit: async (formData) => {
             if(customerid) {
               const response = await editCustomer(formData)
@@ -216,6 +194,9 @@ useEffect(() => {
                           <h5 className="font-1 fw-700 font-size-16">
                             Customer Type :
                           </h5>
+                          {
+                            addCustomerForm.errors.customerType && addCustomerForm.touched.customerType && (<small className="text-danger">{addCustomerForm.errors.customerType}</small>)
+                          }
                         </div>
                         <div className="input-section gtc-3 my-2">
                           {["commercial", "multifamily", "residential"].map(
@@ -252,6 +233,9 @@ useEffect(() => {
                           <h5 className="font-1 fw-700 font-size-16">
                             Preferred Contact Method :
                           </h5>
+                          {
+                            addCustomerForm.errors.contactMethod && addCustomerForm.touched.contactMethod && (<small className="text-danger">{addCustomerForm.errors.contactMethod}</small>)
+                          }
                         </div>
                         <div className="input-section gtc-3 mob my-2">
                         {["Call", "Email", "Text"].map((method) => (
@@ -280,26 +264,36 @@ useEffect(() => {
                       </h5>
                     </div>
                     <div className="input-section my-2">
-                      {["firstName", "lastName", "email", "phone"].map(
-                        (field) => (
-                          <input
-                            key={field}
-                            type={field === "phone" ? "number" : "text"}
-                            placeholder={field
-                              .split(/(?=[A-Z])/)
-                              .join(" ")
-                              .replace(/\b\w/g, (c) => c.toUpperCase())}
-                            value={addCustomerForm.values.personalDetails[field]}
-                            onChange={(e) =>
-                              addCustomerForm.setFieldValue(
-                                `personalDetails.${field}`,
-                                e.target.value
-                              )
-                            }
-                          />
-                        )
-                      )}
-                    </div>
+                    {["firstName", "lastName", "email", "phone"].map((field) => (
+                      <div key={field} className="form-group mb-3">
+                        <input
+                          type={field === "phone" ? "number" : "text"}
+                          className={`form-control ${addCustomerForm.errors.personalDetails?.[field] && addCustomerForm.touched.personalDetails?.[field] && 'is-invalid'}`}
+                          placeholder={field
+                            .split(/(?=[A-Z])/)
+                            .join(" ")
+                            .replace(/\b\w/g, (c) => c.toUpperCase())}
+                          value={addCustomerForm.values.personalDetails[field]}
+                          onChange={(e) =>
+                            addCustomerForm.setFieldValue(
+                              `personalDetails.${field}`,
+                              e.target.value
+                            )
+                          }
+                          onBlur={() =>
+                            addCustomerForm.setFieldTouched(`personalDetails.${field}`, true)
+                          }
+                        />
+                        {/* Display error message for the specific field */}
+                        {addCustomerForm.errors.personalDetails?.[field] &&
+                          addCustomerForm.touched.personalDetails?.[field] && (
+                            <small className="text-danger">
+                              {addCustomerForm.errors.personalDetails[field]}
+                            </small>
+                          )}
+                      </div>
+                    ))}
+                  </div>
                   </div>
                 </div>
 
@@ -348,7 +342,7 @@ useEffect(() => {
                             )}
                         </div>
                         </div>
-                        <div className="top-cs pt-3 gtc-equal">
+                        <div className="top-cs pt-3 gtc-1">
                             <div className="grid-cs cs-align-end">
                                 {/* <div>
                                     <div className="header">

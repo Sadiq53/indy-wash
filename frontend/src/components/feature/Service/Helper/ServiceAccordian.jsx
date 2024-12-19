@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { frequencyDigit, frequencyDigitConverter } from '../../../../utils/frequencyDigitConverter'
-import DeleteServiceModal from './DeleteServiceModal'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';  // Import the default CSS for Toastify
 
@@ -13,6 +12,17 @@ const ServiceAccordian = ({ property, service, onChangeData, getServiceid }) => 
       return acc;
     }, {})
   );
+  const [displayData, setDisplayData] = useState([])
+
+  // Sync servicesData and displayData with the incoming service prop
+  useEffect(() => {
+    const serviceState = service?.reduce((acc, curr) => {
+      acc[curr.uniqueid] = { ...curr };
+      return acc;
+    }, {});
+    setServicesData(serviceState);
+    setDisplayData(service); // Directly reflect the updated service array
+  }, [service]);
 
 // Function to toggle month selection
 const toggleMonthSelection = (month, serviceUniqueId) => {
@@ -152,11 +162,10 @@ useEffect(()=>{
 
   return (
     <div className="accordion" id="servicesAccordion">
-      {service?.map((value) => {
+      {displayData?.map((value) => {
         const getFrequency = servicesData[value?.uniqueid]?.frequency?.find((item) => item.name === servicesData[value?.uniqueid]?.activePlan);
         const perCleaning = servicesData[value?.uniqueid]?.sqft * getFrequency?.price;
         const perMonth = ((perCleaning * getFrequency?.frequencyDigit) / 12 / property?.units).toFixed(2);
-
         return (
           <div className="accordion-item cs-accordian" key={value.uniqueid}>
             <h2 className="accordion-header cs-accordian-head" id={`heading-${value.uniqueid}`}>
@@ -343,115 +352,3 @@ useEffect(()=>{
 };
 
 export default ServiceAccordian;
-
-
-
-
-
-{/* Accordion Item 2
-<div className="accordion-item cs-accordian">
-    <h2 className="accordion-header" id="headingTwo">
-        <button
-        className="accordion-button cs-accordian-button"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapseTwo"
-        aria-expanded="true"
-        aria-controls="collapseTwo"
-        >
-        <div className="flex-cs cs-justify-between">
-            <h4>Trash Room</h4>
-            <div className="table-profile">
-                <div className="gap-0">
-                    <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-solid ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-pen`} style={{ color: "#00b69b" }} /></button>
-                    <button className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}><i className={`fa-regular ${window.innerWidth > 767 ? 'fa-lg' : 'fal-sm'} fa-trash-can`} style={{ color: "#f93c65" }} /></button>
-                </div>
-            </div>
-        </div>
-        </button>
-    </h2>
-    <div
-        id="collapseTwo"
-        className="accordion-collapse collapse show"
-        aria-labelledby="headingTwo"
-        data-bs-parent="#servicesAccordion"
-    >
-        <div className="accordion-body">
-            <div className="accordian-content">
-                <div className="top-section">
-                    <div className="header">
-                        <h4>Service Item</h4>
-                        <h4>Quantity</h4>
-                        <h4>SQFT</h4>
-                        <h4>Frequency</h4>
-                        <h4>Price/SQFT</h4>
-                    </div>
-                    <div className="body">
-                        <div className="part-1 input-section">
-                            <input className="width-100" type="text" placeholder="L1/Retail Parking Garage" name="" id="" />
-                            <input className="width-100" type="text" placeholder="01" name="" id="" />
-                            <input className="width-100" type="text" placeholder="27,542" name="" id="" />
-                            <input className="width-100" type="text" placeholder="Quarterly" name="" id="" />
-                            <input className="width-100" type="text" placeholder="$0.06" name="" id="" />
-                        </div>
-                        <div className="part-2 input-section">
-                            <textarea
-                                rows={5}
-                                placeholder="Note"
-                                value="This service includes hot water pressure washing, industrial-grade 
-                                        degreaser, and surface cleaning to remove dirt, gum, stains, and other debris."
-                            ></textarea>
-                            <div className="keys">
-                                <h4>Price Per Clean =</h4>
-                                <h4>Annual Investment =</h4>
-                                <h4>Price Per Door/Month =</h4>
-                            </div>
-                            <div className="values input-section gtc-3">
-                            <input className="width-100" type="text" placeholder="$0.06" name="" id="" />
-                            <input className="width-100" type="text" placeholder="$0.06" name="" id="" />
-                            <input className="width-100" type="text" placeholder="$0.06" name="" id="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="bottom-section width-100">
-                    <div className="head">
-                        <h4>Select Service Month(s): *</h4>
-                    </div>
-                    <div className="grid-cd width-100 input-section gtc-6">
-                        {[
-                            "January",
-                            "February",
-                            "March",
-                            "April",
-                            "May",
-                            "June",
-                            "July",
-                            "August",
-                            "September",
-                            "October",
-                            "November",
-                            "December",
-                        ].map((month) => (
-                            <div
-                            key={month}
-                            className={`checkbox-item ${
-                                selectedMonths.includes(month) ? "active" : ""
-                            }`}
-                            onClick={() => toggleMonthSelection(month)}
-                            >
-                            {selectedMonths.includes(month) && (
-                                <i
-                                className="fa-light fa-circle-check fa-lg"
-                                style={{ color: "#ffffff" }}
-                                />
-                            )}
-                            {month}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> */}

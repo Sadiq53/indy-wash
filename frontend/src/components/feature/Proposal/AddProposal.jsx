@@ -7,6 +7,9 @@ import { addProposal } from '../../../services/ProposalService';
 import { handleAddProposal, handleAddServices } from '../../../redux/ServiceDataSlice';
 import { handleUpdateCustomerProperty } from '../../../redux/AdminDataSlice';
 import { frequencyDigitConverter } from '../../../utils/frequencyDigitConverter'
+import Spinner from '../../shared/Loader/Spinner';
+import { toast } from 'react-toastify';
+import { validationSchema } from '../../../schemas/addProposalSchema'
 
 const AddProposal = () => {
 
@@ -24,6 +27,7 @@ const AddProposal = () => {
   const [services, setServices] = useState([])
   const [image, setImage] = useState({image1: '', image2: ''});
   const [propertyData, setPropertyData] = useState([])
+  const [loading, setLoading] = useState(true)
   const [createDate, setCreateDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -77,20 +81,14 @@ const AddProposal = () => {
     }
   ])
 
-  // const validationSchema = Yup.object({
-  //   createDate: Yup.date().required('Date is required'),
-  //   customer: Yup.string().required('Customer is required'),
-  //   property: Yup.string().required('Property is required'),
-  //   serviceItem: Yup.string().required('Service Item is required'),
-  //   quantity: Yup.number().required('Quantity is required').positive(),
-  //   description: Yup.string().optional(),
-  // });
+
 
   const proposalForm = useFormik({
-    // validationSchema: ,
+    validationSchema,
     initialValues,
     onSubmit: async(formData) => {
       const response = await addProposal(formData)
+      setLoading(true)
       if(response?.success) {
         const {proposal, service} = response;
         dispatch(handleAddProposal(proposal))
@@ -101,7 +99,9 @@ const AddProposal = () => {
           propertyid: proposal?.property,
           customerid: proposal?.customer
         }
+        setLoading(false)
         dispatch(handleUpdateCustomerProperty(dataObject))
+        toast.success('Proposal Added Successfully!')
         navigate(`/proposal-detail/${proposal?.uniqueid}`)
       }
     }
@@ -193,7 +193,7 @@ const AddProposal = () => {
             price: matchedFrequency ? matchedFrequency.price : freq.price,
           };
         });
-        console.log(data?.frequency)
+        // console.log(data?.frequency)
         proposalForm.setFieldValue('type', data?.type)
         proposalForm.setFieldValue('description', data?.description )
         proposalForm.setFieldValue("frequency", data?.frequency);
@@ -228,7 +228,15 @@ const AddProposal = () => {
                             </div>
                             <div className="part-1 gtc-equal mob">
                             <button type='button' className="filter-btn bg-theme-2"><i class="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Reset All Fields</button>
-                            <button type='submit' className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal</button>
+                            <button type="submit" className="filter-btn txt-deco-none bg-theme-1">
+                              {loading ? (
+                                <>
+                                  <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal
+                                </>
+                              ) : (
+                                <Spinner />
+                              )}
+                            </button>
                             </div>
                         </div>
                         <div className="box-cs mt-4">
@@ -239,15 +247,21 @@ const AddProposal = () => {
                                 <div>
                                   <div className="header">
                                       <h5 className="font-1 fw-700 font-size-16">Select Date</h5>
+                                      {
+                                        proposalForm.errors.createDate && proposalForm.touched.createDate && (<small className='text-danger'>{proposalForm.errors.createDate}</small>)
+                                      }
                                   </div>
                                   <div className="input-section gtc-1 my-2">
-                                      <input type="date" value={proposalForm.values.createDate} onChange={proposalForm.handleChange}  name="createDate" id="" />
+                                      <input className={`${proposalForm.errors.createDate && proposalForm.touched.createDate && 'is-invalid'}`} type="date" value={proposalForm.values.createDate} onChange={proposalForm.handleChange}  name="createDate" id="" />
                                   </div>
                                 </div>
 
                                 <div>
                                   <div className="header">
                                       <h5 className="font-1 fw-700 font-size-16">Select Customer</h5>
+                                      {
+                                        proposalForm.errors.customer && proposalForm.touched.customer && (<small className='text-danger'>{proposalForm.errors.customer}</small>)
+                                      }
                                   </div>
                                   <div className="input-section gtc-1 my-2">
                                   {
@@ -255,6 +269,7 @@ const AddProposal = () => {
                                       <input type="text" className='input-disabled' value={displayData?.customer?.personalDetails?.firstName} name="customer" disabled id="" />
                                     ) : (
                                       <select
+                                        className={`${proposalForm.errors.customer && proposalForm.touched.customer && 'is-invalid'}`}
                                         value={proposalForm.values.customer}
                                         onChange={(event)=>{proposalForm.handleChange(event), toggleProperty(event.target.value)}}
                                         name="customer"
@@ -275,6 +290,9 @@ const AddProposal = () => {
                                 <div>
                                   <div className="header">
                                       <h5 className="font-1 fw-700 font-size-16">Select Property</h5>
+                                      {
+                                        proposalForm.errors.property && proposalForm.touched.property && (<small className='text-danger'>{proposalForm.errors.property}</small>)
+                                      }
                                   </div>
                                   <div className="input-section gtc-1 my-2">
                                     {isParam ? (
@@ -282,12 +300,13 @@ const AddProposal = () => {
                                         type="text"
                                         className="input-disabled"
                                         value={displayData?.property?.propertyName}
-                                        name="customer"
+                                        name="property"
                                         disabled
                                         id=""
                                       />
                                     ) : (
                                       <select
+                                        className={`${proposalForm.errors.property && proposalForm.touched.property && 'is-invalid'}`}
                                         value={proposalForm.values.property} // Directly bind to the uniqueid stored in Formik
                                         onChange={(e) => proposalForm.setFieldValue("property", e.target.value)} // Update only the uniqueid in Formik
                                         name="property"
@@ -311,9 +330,12 @@ const AddProposal = () => {
                                   <div>
                                     <div className="header">
                                       <h5 className="font-1 fw-700 font-size-16">Details :</h5>
+                                      {
+                                        proposalForm.errors.serviceItem && proposalForm.touched.serviceItem && (<small className='text-danger'>{proposalForm.errors.serviceItem}</small>)
+                                      }
                                     </div>
                                     <div className="input-section gtc-1 my-2">
-                                      <select onChange={(event)=>{proposalForm.handleChange(event), toggleService(event.target.value)}}  name="serviceItem" id="">
+                                      <select onChange={(event)=>{proposalForm.handleChange(event), toggleService(event.target.value)}} className={`${proposalForm.errors.serviceItem && proposalForm.touched.serviceItem && 'is-invalid'}`}  name="serviceItem" id="">
                                         <option value="">Service item</option>
                                         {
                                           services && services?.map((value, index) => {
@@ -333,14 +355,20 @@ const AddProposal = () => {
                                   </div>
 
                                   <div>
+                                    {
+                                      proposalForm.errors.quantity && proposalForm.touched.quantity && (<small className='text-danger'>{proposalForm.errors.quantity}</small>)
+                                    }
                                     <div className="input-section gtc-1 my-2">
-                                        <input type="text" onChange={proposalForm.handleChange} placeholder='Quantity' name="quantity" id="" />
+                                        <input type="text" className={`${proposalForm.errors.quantity && proposalForm.touched.quantity && 'is-invalid'}`} onChange={proposalForm.handleChange} placeholder='Quantity' name="quantity" id="" />
                                     </div>
                                   </div>
                                 </div>
+                                  {
+                                    proposalForm.errors.sqft && proposalForm.touched.sqft && (<small className='text-danger'>{proposalForm.errors.sqft}</small>)
+                                  }
                                 <div className="grid-cs gtc-1-2">
                                   <div className="input-section gtc-1 my-2">
-                                    <input type="text" onChange={proposalForm.handleChange} placeholder='SQFT' name="sqft" id="" />
+                                    <input type="text" className={`${proposalForm.errors.sqft && proposalForm.touched.sqft && 'is-invalid'}`} onChange={proposalForm.handleChange} placeholder='SQFT' name="sqft" id="" />
                                   </div>
                                   <div className="input-section gtc-1 my-2">
                                     <input type="text" onChange={proposalForm.handleChange} disabled className='input-disabled' value={proposalForm.values.description} placeholder='Description' name="description" id="" />

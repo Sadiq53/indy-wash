@@ -5,6 +5,9 @@ import { generateUniqueId } from "../../../utils/UniqueIdGenerator";
 import { addCustomService, updateCustomService } from "../../../services/ServicesService";
 import { useDispatch, useSelector } from "react-redux";
 import { handleAddCustomService, handleUpdateCustomService } from "../../../redux/AdminDataSlice";
+import Spinner from "../../shared/Loader/Spinner";
+import { toast } from "react-toastify";
+import { validationSchema } from '../../../schemas/addServiceSchema'
 
 const AddService = () => {
   const dispatch = useDispatch();
@@ -15,6 +18,7 @@ const AddService = () => {
   const customServiceData = useSelector((state) => state.AdminDataSlice.admin);
 
   const [isEditable, setIsEditable] = useState(role !== "view");
+  const [loading, setLoading] = useState(false)
   const [initialValues, setInitialValues] = useState({
     uniqueid: generateUniqueId(),
     createDate: new Date().toISOString().split("T")[0], // Generate today's date
@@ -42,7 +46,7 @@ const AddService = () => {
   const frequencyDigitConverter = {
     "one-off": 1,
     quarterly: 4,
-    "bi-quarterly": 2,
+    "bi-quarterly": 8,
     annual: 1,
     "bi-annual": 2,
     "bi-weekly": 26,
@@ -50,22 +54,28 @@ const AddService = () => {
   };
 
     const serviceForm = useFormik({
+        validationSchema,
         initialValues,
         enableReinitialize: true, // Allow dynamic updates to initialValues
         onSubmit: async (formData) => {
-            if(serviceid && role) {
-                const response = await updateCustomService(formData)
-                if (response.success) {
-                    dispatch(handleUpdateCustomService(response?.result));
-                    navigate(`/services`);
-                }
-            } else {
-                const response = await addCustomService(formData);
-                if (response.success) {
-                    dispatch(handleAddCustomService(response?.result));
-                    navigate(`/services`);
-                }
+          setLoading(true)
+          if(serviceid && role) {
+            const response = await updateCustomService(formData)
+            if (response.success) {
+                  setLoading(false)
+                  toast.success('Service Updated Successfully!')
+                  dispatch(handleUpdateCustomService(response?.result));
+                  navigate(`/services`);
             }
+          } else {
+              const response = await addCustomService(formData);
+              if (response.success) {
+                setLoading(false)
+                toast.success('Service Added Successfully!')
+                dispatch(handleAddCustomService(response?.result));
+                navigate(`/services`);
+              }
+          }
         },
     });
 
@@ -77,7 +87,7 @@ const AddService = () => {
     if (value) {
       updatedFrequency.push({
         name,
-        price: value,
+        price: parseFloat(value),
         frequencyDigit: frequencyDigitConverter[name],
       });
     }
@@ -124,7 +134,7 @@ const AddService = () => {
                             className="fa-light fa-circle-check fa-lg"
                             style={{ color: "#ffffff" }}
                           />{" "}
-                          &nbsp; Save Service
+                          &nbsp; Save Service { loading && (<Spinner />) }
                         </button>
                       </>
                     )}
@@ -141,10 +151,13 @@ const AddService = () => {
                               Details :
                             </h5>
                           </div>
+                            {
+                              serviceForm.errors.name && serviceForm.touched.name && (<small className="text-danger">{serviceForm.errors.name}</small>)
+                            }
                           <div className="input-section gtc-1 my-2">
                             <input
                               type="text"
-                              className={`${!isEditable ? 'input-disabled' : ''}`}
+                              className={`${!isEditable ? 'input-disabled' : ''} ${serviceForm.errors.name && serviceForm.touched.name && 'is-invalid'}`}
                               placeholder="Name"
                               name="name"
                               value={serviceForm.values.name}
@@ -155,10 +168,13 @@ const AddService = () => {
                         </div>
 
                         <div>
+                          {
+                            serviceForm.errors.type && serviceForm.touched.type && (<small className="text-danger">{serviceForm.errors.type}</small>)
+                          }
                           <div className="input-section gtc-1 my-2">
                             <input
                               type="text"
-                              className={`${!isEditable ? 'input-disabled' : ''}`}
+                              className={`${!isEditable ? 'input-disabled' : ''} ${serviceForm.errors.type && serviceForm.touched.type && 'is-invalid'}`}
                               placeholder="Type"
                               name="type"
                               value={serviceForm.values.type}
@@ -170,10 +186,13 @@ const AddService = () => {
                       </div>
 
                       <div>
+                        {
+                          serviceForm.errors.description && serviceForm.touched.description && (<small className="text-danger">{serviceForm.errors.description}</small>)
+                        }
                         <div className="input-section gtc-1 my-2">
                           <input
                             type="text"
-                            className={`${!isEditable ? 'input-disabled' : ''}`}
+                            className={`${!isEditable ? 'input-disabled' : ''} ${serviceForm.errors.description && serviceForm.touched.description && 'is-invalid'}`}
                             placeholder="Service Overview"
                             name="description"
                             value={serviceForm.values.description}

@@ -4,6 +4,7 @@ import { deleteService } from "../../../../services/ServicesService";
 import { handleDeleteService } from "../../../../redux/ServiceDataSlice";
 import { handleDeleteServiceFromCustomer } from "../../../../redux/AdminDataSlice";
 import { toast } from "react-toastify";
+import Spinner from "../../../shared/Loader/Spinner";
 
 const DeleteServiceModal = ({ serviceid, proposalid }) => {
     const [loading, setLoading] = useState(false); // State for managing loader
@@ -29,7 +30,7 @@ const DeleteServiceModal = ({ serviceid, proposalid }) => {
             dispatch(handleDeleteService(dataObject));
             dispatch(handleDeleteServiceFromCustomer(dataObject));
             toast.success(`Service Deleted Successfully!`);
-            clsModal.current?.click(); // Close the modal
+            clsModal.current.click(); // Close the modal
             } else {
             // Handle API error
             console.error("Failed to delete service:", response.message || "Unknown error");
@@ -84,7 +85,7 @@ const DeleteServiceModal = ({ serviceid, proposalid }) => {
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <Spinner />
                         ) : (
                             "Delete"
                         )}

@@ -8,7 +8,6 @@ const ServiceTagCard = ({ service, property }) => {
     const [totalCost, setTotalCost] = useState(null)
 
     useEffect(() => {    
-        console.log(service)
         if (Array.isArray(service)) {
             // Calculate totalSqft by summing up the sqft values of all objects in the service array
             const totalSqft = service.reduce(

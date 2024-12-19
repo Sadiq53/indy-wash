@@ -5,6 +5,7 @@ import { addExtraService } from '../../../../services/ServicesService'
 import { useDispatch } from "react-redux";
 import { handleAddExtraService } from '../../../../redux/ServiceDataSlice'
 import { handleAddService } from "../../../../redux/AdminDataSlice";
+import Spinner from "../../../shared/Loader/Spinner";
 
 const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
 
@@ -18,6 +19,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         const dd = String(today.getDate()).padStart(2, "0");
         return `${yyyy}-${mm}-${dd}`;
     });
+    const [loading, setLoading] = useState(false)
 
     const [formValues, setFormValues] = useState({
         uniqueid: generateUniqueId(),
@@ -107,6 +109,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
     };
 
     const submitServiceData = async() => {
+        setLoading(true)
         const response = await addExtraService(formValues)
         if(response.success) {
             const dataObject = {
@@ -116,6 +119,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                 propertyid: propertyId || "",
                 serviceid: formValues?.uniqueid || "",
             }
+            setLoading(false)
             dispatch(handleAddExtraService(dataObject))
             dispatch(handleAddService(dataObject))
             clsModal.current?.click()
@@ -295,7 +299,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                 className="filter-btn bg-theme-1"
                                 onClick={submitServiceData}
                             >
-                                Save changes
+                                Save changes { loading && (<Spinner />) }
                             </button>
                         </div>
                     </div>

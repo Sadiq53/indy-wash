@@ -8,6 +8,7 @@ import AddServiceModal from './Helper/AddServiceModal'
 import { updateServices } from "../../../services/ServicesService";
 import { handleUpdateServices } from "../../../redux/ServiceDataSlice";
 import DeleteServiceModal from "./Helper/DeleteServiceModal";
+import Spinner from "../../shared/Loader/Spinner";
 
 const ServiceDetail = () => {
 
@@ -26,6 +27,7 @@ const ServiceDetail = () => {
     const [propertyData, setPropertyData] = useState({})
     const [updatedData, setUpdatedData] = useState([])
     const [deleteServiceId, setDeleteServiceId] = useState([])
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(()=>{
@@ -54,9 +56,11 @@ const ServiceDetail = () => {
     }
 
     const submitUpdatedServices = async() => {
+        setLoading(true)
         const response = await updateServices(updatedData)
         if(response.success) {
             dispatch(handleUpdateServices(updatedData))
+            setLoading(false)
             navigate(`/proposal-detail/${proposalid}`)
         }
     }
@@ -84,7 +88,7 @@ return (
                             </div>
                             <div className="part-1 gtc-equal">
                             <button className="filter-btn bg-theme-7"><i class="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} /> &nbsp; Download Agreement</button>
-                            <button onClick={submitUpdatedServices} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal</button>
+                            <button onClick={submitUpdatedServices} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal { loading && (<Spinner />) }</button>
                             </div>
                         </div>
 

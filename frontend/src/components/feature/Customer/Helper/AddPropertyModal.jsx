@@ -5,6 +5,7 @@ import { validationSchema } from '../../../../schemas/addPropertySchema'
 import { addProperty } from "../../../../services/CustomerService";
 import { generateUniqueId } from "../../../../utils/UniqueIdGenerator";
 import { handleAddProperty } from "../../../../redux/AdminDataSlice";
+import Spinner from '../../../shared/Loader/Spinner'
 
 const AddPropertyModal = ({ customerid }) => {
 
@@ -227,7 +228,7 @@ const AddPropertyModal = ({ customerid }) => {
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <Spinner />
                         ) : (
                             "Add Property"
                         )}

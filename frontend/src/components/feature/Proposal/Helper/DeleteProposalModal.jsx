@@ -4,6 +4,7 @@ import { deleteProposal } from "../../../../services/ProposalService";
 import { handleDeleteProposal } from "../../../../redux/ServiceDataSlice";
 import { handleDeleteProposalFromCustomer } from "../../../../redux/AdminDataSlice";
 import { toast } from "react-toastify";
+import Spinner from '../../../shared/Loader/Spinner'
 
 const DeleteProposalModal = ({ proposalData }) => {
 
@@ -75,7 +76,7 @@ const DeleteProposalModal = ({ proposalData }) => {
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <Spinner />
                         ) : (
                             "Delete"
                         )}

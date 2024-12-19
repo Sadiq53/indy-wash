@@ -41,7 +41,7 @@ const MultiSelector = ({ onDataChange, paramData }) => {
   const validateData = () => {
     const validationErrors = properties.map((property, index) => {
       const error = {};
-      if (!property.companyName) error.companyName = "Company name is required";
+      if (!property.propertyName) error.propertyName = "Company name is required";
       if (!property.property) error.property = "Property is required";
       if (!property.buildings) error.buildings = "# of Buildings is required";
       if (!property.units) error.units = "No. of Units is required";
@@ -79,6 +79,13 @@ const MultiSelector = ({ onDataChange, paramData }) => {
   };
   
 
+  const removeProperty = (index) => {
+    const updatedProperties = properties.filter((_, i) => i !== index); // Remove the property at the specified index
+    setProperties(updatedProperties);
+    onDataChange(updatedProperties); // Send updated data via props
+  };
+  
+
   const addProperty = () => {
     setProperties([
       ...properties,
@@ -108,8 +115,9 @@ const MultiSelector = ({ onDataChange, paramData }) => {
         {properties.map((property, index) => (
           <div key={index} className="mt-5">
             {(index + 1) !== 1 && (
-              <div className={`py-4 ${(index + 1) !== 1 && 'cs-border'}`}>
+              <div className={`py-4 d-flex cs-between ${(index + 1) !== 1 && 'cs-border'}`}>
                 <h5 className="font-1 fw-700 pill-cs font-size-16">Property Details {index + 1}</h5>
+                <button onClick={()=>removeProperty(index)} type="button" className="btn"><i class="fa-solid fa-xl fa-xmark"></i></button>
               </div>
             )}
             <div>
@@ -123,14 +131,14 @@ const MultiSelector = ({ onDataChange, paramData }) => {
                   value={property.propertyName}
                   onChange={(e) => setSelection(index, "propertyName", e.target.value)}
                 />
-                {/* {errors[index]?.companyName && <div className="error text-danger">{errors[index].companyName}</div>} */}
+                {errors[index]?.propertyName && <div className="error text-danger">{errors[index].propertyName}</div>}
                 <input
                   type="text"
                   placeholder="Property"
                   value={property.property}
                   onChange={(e) => setSelection(index, "property", e.target.value)}
                 />
-                {/* {errors[index]?.property && <div className="error text-danger">{errors[index].property}</div>} */}
+                {errors[index]?.property && <div className="error text-danger">{errors[index].property}</div>}
                 <input
                   type="text"
                   placeholder="# of Buildings"
@@ -144,7 +152,7 @@ const MultiSelector = ({ onDataChange, paramData }) => {
                   value={property.units}
                   onChange={(e) => setSelection(index, "units", e.target.value)}
                 />
-                {/* {errors[index]?.units && <div className="error text-danger">{errors[index].units}</div>} */}
+                {errors[index]?.units && <div className="error text-danger">{errors[index].units}</div>}
               </div>
               <div className="input-section gtc-equal my-2">
                 <input

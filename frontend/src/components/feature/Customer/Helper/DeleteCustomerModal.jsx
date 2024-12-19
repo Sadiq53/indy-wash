@@ -4,6 +4,7 @@ import { deleteCustomer } from "../../../../services/CustomerService";
 import { handleDeleteCustomerData } from "../../../../redux/ServiceDataSlice";
 import { handleDeleteCustomer } from "../../../../redux/AdminDataSlice";
 import { toast } from "react-toastify";
+import Spinner from "../../../shared/Loader/Spinner";
 
 const DeleteCustomerModal = ({ customerData }) => {
 
@@ -75,7 +76,7 @@ const DeleteCustomerModal = ({ customerData }) => {
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <Spinner />
                         ) : (
                             "Delete"
                         )}

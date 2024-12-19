@@ -4,6 +4,11 @@
 	box-sizing: border-box;
 }
 
+.form-check-input:checked{
+	background-color: #979797 !important;
+    border-color: #979797;
+}
+
 ::-webkit-scrollbar {
     width: 10px;
   }
@@ -20,6 +25,9 @@
     border-radius: 10px;
   }
 
+  .cs-between{
+	justify-content: space-between !important;
+  }
 
 body{
 	background-color: #F5F6FA !important;
@@ -1219,4 +1227,8 @@ margin: 0;
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
+}
+
+.is-invalid{
+	border: 1px solid red !important;
 }

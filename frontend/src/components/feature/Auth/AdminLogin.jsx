@@ -4,12 +4,14 @@ import { login } from "../../../services/AdminService"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
+import Spinner from '../../shared/Loader/Spinner'
 
 const AdminLogin = () => {
 
   const navigate = useNavigate()
 
   const [errMsg, setErrMsg] = useState({state: false, message: ''})
+  const [loading, setLoading] = useState(false)
 
   const loginForm = useFormik({
     validationSchema: loginValidation,
@@ -18,8 +20,10 @@ const AdminLogin = () => {
       password: ''
     },
     onSubmit: async(formData) => {
+      setLoading(true)
       const response = await login(formData)
       if(response.success) {
+        setLoading(false)
         localStorage.setItem('ddlj', response.token)
         navigate('/')
       } else {
@@ -57,7 +61,7 @@ const AdminLogin = () => {
                         <input type="text" placeholder="Enter Password" name="password" id="" onChange={loginForm.handleChange} />
                       </div>
                       <div className="pt-3 flex-cs ">
-                        <button type="submit" className="filter-btn w-15 bg-theme-1">Login</button>
+                        <button type="submit" className="filter-btn w-15 bg-theme-1">Login {loading && <Spinner />}</button>
                       </div>
                     </div>
                   </div>

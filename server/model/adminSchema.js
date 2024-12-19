@@ -9,8 +9,8 @@ const serviceSchema = new mongoose.Schema({
     type: { type: String, default: '' },
     description: { type: String, default: '' },
     frequency: [{
-        name: { type: String, required: true },
-        price: { type: String, required: true },
+        name: { type: String, default: '' },
+        price: { type: Number, default: 0 },
     }]
 })
 

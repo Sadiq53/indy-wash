@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleDeleteCustomService } from "../../../../redux/AdminDataSlice";
 import { deleteCustomService } from "../../../../services/ServicesService";
 import { toast } from "react-toastify";
+import Spinner from "../../../shared/Loader/Spinner";
 
 const DeleteCustomServiceModal = ({ serviceid }) => {
 
@@ -65,7 +66,7 @@ const DeleteCustomServiceModal = ({ serviceid }) => {
                         disabled={loading} // Disable button during loading
                         >
                         {loading ? (
-                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <Spinner />
                         ) : (
                             "Delete"
                         )}
