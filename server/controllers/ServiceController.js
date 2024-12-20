@@ -9,7 +9,7 @@ const multer = require('multer');
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 // AWS SDK Configuration
-const s3 = new S3Client({
+const s3Client = new S3Client({
     region: 'us-west-2',
     credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -17,17 +17,22 @@ const s3 = new S3Client({
     },
 });
   
-// Multer configuration for file storage
+// Multer S3 storage configuration
 const storage = multerS3({
-    s3: s3,
-    bucket: 'jmb-enterprises-bucket',
-    // acl: 'public-read',
+    s3: s3Client,
+    bucket: process.env.AWS_BUCKET_NAME,
+    acl: 'public-read',
+    metadata: (req, file, cb) => {
+    cb(null, { fieldName: file.fieldname });
+    },
     key: (req, file, cb) => {
-        // Generate a unique name for the file
-        const fileName = `${uuidv4()}${path.extname(file.originalname)}`;
-        cb(null, fileName);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    const newFilename = `service/${uniqueSuffix}${extension}`;
+    cb(null, newFilename); // S3 key (path within the bucket)
     }
 });
+
 
 // Multer instance with limits and file type filter
 const upload = multer({
@@ -48,7 +53,7 @@ route.get('/', async(req, res) => {
     res.status(200).send({success: true, service: serviceData, proposal: proposalData})
 })
 
-route.post('/', async (req, res) => {
+route.post('/', upload.any(), async (req, res) => {
     const rawData = req.body;
 
     // Create serviceClone object
