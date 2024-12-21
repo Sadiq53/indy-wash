@@ -13,7 +13,28 @@ const toggleActivePlan = async(formData) => {
 }
 
 const addExtraService = async(formData) => {
-    const response = await axios.post(`${API_URL}/service/extra`, formData)
+
+    const formDataMultipart = new FormData();
+
+    // Append all other fields to the FormData object
+    for (const key in formData) {
+        if (key === 'additionalInfo') {
+            // Handle image files separately
+            formData.additionalInfo.forEach((image, index) => {
+                formDataMultipart.append(`additionalInfo[${index}]`, image.file);
+            });
+        } else if (key === 'frequency') {
+            // If frequency is an object, stringify it before appending
+            formDataMultipart.append(key, JSON.stringify(formData[key]));
+        } else {
+            formDataMultipart.append(key, formData[key]);
+        }
+    }
+    const response = await axios.post(`${API_URL}/service/extra`, formDataMultipart, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
     return response.data
 }
 

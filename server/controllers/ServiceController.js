@@ -4,45 +4,70 @@ const customerModel = require('../model/customerSchema')
 const serviceModel = require('../model/serviceSchema')
 const proposalModel = require('../model/proposalSchema')
 require('dotenv').config();
+const path = require('path')
+const { v4: uuidv4 } = require('uuid');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 // AWS SDK Configuration
 const s3Client = new S3Client({
-    region: 'us-west-2',
+    region: 'us-east-2',
     credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
 });
-  
+
+const deleteImageFromS3 = async (imageKey) => {
+    try {
+        if (!imageKey) {
+            console.error("Image key is missing");
+            return;
+        }
+
+        const deleteParams = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: imageKey,
+        };
+
+        // console.log(`Attempting to delete image: ${imageKey}`);
+        const command = new DeleteObjectCommand(deleteParams);
+        const result = await s3Client.send(command);
+
+        console.log(`Image ${imageKey} successfully deleted from S3`, result);
+    } catch (error) {
+        console.error(`Error deleting image ${imageKey} from S3:`, error);
+        throw new Error(`Failed to delete image ${imageKey} from S3`);
+    }
+};
+
+
+
 // Multer S3 storage configuration
 const storage = multerS3({
     s3: s3Client,
     bucket: process.env.AWS_BUCKET_NAME,
-    acl: 'public-read',
+    // acl: 'public-read',
     metadata: (req, file, cb) => {
-    cb(null, { fieldName: file.fieldname });
+        cb(null, { fieldName: file.fieldname });
     },
     key: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    const newFilename = `service/${uniqueSuffix}${extension}`;
-    cb(null, newFilename); // S3 key (path within the bucket)
-    }
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const extension = path.extname(file.originalname);
+        const newFilename = `service/${uniqueSuffix}${extension}`;
+        cb(null, newFilename); // S3 key (path within the bucket)
+    },
 });
-
 
 // Multer instance with limits and file type filter
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 100 * 1024 * 1024 }, // Limit to 10MB
+    limits: { fileSize: 10 * 1024 * 1024 }, // Limit to 10MB
     fileFilter: (req, file, cb) => {
         cb(null, true);
-    }
+    },
 });
-
 
 
 
@@ -53,31 +78,100 @@ route.get('/', async(req, res) => {
     res.status(200).send({success: true, service: serviceData, proposal: proposalData})
 })
 
+// route.post('/', upload.any(), async (req, res) => {
+//     const rawData = req.body;
+
+//     // Create serviceClone object
+//     const serviceClone = {
+//         uniqueid: rawData?.serviceUniqueid,
+//         createDate: rawData?.createDate,
+//         name: rawData?.serviceItem,
+//         type: rawData?.type,
+//         description: rawData?.description,
+//         quantity: rawData?.quantity,
+//         sqft: rawData?.sqft,
+//         frequency: rawData?.frequency,
+//     };
+
+//     // Create proposalClone object
+//     const proposalClone = {
+//         uniqueid: rawData?.uniqueid,
+//         createDate: rawData?.createDate,
+//         customer: rawData?.customer,
+//         property: rawData?.property,
+//         service: [rawData?.serviceUniqueid],
+//     };
+
+//     try {
+//         // Create proposal in the database
+//         await proposalModel.create(proposalClone);
+
+//         // Create service in the database
+//         await serviceModel.create(serviceClone);
+
+//         // Find customer by uniqueid
+//         const customer = await customerModel.findOne({ uniqueid: rawData?.customer });
+
+//         if (!customer) {
+//             return res.status(404).send({ message: 'Customer not found' });
+//         }
+
+//         // Find the property inside the customer object
+//         const property = customer.property.find(prop => prop.uniqueid === rawData?.property);
+
+//         if (property) {
+//             // Push the serviceUniqueid and proposalClone.uniqueid into the respective arrays
+//             property.services.push(rawData?.serviceUniqueid);
+//             property.proposal.push(rawData?.uniqueid);
+//         } else {
+//             return res.status(404).send({ message: 'Property not found' });
+//         }
+
+//         // Save the updated customer object
+//         await customer.save();
+
+//         res.status(200).send({ message: 'Service and Proposal added successfully', success: true, service: serviceClone, proposal: proposalClone });
+//     } catch (error) {
+//         console.error('Error in adding service and proposal:', error);
+//         res.status(500).send({ message: 'Internal Server Error' });
+//     }
+// });
+
 route.post('/', upload.any(), async (req, res) => {
+    // console.log(req.body)
     const rawData = req.body;
 
-    // Create serviceClone object
-    const serviceClone = {
-        uniqueid: rawData?.serviceUniqueid,
-        createDate: rawData?.createDate,
-        name: rawData?.serviceItem,
-        type: rawData?.type,
-        description: rawData?.description,
-        quantity: rawData?.quantity,
-        sqft: rawData?.sqft,
-        frequency: rawData?.frequency,
-    };
-
-    // Create proposalClone object
-    const proposalClone = {
-        uniqueid: rawData?.uniqueid,
-        createDate: rawData?.createDate,
-        customer: rawData?.customer,
-        property: rawData?.property,
-        service: [rawData?.serviceUniqueid],
-    };
-
     try {
+        // Process uploaded files (images in additionalInfo)
+        const images = req.files.map(file => ({
+            uniqueid: uuidv4(),
+            s3Url: file.location, // Public URL of the file
+            s3Key: file.key, // S3 Key of the file
+        }));
+
+
+        // Create serviceClone object
+        const serviceClone = {
+            uniqueid: rawData?.serviceUniqueid,
+            createDate: rawData?.createDate,
+            name: rawData?.serviceItem,
+            type: rawData?.type,
+            description: rawData?.description,
+            quantity: rawData?.quantity,
+            sqft: rawData?.sqft,
+            frequency: JSON.parse(rawData?.frequency),
+            images: images, // Attach the uploaded images
+        };
+
+        // Create proposalClone object
+        const proposalClone = {
+            uniqueid: rawData?.uniqueid,
+            createDate: rawData?.createDate,
+            customer: rawData?.customer,
+            property: rawData?.property,
+            service: [rawData?.serviceUniqueid],
+        };
+
         // Create proposal in the database
         await proposalModel.create(proposalClone);
 
@@ -105,17 +199,31 @@ route.post('/', upload.any(), async (req, res) => {
         // Save the updated customer object
         await customer.save();
 
-        res.status(200).send({ message: 'Service and Proposal added successfully', success: true, service: serviceClone, proposal: proposalClone });
+        res.status(200).send({
+            message: 'Service and Proposal added successfully',
+            success: true,
+            service: serviceClone,
+            proposal: proposalClone,
+        });
     } catch (error) {
         console.error('Error in adding service and proposal:', error);
         res.status(500).send({ message: 'Internal Server Error' });
     }
 });
 
-route.post('/extra', async (req, res) => {
+route.post('/extra', upload.any(), async (req, res) => {
     const rawData = req.body;
     const { customerid, proposalid, propertyid, uniqueid } = rawData;
 
+    // Process uploaded files (images in additionalInfo)
+    const images = req.files.map(file => ({
+        uniqueid: uuidv4(),
+        s3Url: file.location, // Public URL of the file
+        s3Key: file.key, // S3 Key of the file
+    }));
+
+    // console.log(images)
+    
     // Construct serviceClone object
     const serviceClone = {
         uniqueid,
@@ -125,15 +233,14 @@ route.post('/extra', async (req, res) => {
         description: rawData?.description,
         quantity: rawData?.quantity,
         sqft: rawData?.sqft,
-        frequency: rawData?.frequency,
+        frequency: JSON.parse(rawData?.frequency),
         activePlan: rawData?.activePlan,
+        images
     };
 
     try {
-        // 1. Create a new service in the database
         await serviceModel.create(serviceClone);
 
-        // 2. Add the service to the proposal
         const proposalUpdateResult = await proposalModel.updateOne(
             { uniqueid: proposalid },
             { $push: { service: uniqueid } }
@@ -183,7 +290,7 @@ route.post('/extra', async (req, res) => {
 
 route.post('/custom', async(req, res) => {
     const customServices = req.body
-    await adminModel.updateOne({username: 'admin'},{$set: {customServices: customServices}})
+    await adminModel.updateOne({username: 'admin'},{$push: {customServices: customServices}})
     res.status(200).send({ success: true, result: customServices })
 })
 
@@ -204,7 +311,6 @@ route.put('/custom', async (req, res) => {
         res.status(500).send({ success: false, message: 'Internal server error' });
     }
 });
-
 
 route.put('/plan', async(req, res) => {
     const { service, frequency } = req.body
@@ -278,6 +384,17 @@ route.post('/delete', async (req, res) => {
     }
 
     try {
+
+        const service = await serviceModel.findOne({ uniqueid: serviceid });
+
+        if(service?.images?.length >= 1) {
+            const {images} = service;
+            const urls = images?.map(value => value.s3Key)
+            for (const url of urls) {
+                await deleteImageFromS3(url);  // Ensure you pass the URL to the delete function
+            }
+        }
+
         // Delete the service from the serviceModel
         await serviceModel.deleteOne({ uniqueid: serviceid });
 
@@ -329,6 +446,19 @@ route.post('/proposal/delete', async (req, res) => {
     }
 
     try {
+
+        const services = await serviceModel.find({ uniqueid: { $in: serviceid } });
+
+        const imageKeys = services.flatMap((service) => {
+            return Array.isArray(service.images)
+                ? service.images.map((img) => img.s3Key).filter(Boolean) // Ensure valid keys
+                : [];
+        });
+
+        for (const key of imageKeys) {
+            await deleteImageFromS3(key);
+        }
+
         await proposalModel.deleteOne({ uniqueid: proposalid });
 
         await serviceModel.deleteMany({ uniqueid: { $in: serviceid } });

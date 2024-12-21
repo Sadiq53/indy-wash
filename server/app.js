@@ -8,7 +8,11 @@ const routes = require('./config/allRoutes')
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'assets')))
 app.use(express.urlencoded({ extended : true }))
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow required methods
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allow required headers
+}));
 app.use(routes)
 
 

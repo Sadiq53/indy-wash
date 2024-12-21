@@ -25,7 +25,7 @@ const AddProposal = () => {
   const [displayData, setDisplayData] = useState({customer: {}, property: {}})
   const [isParam, setIsParam] = useState(false)
   const [services, setServices] = useState([])
-  const [image, setImage] = useState({image1: '', image2: ''});
+  const [image, setImage] = useState([]);
   const [propertyData, setPropertyData] = useState([])
   const [loading, setLoading] = useState(true)
   const [createDate, setCreateDate] = useState(() => {
@@ -46,7 +46,7 @@ const AddProposal = () => {
     quantity: '',
     sqft: '',
     description: '',
-    additionalInfo: image,
+    additionalInfo: [],
     frequency: [],
     status: 'draft'  
   })
@@ -86,26 +86,33 @@ const AddProposal = () => {
   const proposalForm = useFormik({
     validationSchema,
     initialValues,
-    onSubmit: async(formData) => {
-      const response = await addProposal(formData)
-      setLoading(true)
-      if(response?.success) {
-        const {proposal, service} = response;
-        dispatch(handleAddProposal(proposal))
-        dispatch(handleAddServices(service))
+    onSubmit: async (formData) => {
+      // Attach images to formData
+      const formDataWithImages = {
+        ...formData,
+        additionalInfo: image, // Include images in the form data
+      };
+
+      const response = await addProposal(formDataWithImages); // Call your API
+      setLoading(true);
+
+      if (response?.success) {
+        const { proposal, service } = response;
+        dispatch(handleAddProposal(proposal));
+        dispatch(handleAddServices(service));
         const dataObject = {
           serviceid: service?.uniqueid,
           proposalid: proposal?.uniqueid,
           propertyid: proposal?.property,
-          customerid: proposal?.customer
-        }
-        setLoading(false)
-        dispatch(handleUpdateCustomerProperty(dataObject))
-        toast.success('Proposal Added Successfully!')
-        navigate(`/proposal-detail/${proposal?.uniqueid}`)
+          customerid: proposal?.customer,
+        };
+        setLoading(false);
+        dispatch(handleUpdateCustomerProperty(dataObject));
+        toast.success('Proposal Added Successfully!');
+        navigate(`/proposal-detail/${proposal?.uniqueid}`);
       }
-    }
-  })
+    },
+  });
 
   const handleFrequencyChange = (name, value) => {
     const updatedFrequencies = frequencies.map((freq) =>
@@ -204,14 +211,18 @@ const AddProposal = () => {
     }
   };
   
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files); // Get all selected files
+    const newImageFiles = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file), // Generate a preview URL for the image
+    }));
+    setImage((prevImages) => [...prevImages, ...newImageFiles]); // Add to existing images
+  };
 
-    const handleImageUpload = (event, type) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage({...image, [type]: imageUrl});
-        }
-    };
+  const handleRemoveImage = (index) => {
+    setImage((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
 
     
 
@@ -376,7 +387,7 @@ const AddProposal = () => {
                                 </div>
                               </div>
 
-                              <div className="pt-3">
+                              {/* <div className="pt-3">
                                 <div className="grid-cs gtc-3 cs-align-end">
                                   <div>
                                       <div className="header">
@@ -438,7 +449,59 @@ const AddProposal = () => {
                                       </div>
                                   </div>
                                 </div>
-                              </div>
+                              </div> */}
+
+                            <div className="pt-3">
+                              <div className="">
+                                  <div className="header">
+                                    <h5 className="font-1 fw-700 font-size-16">Additional info :</h5>
+                                  </div>
+                                  <div className="input-section grid-cs gtc-3 cs-align-end mt-2">
+                                    {image?.length > 0 ? 
+                                        image?.map((image, index) => (
+                                    <div
+                                      className="upload-box"
+                                      onClick={() => document.getElementById('file-upload').click()}
+                                    >
+                                        <div className="image-preview-container">
+                                            <div key={index} className="image-preview">
+                                              <img src={image.preview} alt="Uploaded" />
+                                              <button
+                                                type="button"
+                                                className="btn btn-danger btn-sm cs-absolute"
+                                                onClick={() => handleRemoveImage(index)}
+                                              >
+                                                Remove
+                                              </button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                          )) : (
+                                            <>
+                                            <div
+                                              className="upload-box"
+                                              onClick={() => document.getElementById('file-upload').click()}
+                                            >
+                                              <img
+                                                src="/assets/img/camera.svg"
+                                                alt="Camera Icon"
+                                                className="camera-icon"
+                                              />
+                                              <p>Upload Photos</p>
+                                            </div>
+                                        </>
+                                      )}
+                                    </div>
+                                    <input
+                                      id="file-upload"
+                                      type="file"
+                                      accept="image/*"
+                                      multiple // Allow selecting multiple files
+                                      onChange={handleImageUpload}
+                                      className="file-input"
+                                    />
+                                </div>
+                            </div>
 
                             </div>
                             <div className="col-md-4">

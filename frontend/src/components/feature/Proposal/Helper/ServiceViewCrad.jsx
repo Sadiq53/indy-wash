@@ -37,17 +37,28 @@ const ServiceViewCrad = ({ handlePreviousService, handleNextService, header, pro
 
             <div className="gallery">
                 <div className="grid-cs grid-equal">
+                    {/* Show the 0th position image */}
                     <div>
-                        <img src="/assets/img/demo.svg" alt="" />
+                        {
+                            selectedServiceData?.images?.length >= 1 ? (
+                                <img className="cs-hieght" src={selectedServiceData.images[0].s3Url} alt="" />
+                            ) : (
+                                <img src="/assets/img/demo.svg" alt="" />
+                            )
+                        }
                     </div>
+                    {/* Loop through remaining images (starting from index 1) */}
                     <div className="grid-cs gtc-equal">
-                        <img src="/assets/img/demo.svg" alt="" />
-                        <img src="/assets/img/demo.svg" alt="" />
-                        <img src="/assets/img/demo.svg" alt="" />
-                        <img src="/assets/img/demo.svg" alt="" />
+                        {
+                            selectedServiceData?.images?.length > 1 &&
+                            selectedServiceData.images.slice(1).map((value, index) => (
+                                <img key={index} src={value.s3Url} alt="" />
+                            ))
+                        }
                     </div>
                 </div>
             </div>
+
         </div>
     </>
   )

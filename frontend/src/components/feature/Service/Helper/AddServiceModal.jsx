@@ -20,6 +20,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         return `${yyyy}-${mm}-${dd}`;
     });
     const [loading, setLoading] = useState(false)
+    const [image, setImage] = useState([]);
 
     const [formValues, setFormValues] = useState({
         uniqueid: generateUniqueId(),
@@ -30,6 +31,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         description: "",
         frequency: [],
         activePlan: "",
+        additionalInfo: [],
         proposalid: proposalId || "",
         customerid: customerId || "",
         propertyid: propertyId || "",
@@ -41,7 +43,6 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         }
     }, [proposalId, customerId, propertyId])
 
-    const [image, setImage] = useState({ image1: "", image2: "" });
 
     // Handle input changes for text inputs
     const handleInputChange = (e) => {
@@ -100,13 +101,23 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
     };
 
     // Handle image upload
-    const handleImageUpload = (event, type) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setImage((prevImage) => ({ ...prevImage, [type]: imageUrl }));
-        }
+    const handleImageUpload = (event) => {
+        const files = Array.from(event.target.files); // Get all selected files
+        const newImageFiles = files.map((file) => ({
+          file,
+          preview: URL.createObjectURL(file), // Generate a preview URL for the image
+        }));
+        setImage((prevImages) => [...prevImages, ...newImageFiles]); // Add to existing images
     };
+
+    useEffect(()=>{
+        setFormValues({...formValues, additionalInfo: image})
+    }, [image])
+
+    const handleRemoveImage = (index) => {
+        setImage((prevImages) => prevImages.filter((_, i) => i !== index));
+    };
+    
 
     const submitServiceData = async() => {
         setLoading(true)
@@ -219,7 +230,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                                     onChange={handleInputChange}
                                                 ></textarea>
                                             </div>
-                                            <div className="grid-cs gtc-equal cs-align-end">
+                                            {/* <div className="grid-cs gtc-equal cs-align-end">
                                                 <div>
                                                     <div
                                                         className="input-section mt-2 gtc-1"
@@ -284,7 +295,51 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                                         />
                                                     </div>
                                                 </div>
+                                            </div> */}
+                                            <div className="input-section grid-cs gtc-equal cs-align-end">
+                                    {image?.length > 0 ? 
+                                        image?.map((image, index) => (
+                                    <div
+                                      className="upload-box"
+                                      onClick={() => document.getElementById('file-upload').click()}
+                                    >
+                                        <div className="image-preview-container">
+                                            <div key={index} className="image-preview">
+                                              <img src={image.preview} alt="Uploaded" />
+                                              <button
+                                                type="button"
+                                                className="btn btn-danger btn-sm cs-absolute"
+                                                onClick={() => handleRemoveImage(index)}
+                                              >
+                                                Remove
+                                              </button>
                                             </div>
+                                            </div>
+                                        </div>
+                                          )) : (
+                                            <>
+                                            <div
+                                              className="upload-box"
+                                              onClick={() => document.getElementById('file-upload').click()}
+                                            >
+                                              <img
+                                                src="/assets/img/camera.svg"
+                                                alt="Camera Icon"
+                                                className="camera-icon"
+                                              />
+                                              <p>Upload Photos</p>
+                                            </div>
+                                        </>
+                                      )}
+                                    </div>
+                                    <input
+                                      id="file-upload"
+                                      type="file"
+                                      accept="image/*"
+                                      multiple // Allow selecting multiple files
+                                      onChange={handleImageUpload}
+                                      className="file-input"
+                                    />
                                         </div>
                                     </div>
                                 </div>
