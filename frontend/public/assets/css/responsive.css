@@ -22,13 +22,19 @@
     }
     .main-header{
         justify-content: space-between;
-        flex-direction: row-reverse;
+        /* flex-direction: row-reverse; */
+    }
+    .arrow{
+        width: 30px;
     }
     .bell img{
         width: 70%;
     }
     .profile-btn img{
-        width: 70%;
+        width: 100%;
+    }
+    .mob-head-flex{
+        display: flex;
     }
     .profile-btn{
         gap: 4px;
@@ -40,8 +46,11 @@
         font-size: 18px;
     }
     .filter-btn{
-        padding: 6px 6px;
+        padding: 6px 15px;
         font-size: 12px;
+    }
+    .box-cs .input-section select{
+        line-height: 30px;
     }
     .font-3{
         font-size: 12px;

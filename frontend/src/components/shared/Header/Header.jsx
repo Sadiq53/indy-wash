@@ -59,7 +59,7 @@ const Header = () => {
                 >
                   <h4 className="font-1"><i class="fa-solid fa-chevrons-left"></i> Back</h4>
                 </button>
-
+                <div className="mob-head-flex">
                 {/* Sidebar Toggle */}
                 {isOpen ? (
                   <button
@@ -83,13 +83,13 @@ const Header = () => {
 
                 {/* Profile and Notifications */}
                 <div className="head-section">
-                  <div className="bell">
+                  {/* <div className="bell">
                     <button
                       className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}
                     >
                       <img src="/assets/img/bell.svg" alt="" />
                     </button>
-                  </div>
+                  </div> */}
                   <button
                     className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}
                   >
@@ -106,6 +106,7 @@ const Header = () => {
                       </div>
                     </div>
                   </button>
+                </div>
                 </div>
               </div>
             </div>
