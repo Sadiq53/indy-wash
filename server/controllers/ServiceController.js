@@ -489,7 +489,4 @@ route.post('/proposal/delete', async (req, res) => {
 });
 
 
-
-
-
 module.exports = route;
