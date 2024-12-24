@@ -4,6 +4,7 @@
         left: -234px;
         z-index: 999999;
         transition: 0.5s;
+        height: 100%;
     }
     .dashboard-tags-layout{
         grid-template-columns: 1fr;
@@ -35,6 +36,7 @@
     }
     .mob-head-flex{
         display: flex;
+        flex-direction: row-reverse;
     }
     .profile-btn{
         gap: 4px;
@@ -45,12 +47,16 @@
     .font-1{
         font-size: 18px;
     }
+    .box-cs .input-section input[type="date"]{
+        width: 100%;
+        height: 32px;
+    }
     .filter-btn{
         padding: 6px 15px;
         font-size: 12px;
     }
     .box-cs .input-section select{
-        line-height: 30px;
+        height: 32px;
     }
     .font-3{
         font-size: 12px;
@@ -183,7 +189,6 @@
         flex-direction: column;
     }
     .custom-table{
-        width: 100vw;
         overflow-x: scroll;
     }
     .custom-table table{
@@ -198,6 +203,9 @@
     }
     .cs-accordian{
         padding: 0;
+    }
+    .the-content-sec{
+        width: 100vw;
     }
     .cs-accordian-button h4{
         font-size: 12px;

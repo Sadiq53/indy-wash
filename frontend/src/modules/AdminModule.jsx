@@ -50,7 +50,7 @@ useEffect(()=>{
     <>
         <main className="the-main-grid">
             <Sidebar />
-            <section>
+            <section className='the-content-sec'>
                 <Header />
                 <Outlet />
             </section>
