@@ -253,8 +253,9 @@ const navigateRoute = () => {
 
       {popup && <AgreedModal onConfirmation={confirmation} />}
         <div ref={agreementRef} style={{position : 'absolute', left : '-260%', top : '28%' }}>
-          <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
+        <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
         </div>
+        
     </>
   );
 };

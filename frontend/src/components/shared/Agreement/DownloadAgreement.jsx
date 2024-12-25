@@ -211,7 +211,7 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                         <table cellPadding="0" cellSpacing="0" border="0" role="presentation" width="100%" style={{ width: '100%', borderSpacing: 0 }}>
                                           <tr>
                                             <td valign="top" height="10.74" style={{ height: '10.74px', verticalAlign: 'top' }}>
-                                              <p className="color-979797" style={{ fontSize: '14.66px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>{value?.name}</p>
+                                              <p className="color-979797" style={{ fontSize: '14.66px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '18px' }}>{value?.name}</p>
                                             </td>
                                           </tr>
                                           <tr>
@@ -273,18 +273,18 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                         <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0, width :'100%' }}>
                                           <tr>
                                             <td width="169.77" style={{ paddingLeft: '7.98px', width: '169.77px', maxWidth: '169.77px', height: '100px' }}>
-                                              <table className="bg-388CFF" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#388CFF" width="100%" height="48.43" style={{ borderRadius: '3.19px', backgroundColor: '#388CFF', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
+                                              <table className="bg-388CFF" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#388CFF" width="100%" height="48.43" style={{ borderRadius: '3.19px', padding: '10px', backgroundColor: '#388CFF', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
                                                 <td valign="top" width="124.53" style={{ width: '124.53px', verticalAlign: 'top', padding: '5px' }}>
                                                 <table cellPadding="0" cellSpacing="0" border="0" role="presentation" width="100%" style={{ width: '100%', borderSpacing: 0 }}>
                                                   <tr>
-                                                    <td align="left" valign="top" height="13.22" style={{ paddingLeft: '39.85px', height: '13.22px', verticalAlign: 'top' }}>
+                                                    <td align="left" valign="top" height="13.22" style={{ height: '13.22px', verticalAlign: 'top' }}>
                                                       <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                                         <tr>
                                                           {/* <td>
                                                             <img src="assets/image_ae0d7c76.png" width="10" height="10" style={{ width: '10px', height: '10px', display: 'block' }} alt="Icon" />
                                                           </td> */}
                                                           <td width="73.97" style={{ width: '73.97px' }}>
-                                                            <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'center', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Service Analysis</p>
+                                                            <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'left', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '20px' }}>Service Analysis</p>
                                                           </td>
                                                         </tr>
                                                       </table>
@@ -292,12 +292,12 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                                   </tr>
                                                   <tr>
                                                     <td style={{ paddingTop: '2.22px' }}>
-                                                      <p className="color-f5f6fa" style={{ fontSize: '12.39px', fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '8px' }}>{totalSqft} SQFT Total</p>
+                                                      <p className="color-f5f6fa" style={{ fontSize: '12.39px', fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '20px' }}>{totalSqft} SQFT Total</p>
                                                     </td>
                                                   </tr>
                                                   <tr>
                                                     <td>
-                                                      <p className="color-fffffe" style={{ fontSize: '16.51px', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Avg Cost per SQFT</p>
+                                                      <p className="color-fffffe" style={{ fontSize: '16.51px', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '20px' }}>Avg Cost per SQFT</p>
                                                     </td>
                                                   </tr>
                                                 </table>
@@ -311,7 +311,7 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                                     </tr>
                                                     <tr>
                                                       <td style={{ paddingTop: '2.18px' }}>
-                                                        <p className="color-f5f6fa" style={{ fontSize: '12.39px', textAlign: 'center', fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '8px' }}>${totalCost / totalSqft}/SQFT</p>
+                                                        <p className="color-f5f6fa" style={{ fontSize: '12.39px', textAlign: 'center', fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '8px' }}>${(totalCost / totalSqft)?.toFixed(2)}/SQFT</p>
                                                       </td>
                                                     </tr>
                                                   </table>
@@ -319,19 +319,19 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                               </table>
                                             </td>
                                             <td width="169.77" style={{ paddingLeft: '7.98px', width: '169.77px', maxWidth: '169.77px', height: '100px' }}>
-                                              <table className="bg-ff8214" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#ff8214" width="100%" height="48.43" style={{ borderRadius: '3.19px', padding: '7px', backgroundColor: '#ff8214', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
+                                              <table className="bg-ff8214" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#ff8214" width="100%" height="48.43" style={{ borderRadius: '3.19px', padding: '10px', backgroundColor: '#ff8214', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
                                                 <tr>
                                                   <td align="left" valign="middle" height="48.43" style={{ paddingLeft: '5.92px', verticalAlign: 'middle', height: '48.43px' }}>
                                                     <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                                       <tr>
-                                                        <td align="left" valign="top" height="13.48" style={{ paddingLeft: '48.36px', height: '13.48px', verticalAlign: 'top' }}>
+                                                        <td align="left" valign="top" height="13.48" style={{ paddingLeft: '', height: '13.48px', verticalAlign: 'top' }}>
                                                           <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                                             <tr>
                                                               {/* <td>
                                                                 <img src="assets/image_7faf743b.png" width="11" height="10" style={{ width: '11px', height: '10px', display: 'block' }} alt="Icon" />
                                                               </td> */}
                                                               <td width="57.47" style={{ paddingLeft: '1.84px', width: '57.47px' }}>
-                                                                <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'center', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Investment</p>
+                                                                <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'left', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Investment</p>
                                                               </td>
                                                             </tr>
                                                           </table>
@@ -367,19 +367,19 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                               </table>
                                             </td>
                                             <td width="169.77" style={{ paddingLeft: '7.98px', width: '169.77px', maxWidth: '169.77px', height: '100px' }}>
-                                              <table className="bg-e9941e" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#e9941e" width="100%" height="48.43" style={{ borderRadius: '3.19px', padding: '7px', backgroundColor: '#e9941e', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
+                                              <table className="bg-e9941e" cellPadding="0" cellSpacing="0" border="0" role="presentation" bgcolor="#e9941e" width="100%" height="48.43" style={{ borderRadius: '3.19px', padding: '10px', backgroundColor: '#e9941e', width: '100%', height: '48.43px', borderSpacing: 0, borderCollapse: 'separate' }}>
                                                 <tr>
                                                   <td align="left" valign="middle" height="48.43" style={{ paddingLeft: '5.92px', verticalAlign: 'middle', height: '48.43px' }}>
                                                     <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                                       <tr>
-                                                        <td align="left" valign="top" height="13.02" style={{ paddingLeft: '36.66px', height: '13.02px', verticalAlign: 'top' }}>
+                                                        <td align="left" valign="top" height="13.02" style={{ paddingLeft: '', height: '13.02px', verticalAlign: 'top' }}>
                                                           <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                                             <tr>
                                                               {/* <td>
                                                                 <img src="assets/image_1232ab3c.png" width="11" height="11" style={{ width: '11px', height: '11px', display: 'block' }} alt="Icon" />
                                                               </td> */}
                                                               <td width="116.09" style={{ width: '116.09px' }}>
-                                                                <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'center', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Per Door Analysis</p>
+                                                                <p className="color-fffffe" style={{ fontSize: '16.51px', textAlign: 'left', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '20px' }}>Per Door Analysis</p>
                                                               </td>
                                                             </tr>
                                                           </table>
@@ -398,7 +398,7 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                                                   </tr>
                                                                   <tr>
                                                                     <td>
-                                                                      <p className="color-fffffe" style={{ fontSize: '16.51px', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '11px' }}>Per Door Investment</p>
+                                                                      <p className="color-fffffe" style={{ fontSize: '16.51px', fontWeight: 700, color: 'white', margin: 0, padding: 0, lineHeight: '20px' }}>Per Door Investment</p>
                                                                     </td>
                                                                   </tr>
                                                                 </table>
@@ -412,7 +412,7 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                                                   </tr>
                                                                   <tr>
                                                                     <td style={{ paddingTop: '1.12px' }}>
-                                                                      <p className="color-f5f6fa" style={{ fontSize: '12.39px',  fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '8px' }}>${(totalCost / [propertyData?.units])?.toFixed(2)} / Unit PM</p>
+                                                                      <p className="color-f5f6fa" style={{ fontSize: '12.39px',  fontWeight: 400, letterSpacing: '-0.06px', color: '#f5f6fa', margin: 0, padding: 0, lineHeight: '18px' }}>${(totalCost / [propertyData?.units])?.toFixed(2)} / Unit PM</p>
                                                                     </td>
                                                                   </tr>
                                                                 </table>

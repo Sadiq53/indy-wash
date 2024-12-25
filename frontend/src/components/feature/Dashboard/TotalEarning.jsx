@@ -18,7 +18,7 @@ const TotalEarning = ({ proposalData, serviceData }) => {
     <>
         <div className="box-cs">
             <h5 className="font-1 fw-700 font-size-16">Total Earnings</h5>
-            <div className="layout">
+            <div className="layout mob-lay">
                 <div>
                     <h3 className="font-1 fw-500 font-size-35">${totalEarning}</h3>
                     <p className="font-size-16 font-1">Total Yearly Income</p>

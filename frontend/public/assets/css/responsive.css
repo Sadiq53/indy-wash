@@ -95,8 +95,17 @@
         height: 50px;
         width: 50px;
     }
+    .proposal-tag-cards .tag-card{
+        width: 87%;
+    }
+    .mob-hide{
+        display: none !important;
+    }
     .font-2{
         font-size: 18px ;
+    }
+    .accordian-content .top-section{
+        width: 100%;
     }
     .graph img{
         width: 100%;
@@ -168,7 +177,21 @@
     }
     .accordian-content .header{
         gap: 10px;
+        overflow: hidden;
+        overflow-x: scroll;
     }
+    .accordian-content .header::-webkit-scrollbar {
+        height: 5px !important;
+      }
+      .mob-lay{
+        flex-direction: row !important;
+        justify-content: space-between !important;
+      }
+      .box-cs .mob-lay .line{
+        width: 1px;
+        height: 40px;
+        border-right: 1px solid #979797;
+      }
     .cs-modal .layout{
         padding: 20px;
         height: 180px;

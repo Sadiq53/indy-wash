@@ -97,11 +97,11 @@ const Header = () => {
                       <div className="profile">
                         <img src="/assets/img/head-profile.svg" alt="" />
                       </div>
-                      <div className="name">
+                      <div className="name mob-hide">
                         <h5>Moni Roy</h5>
                         <small>Admin</small>
                       </div>
-                      <div className="arrow">
+                      <div className="arrow mob-hide">
                         <img src="/assets/img/head-arrow.svg" alt="" />
                       </div>
                     </div>
