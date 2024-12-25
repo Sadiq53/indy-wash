@@ -45,6 +45,14 @@ body{
 	padding: 0px 30px;
 	gap: 10px;
 }
+.btn:active {
+    outline: none !important;
+    border: none !important;
+}
+.btn{
+	border: none !important;
+	outline: none !important;
+}
 .menu ul li a{
 	color: #202244;
 font-family: "DM Sans";

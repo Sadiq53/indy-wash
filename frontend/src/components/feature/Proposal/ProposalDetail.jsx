@@ -215,22 +215,22 @@ const navigateRoute = () => {
                     </div>
                   ) : (
                     <div className="accordion width-100 " id="actionAccordion">
-                      <div className="accordion-item cs-accordian width-100" key='one'>
+                      <div className="accordion-item cs-accordian width-100 br-none" key='one'>
                         <h2 className="accordion-header cs-accordian-head" id={`heading-one`}>
                           <button
-                            className="accordion-button cs-accordian-button"
+                            className="accordion-button cs-accordian-button flex-acc-btn collapsed"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target={`#collapse-one`}
-                            aria-expanded="true"
+                            aria-expanded="false"
                             aria-controls={`collapse-one`}
                           >
-                            Actions
+                            Proposal Management Actions
                           </button>
                         </h2>
                         <div
                           id={`collapse-one`}
-                          className="accordion-collapse collapse show"
+                          className="accordion-collapse collapse"
                           aria-labelledby={`heading-one`}
                           data-bs-parent="#actionAccordion"
                         >

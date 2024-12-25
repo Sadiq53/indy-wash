@@ -224,6 +224,15 @@
     .proposal-tag-cards .tag-card h4{
         font-size: 16px;
     }
+    .br-none{
+        border: none !important;
+    }
+    .flex-acc-btn{
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        font-family: "DM Sans";
+    }
     .cs-accordian{
         padding: 0;
     }
