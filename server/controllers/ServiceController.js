@@ -349,11 +349,12 @@ route.put('/status', async (req, res) => {
     const { status, proposalid, date } = req.body;
 
     // Validate input
-    if (typeof status !== "boolean" || !proposalid || !date) {
-        return res.status(400).send({ message: 'Invalid input data', success: false });
-    }
-
+    // if (typeof status !== "boolean" || !proposalid || !date) {
+    //     return res.status(400).send({ message: 'Invalid input data', success: false });
+    // }
+    
     const getStatus = status ? 'active' : 'draft';
+    // console.log(getStatus)
 
     try {
         // Update the proposal status in the database

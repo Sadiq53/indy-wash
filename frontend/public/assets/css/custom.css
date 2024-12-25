@@ -147,6 +147,20 @@ text-decoration: none;
 margin: 0;
 }
 
+.btn-cs-2 {
+	padding: 0.4rem 0.4rem;
+	border-radius: 4px;
+	color: #fff;
+	font-family: "DM Sans";
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+	letter-spacing: -0.114px;
+	text-decoration: none;
+	margin-top: 15px !important;
+}
+
 .txt-deco-none{
 	text-decoration: none !important;
 }
@@ -227,6 +241,9 @@ margin: 0;
 }
 .font-size-16{
 	font-size: 16px !important;
+}
+.font-size-14{
+	font-size: 14px !important;
 }
 
 .background-white {
@@ -419,6 +436,11 @@ box-shadow: none;
 
 .gtc-equal{
 	grid-template-columns: 1fr 1fr !important;
+}
+
+.gtc-5{
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr !important;
+
 }
 
 .box-cs .input-section{
@@ -1262,4 +1284,24 @@ margin: 0;
 
 .appointment_widgets-xl--revamp{
 	padding: 0 !important;
+}
+
+.message-tag{
+	position: relative;
+}
+.message-tag .cs-status{
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+}
+
+.btn-cs.sm{
+    padding: 3px 6px;
+}
+.btn-cs{
+	background-color: transparent;
+    padding: 3px 6px;
+    box-shadow: none;
+	border: none;
+    color: #000;
 }

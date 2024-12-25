@@ -27,7 +27,7 @@ const AddCustomer = () => {
   });
 
     const addCustomerForm = useFormik({
-      validationSchema,
+      // validationSchema,
         initialValues: {
           uniqueid: '',
         createDate,
@@ -38,6 +38,7 @@ const AddCustomer = () => {
             lastName: "",
             email: "",
             phone: "",
+            company: ""
         },
         property: [],
         additionalContact: {
@@ -92,6 +93,7 @@ useEffect(() => {
           lastName: filteredCustomerData?.personalDetails?.lastName || "",
           email: filteredCustomerData?.personalDetails?.email || "",
           phone: filteredCustomerData?.personalDetails?.phone || "",
+          company: filteredCustomerData?.personalDetails?.company || "",
         },
         // property: filteredCustomerData?.property || [],
         additionalContact: {
@@ -263,8 +265,8 @@ useEffect(() => {
                         Personal Details :
                       </h5>
                     </div>
-                    <div className="input-section my-2">
-                    {["firstName", "lastName", "email", "phone"].map((field) => (
+                    <div className="input-section gtc-5 my-2">
+                    {["firstName", "lastName", "email", "phone", "company"].map((field) => (
                       <div key={field} className="form-group mb-3">
                         <input
                           type={field === "phone" ? "number" : "text"}
@@ -280,9 +282,9 @@ useEffect(() => {
                               e.target.value
                             )
                           }
-                          onBlur={() =>
-                            addCustomerForm.setFieldTouched(`personalDetails.${field}`, true)
-                          }
+                          // onBlur={() =>
+                          //   addCustomerForm.setFieldTouched(`personalDetails.${field}`, true)
+                          // }
                         />
                         {/* Display error message for the specific field */}
                         {addCustomerForm.errors.personalDetails?.[field] &&

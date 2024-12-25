@@ -38,7 +38,7 @@ const CustomerDetail = () => {
                     <div className="col-md-12">
                         <div className="head-filters">
                             <div className="part-1 gtc-1">
-                                <h4 className="font-1 fw-700">Company Name</h4>
+                                <h4 className="font-1 fw-700">{displayData?.personalDetails?.company}</h4>
                             </div>
                             <div className="part-1  gtc-3">
                                 <button onClick={()=>navigate(`/add-customer/${id}`)} className="filter-btn txt-deco-none bg-theme-7"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /> &nbsp; Edit {displayData?.personalDetails?.firstName}</button>

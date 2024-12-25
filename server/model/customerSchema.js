@@ -29,6 +29,7 @@ personalDetails: {
     lastName: { type: String, default: '' },
     email: { type: String, default: '' },
     phone: { type: Number, default: 0 },
+    company: { type: String, default: '' },
 },
 property: [propertySchema],
 additionalContact: {

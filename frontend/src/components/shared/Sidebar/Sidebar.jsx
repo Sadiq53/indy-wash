@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {NavLink, useLocation} from 'react-router-dom'
 import { handleSidebar } from '../../../redux/AdminDataSlice'
+import { hanldeStatusActive } from '../../../redux/ServiceDataSlice'
 
 const Sidebar = () => {
 
     const location = useLocation()
     const dispatch = useDispatch()
     const [active, setActive] = useState('/')
+
+    const itemActive = useSelector(state => state.ServiceDataSlice.itemActive)
 
     useEffect(()=>{
         setActive(location.pathname)
@@ -60,9 +63,10 @@ const Sidebar = () => {
                         </NavLink>
                     </li>
                     <li className={active === '/active-overview' && 'active'}>
-                        <NavLink onClick={closeSidebar} to="/active-overview">
+                        <NavLink className='message-tag' onClick={()=>{closeSidebar(), dispatch(hanldeStatusActive(false))}} to="/active-overview">
                         <img src="assets/img/active.svg" />
                         Active Overview
+                        {itemActive && <div className="cs-status status-bg-active"></div>}
                         </NavLink>
                     </li>
                     </ul>

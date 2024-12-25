@@ -33,7 +33,7 @@ const ServiceTagCard = ({ service, property }) => {
                     </div>
                     <div className="inner-layout">
                     <h4>Avg Cost per SQFT</h4>
-                    <p>${totalCost / totalSqft}/SQFT</p>
+                    <p>${(totalCost / totalSqft)?.toFixed(2)}/SQFT</p>
                     </div>
             </div>
 

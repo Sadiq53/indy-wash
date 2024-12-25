@@ -70,6 +70,8 @@ route.post('/property', async (req, res) => {
 route.put('/', async (req, res) => {
     try {
         const { uniqueid, ...updateFields } = req.body; // Extract 'uniqueid' and other fields
+
+        // console.log(req.body)
     
         if (!uniqueid) {
             return res.status(400).send({ message: "uniqueid is required" });

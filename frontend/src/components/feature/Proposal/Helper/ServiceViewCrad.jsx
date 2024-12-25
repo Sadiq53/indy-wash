@@ -8,18 +8,22 @@ const ServiceViewCrad = ({ handlePreviousService, handleNextService, header, pro
                 <div className="d-flex justify-content-between w-100">
                     {/* Previous Button */}
                     <button 
-                        className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`} 
+                        className={`btn-cs ${window.innerWidth > 767 ? '' : 'sm'}`} 
                         onClick={handlePreviousService}>
                         <i className="fa-sharp-duotone fa-light fa-angles-left" /> {header?.prev}
                     </button>
 
-                    <NavLink to={`/service-detail/${proposalid}`} className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`}>
-                        <i className="fa-regular fa-circle-plus" /> Add More Service
-                    </NavLink>
+                    {
+                        window.innerWidth >= 767 && (
+                            <NavLink to={`/service-detail/${proposalid}`} className={`btn`}>
+                                <i className="fa-regular fa-circle-plus" /> Add More Service
+                            </NavLink>
+                        )
+                    }
 
                     {/* Next Button */}
                     <button 
-                        className={`btn ${window.innerWidth > 767 ? '' : 'btn-sm'}`} 
+                        className={`btn-cs ${window.innerWidth > 767 ? '' : 'sm'}`} 
                         onClick={handleNextService}>
                         {header?.next} <i className="fa-sharp-duotone fa-light fa-angles-right" />
                     </button>

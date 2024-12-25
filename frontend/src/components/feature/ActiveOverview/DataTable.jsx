@@ -1,9 +1,13 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { formatDate } from '../../../../utils/formatDate';
+import { formatDate } from '../../../utils/formatDate';
 import { useEffect, useState } from "react";
+import { handleToggleStatus } from "../../../redux/ServiceDataSlice";
+import { toggleStatus } from "../../../services/ProposalService";
+import { toast } from "react-toastify";
 
-const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Accept searchQuery as a prop
+const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
+    const dispatch = useDispatch();
 
     const customerDetail = useSelector((state) => state.AdminDataSlice.customers) || [];
     // const proposalDetail = useSelector((state) => state.ServiceDataSlice.proposal) || [];
@@ -11,14 +15,16 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
     const [displayData, setDisplayData] = useState([]);
 
     useEffect(() => {
-        if (proposalDetail?.length >= 0) {
-            setDisplayData(proposalDetail);
+        if (proposalDetail?.length > 0) {
+            // Filter proposals by active status
+            const activeProposals = proposalDetail.filter((proposal) => proposal?.status?.type === "active");
+            setDisplayData(activeProposals);
         }
     }, [proposalDetail, customerDetail]);
 
     const extractCustomerDetail = (proposal) => {
         if (customerDetail?.length >= 1 && proposal?.customer) {
-            return customerDetail?.find(value => value.uniqueid === proposal?.customer) || {};
+            return customerDetail?.find((value) => value.uniqueid === proposal?.customer) || {};
         }
         return {};
     };
@@ -27,13 +33,26 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
         const customerData = extractCustomerDetail(proposal);
         const { personalDetails } = customerData;
 
-        // Check if searchQuery matches name, company, or property
+        // Check if searchQuery matches name, email, or proposal ID
         return (
-            personalDetails?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) // Replace with actual company logic
-            // proposal.uniqueid?.toLowerCase().includes(searchQuery.toLowerCase())
+            personalDetails?.firstName?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+            personalDetails?.email?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) 
         );
     });
+
+    const changeStatus = async (status, proposalid) => {
+        const dataObject = {
+            status: status === "active",
+            proposalid,
+            date: Date.now(),
+        };
+        const response = await toggleStatus(dataObject);
+        if (response?.success) {
+            dispatch(handleToggleStatus(dataObject));
+            toast.success("Proposal has Draft Successfully!")
+        }
+    };
 
     return (
         <div className="box-cs">
@@ -47,7 +66,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                             <th>Proposal ID</th>
                             <th>Email Address</th>
                             <th>Status</th>
-                            <th>Status</th>
+                            <th>Change Status</th>
                             <th>Edits</th>
                         </tr>
                     </thead>
@@ -83,18 +102,24 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                                             <p>{personalDetails?.email || "N/A"}</p>
                                         </td>
                                         <td>
-                                        <div className="flex-cs">
-                                                <div className={`cs-status status-bg-${value?.status?.type === 'draft' ? 'draft' : 'active'}`}></div>
+                                            <div className="flex-cs">
+                                                <div className="cs-status status-bg-active"></div>
                                                 <p>{value?.status?.type || "N/A"}</p>
                                             </div>
                                         </td>
+                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">Draft</button></td>
                                         <td>
                                             <div className="table-profile gap-0">
                                                 <div>
                                                     <NavLink to={`/proposal-detail/${value.uniqueid}`} className="btn">
                                                         <i className="fa-solid fa-lg fa-pen" style={{ color: "#00b69b" }} />
                                                     </NavLink>
-                                                    <button className="btn" data-bs-toggle="modal" data-bs-target="#delete" onClick={() => onDelete(value)}>
+                                                    <button
+                                                        className="btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#delete"
+                                                        onClick={() => onDelete(value)}
+                                                    >
                                                         <i className="fa-regular fa-lg fa-trash-can" style={{ color: "#f93c65" }} />
                                                     </button>
                                                 </div>
@@ -105,7 +130,9 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                             })
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center">No data available</td>
+                                <td colSpan="6" className="text-center">
+                                    No data available
+                                </td>
                             </tr>
                         )}
                     </tbody>
@@ -116,3 +143,4 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
 };
 
 export default DataTable;
+

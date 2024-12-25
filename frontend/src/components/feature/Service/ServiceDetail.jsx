@@ -86,7 +86,7 @@ return (
                             <div className="part-1">
                                 <h4 className="font-1 fw-700">{propertyData?.propertyName}</h4>
                             </div>
-                            <div className="part-1 gtc-equal">
+                            <div className="part-1 gtc-equal mob">
                             <button className="filter-btn bg-theme-7"><i class="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} /> &nbsp; Download Agreement</button>
                             <button onClick={submitUpdatedServices} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal { loading && (<Spinner />) }</button>
                             </div>

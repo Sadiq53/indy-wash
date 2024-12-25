@@ -53,7 +53,7 @@
     }
     .filter-btn{
         padding: 6px 15px;
-        font-size: 12px;
+        font-size: 11px;
     }
     .box-cs .input-section select{
         height: 32px;
@@ -247,5 +247,17 @@
     }
     .service-overview-card .tab-cs{
         font-size: 12px;
+    }
+    .accordian-content .filter-btn{
+        font-size: 10px !important;
+    }
+    .p-1rem{
+        padding: 1rem 1rem !important;
+    }
+    .p-05rem{
+        padding: 0.5rem 0.5rem !important;
+    }
+    .flex-col-rev{
+        flex-direction: column-reverse;
     }
 }

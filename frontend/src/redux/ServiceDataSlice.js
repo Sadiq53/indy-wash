@@ -3,7 +3,8 @@ import axios from 'axios'
 
 const initialState = {
     services: [],
-    proposal: []
+    proposal: [],
+    itemActive: false
 }
 
 const ServiceDataSlice = createSlice({
@@ -12,6 +13,9 @@ const ServiceDataSlice = createSlice({
     reducers : {
         resetState : (state) =>{
             
+        },
+        hanldeStatusActive: (state, action) => {
+            state.itemActive = action.payload
         },
         handleGetServices : (state, action) => {
             state.services = action.payload
@@ -175,4 +179,4 @@ const ServiceDataSlice = createSlice({
 })
 
 export default ServiceDataSlice.reducer;
-export const { resetState, handleAddProposal, handleDeleteProposal, handleDeleteCustomerData, handleToggleStatus, handleDeleteService, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions
+export const { resetState, handleAddProposal, hanldeStatusActive, handleDeleteProposal, handleDeleteCustomerData, handleToggleStatus, handleDeleteService, handleAddExtraService, handleUpdateServices, handleToggleActivePlan, handleGetProposal, handleAddServices, handleGetServices } = ServiceDataSlice.actions

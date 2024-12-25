@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from '../../../utils/formatDate'
 import ServiceViewCrad from "./Helper/ServiceViewCrad";
 import { toggleStatus } from '../../../services/ProposalService'
-import { handleToggleStatus } from "../../../redux/ServiceDataSlice";
+import { handleToggleStatus, hanldeStatusActive } from "../../../redux/ServiceDataSlice";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import DownloadAgreement from "../../shared/Agreement/DownloadAgreement";
+import MoreDetailModal from "./Helper/MoreDetailModal";
 
 const ProposalDetail = () => {
   const { proposalid } = useParams();
@@ -43,6 +44,7 @@ const ProposalDetail = () => {
       }
       const response = await toggleStatus(dataObject)
       if(response?.success) {
+        dispatch(hanldeStatusActive(true))
         dispatch(handleToggleStatus(dataObject))
         toast.success(`Your Proposal is Active and Added to Active Overview`);
       }
@@ -178,49 +180,118 @@ const navigateRoute = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="head-filters">
-                <div className="part-1">
+                <div className="part-1 gtc-equal">
                   <h4 className="font-1 fw-700">{propertyData?.propertyName || "N/A"}</h4>
+                  {window.innerWidth < 767 && (<button data-bs-toggle='modal' data-bs-target='#showDetail' className="filter-btn bg-theme-1">Service Overview</button>)}
                 </div>
-                <div className="part-1 gtc-4">
-                  {proposalData?.status?.type === 'active' ? (
-                    <button className="filter-btn txt-deco-none bg-theme-1">
-                      <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
-                      &nbsp; Mark As Agreed
-                    </button>
+                {
+                  window.innerWidth >= 767 ? (
+                    <div className="part-1 gtc-4 ">
+                      {proposalData?.status?.type === 'active' ? (
+                        <button className="filter-btn txt-deco-none bg-theme-1">
+                          <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                          &nbsp; Mark As Agreed
+                        </button>
+                      ) : (
+                        <button onClick={() => setPopup(true)} className="filter-btn bg-theme-7-outline">
+                          <div className="flex-cs">
+                            <input type="checkbox" className="cs-checkbox form-check-input mt-0" />
+                            &nbsp; Mark As Agreed
+                          </div>
+                        </button>
+                      )}
+                      <button onClick={handleDownloadAgreement} className="filter-btn bg-theme-7">
+                        <i className="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} />
+                        &nbsp; Download Agreement
+                      </button>
+                      <NavLink to={`/service-detail/${proposalid}`} className="filter-btn txt-deco-none bg-theme-2">
+                        <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
+                        &nbsp; Contract Overview
+                      </NavLink>
+                      <button onClick={navigateRoute}  className="filter-btn txt-deco-none bg-theme-1">
+                        <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                        &nbsp; Save Proposal
+                      </button>
+                    </div>
                   ) : (
-                    <button onClick={() => setPopup(true)} className="filter-btn bg-theme-7-outline">
-                      <div className="flex-cs">
-                        <input type="checkbox" className="cs-checkbox form-check-input mt-0" />
-                        &nbsp; Mark As Agreed
+                    <div className="accordion width-100 " id="actionAccordion">
+                      <div className="accordion-item cs-accordian width-100" key='one'>
+                        <h2 className="accordion-header cs-accordian-head" id={`heading-one`}>
+                          <button
+                            className="accordion-button cs-accordian-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={`#collapse-one`}
+                            aria-expanded="true"
+                            aria-controls={`collapse-one`}
+                          >
+                            Actions
+                          </button>
+                        </h2>
+                        <div
+                          id={`collapse-one`}
+                          className="accordion-collapse collapse show"
+                          aria-labelledby={`heading-one`}
+                          data-bs-parent="#actionAccordion"
+                        >
+                          <div className="accordion-body p-1rem">
+                            <div className="accordian-content">
+                              <div className="part-1 gtc-4 ">
+                                {proposalData?.status?.type === 'active' ? (
+                                  <button className="filter-btn txt-deco-none bg-theme-1">
+                                    <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                                    &nbsp; Mark As Agreed
+                                  </button>
+                                ) : (
+                                  <button onClick={() => setPopup(true)} className="filter-btn bg-theme-7-outline">
+                                    <div className="flex-cs">
+                                      <input type="checkbox" className="cs-checkbox form-check-input mt-0" />
+                                      &nbsp; Mark As Agreed
+                                    </div>
+                                  </button>
+                                )}
+                                <button onClick={handleDownloadAgreement} className="filter-btn bg-theme-7">
+                                  <i className="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} />
+                                  &nbsp; Download Agreement
+                                </button>
+                                <NavLink to={`/service-detail/${proposalid}`} className="filter-btn txt-deco-none bg-theme-2">
+                                  <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
+                                  &nbsp; Contract Overview
+                                </NavLink>
+                                <button onClick={navigateRoute}  className="filter-btn txt-deco-none bg-theme-1">
+                                  <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
+                                  &nbsp; Save Proposal
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </button>
-                  )}
-                  <button onClick={handleDownloadAgreement} className="filter-btn bg-theme-7">
-                    <i className="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} />
-                    &nbsp; Download Agreement
-                  </button>
-                  <NavLink to={`/service-detail/${proposalid}`} className="filter-btn txt-deco-none bg-theme-2">
-                    <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
-                    &nbsp; Contract Overview
-                  </NavLink>
-                  <button onClick={navigateRoute}  className="filter-btn txt-deco-none bg-theme-1">
-                    <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />
-                    &nbsp; Save Proposal
-                  </button>
-                </div>
+                    </div>
+                  )
+                }
               </div>
 
               <div className="pt-4">
                 <div className="box-cs">
-                  <div className="row gap-20">
+                  <div className="row flex-col-rev gap-20">
                     <div className="col-md-8">
                       <ProposalTagCard service={selectedServiceData} units={propertyData?.units}/>
                       <div className="pt-4">
                         <ServiceViewCrad header={tabHeader} handlePreviousService={handlePreviousService} handleNextService={handleNextService} proposalid={proposalid} selectedServiceData={selectedServiceData} />
+                          {
+                            window.innerWidth < 767 && (
+                              <div className="mt-2">
+                                <NavLink to={`/service-detail/${proposalid}`} className={`btn-cs-2 bg-theme-2 txt-deco-none `}>
+                                  <i className="fa-regular fa-circle-plus" /> Add More Service
+                                </NavLink>
+                              </div>
+                            )
+                          }
                       </div>
                     </div>
-                    <div className="col-md-4">
-                      <div className="proposal-data">
+                    <div className="col-md-4 ">
+                      <div className="proposal-data ">
                         <div><p>Date </p>: <p>{formatDate(proposalData?.createDate)}</p></div>
                         <div><p>No. of Units </p>: <p>{propertyData?.units}</p></div>
                         <div><p>Company</p>: <p>{propertyData?.propertyName || "N/A"}</p></div>
@@ -229,7 +300,7 @@ const navigateRoute = () => {
                         <div><p>Property Address</p>: <p>{propertyData?.billingAddress || "N/A"}</p></div>
                       </div>
                       <div className="pt-4">
-                        <div className="service-overview-card">
+                        <div className="service-overview-card desk-show">
                           <div><h4>Service Overview</h4></div>
                           <div>
                             <p>
@@ -255,7 +326,7 @@ const navigateRoute = () => {
         <div ref={agreementRef} style={{position : 'absolute', left : '-260%', top : '28%' }}>
         <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
         </div>
-        
+        <MoreDetailModal selectedServiceData={selectedServiceData} totalSqft={totalSqft} yearCost={perCleaning * selectedFrequency?.frequencyDigit} />
     </>
   );
 };

@@ -7,9 +7,12 @@ import { useSelector } from "react-redux";
 import * as XLSX from "xlsx"; // Import the xlsx library
 import { formatDate } from "../../../utils/formatDate";
 import { toast } from "react-toastify";
+import Filter from "../../shared/Filter/Filter";
 
 const CustomerList = () => {
   const [selectedCustomer, setSelectedCustomer] = useState({});
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [activeFilters, setActiveFilters] = useState([]); // State for active filters
   const customerDetail = useSelector((state) => state.AdminDataSlice.customers);
 
   const onDelete = (customer) => {
@@ -45,6 +48,55 @@ const CustomerList = () => {
     XLSX.writeFile(workbook, "CustomerDetails.xlsx");
   };
 
+  // Apply filters
+  const applyFilters = (filters) => {
+    setActiveFilters(filters);
+  };
+
+  // Filter and sort customer data based on active filters
+  const filteredCustomers = customerDetail
+  ?.filter((customer) => {
+    // Search filter
+    const searchLower = searchQuery.toLowerCase();
+
+    // Check both firstName and companyName for the search query
+    const matchesFirstName = customer?.personalDetails?.firstName
+      ?.toLowerCase()
+      ?.includes(searchLower);
+
+    const matchesCompanyName = customer?.personalDetails?.company
+      ?.toLowerCase()
+      ?.includes(searchLower);
+
+    if (searchQuery && !(matchesFirstName || matchesCompanyName)) {
+      return false;
+    }
+    return true;
+  })
+  ?.sort((a, b) => {
+    if (activeFilters.includes("az")) {
+      return (
+        a.personalDetails?.firstName?.localeCompare(
+          b.personalDetails?.firstName
+        ) || 0
+      );
+    }
+    if (activeFilters.includes("za")) {
+      return (
+        b.personalDetails?.firstName?.localeCompare(
+          a.personalDetails?.firstName
+        ) || 0
+      );
+    }
+    if (activeFilters.includes("dateAsc")) {
+      return new Date(a.createDate) - new Date(b.createDate);
+    }
+    if (activeFilters.includes("dateDesc")) {
+      return new Date(b.createDate) - new Date(a.createDate);
+    }
+    return 0;
+  });
+
   return (
     <>
       <section>
@@ -61,11 +113,11 @@ const CustomerList = () => {
                     <input
                       type="text"
                       placeholder="Search"
-                      name=""
-                      id=""
+                      value={searchQuery} // Bind the input value to searchQuery state
+                      onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery state
                     />
                   </div>
-                  <button className="filter-btn bg-theme-2">
+                  <button className="filter-btn bg-theme-2" data-bs-toggle="modal" data-bs-target="#filter">
                     <i
                       className="fa-light fa-lg fa-filter"
                       style={{ color: "#ffffff" }}
@@ -73,7 +125,7 @@ const CustomerList = () => {
                     filters
                   </button>
                 </div>
-                <div className="part-1 gtc-equal">
+                <div className="part-1 gtc-equal mob">
                   <NavLink
                     to="/add-customer"
                     className="filter-btn txt-deco-none bg-theme-1"
@@ -99,7 +151,7 @@ const CustomerList = () => {
 
               <div className="pt-4">
                 <DataTable
-                  customerDetail={customerDetail}
+                  customerDetail={filteredCustomers} // Pass filtered customers to DataTable
                   onDelete={onDelete}
                 />
               </div>
@@ -108,6 +160,7 @@ const CustomerList = () => {
         </div>
       </section>
       <DeleteCustomerModal customerData={selectedCustomer} />
+      <Filter type={"customer"} applyFilters={applyFilters} />
     </>
   );
 };

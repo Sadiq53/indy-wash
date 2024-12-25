@@ -37,7 +37,7 @@ const DataTable = ({ title, onDelete, customerDetail }) => {
                         </div>
                         <div>
                           <img src="/assets/img/location-2.svg" alt="Location" />
-                          <p className="text-start">Best Management Company Inc</p>
+                          <p className="text-start">{value.personalDetails?.company || "N/A"}</p>
                         </div>
                       </div>
                     </NavLink>

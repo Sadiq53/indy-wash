@@ -1,11 +1,15 @@
 import { useSelector } from "react-redux";
-import DataTable from "../Proposal/Helper/DataTable"
+import DataTable from "./DataTable"
 import { useState } from "react";
 import DeleteProposalModal from "../Proposal/Helper/DeleteProposalModal";
+import Filter from "../../shared/Filter/Filter";
 
 const ActiveOverview = () => {
 
     const [selectedProposal, setSelectedProposal] = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeFilters, setActiveFilters] = useState([]);
+
     const customerDetail = useSelector((state) => state.AdminDataSlice.customers) || [];
     const proposalDetail = useSelector((state) => state.ServiceDataSlice.proposal) || [];
 
@@ -45,6 +49,40 @@ const ActiveOverview = () => {
         XLSX.writeFile(workbook, 'Proposals.xlsx');
     };
 
+    const applyFilters = (filters) => {
+        setActiveFilters(filters);
+        };
+    
+        const filteredProposals = () => {
+        let proposals = [...proposalDetail];
+    
+        if (activeFilters.includes('az')) {
+            proposals.sort((a, b) => {
+            const customerA = extractCustomerDetail(a).personalDetails?.firstName || '';
+            const customerB = extractCustomerDetail(b).personalDetails?.firstName || '';
+            return customerA.localeCompare(customerB);
+            });
+        }
+    
+        if (activeFilters.includes('za')) {
+            proposals.sort((a, b) => {
+            const customerA = extractCustomerDetail(a).personalDetails?.firstName || '';
+            const customerB = extractCustomerDetail(b).personalDetails?.firstName || '';
+            return customerB.localeCompare(customerA);
+            });
+        }
+    
+        if (activeFilters.includes('dateAsc')) {
+            proposals.sort((a, b) => new Date(a.createDate) - new Date(b.createDate));
+        }
+    
+        if (activeFilters.includes('dateDesc')) {
+            proposals.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+        }
+    
+        return proposals;
+        };
+
   return (
     <>
         <section>
@@ -55,9 +93,14 @@ const ActiveOverview = () => {
                             <div className="part-1">
                                 <div className="search-input">
                                     <i class="fa-light fa-lg fa-magnifying-glass" style={{color: '#2022248c'}}></i>
-                                    <input type="text" placeholder="Search" name="" id="" />
+                                    <input
+                                            type="text"
+                                            placeholder="Search"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+                                        />
                                 </div>
-                                <button className="filter-btn bg-theme-2"><i className="fa-light fa-lg fa-filter" style={{ color: "#ffffff" }} /> filters</button>
+                                <button data-bs-toggle="modal" data-bs-target="#filter" className="filter-btn bg-theme-2"><i className="fa-light fa-lg fa-filter" style={{ color: "#ffffff" }} /> filters</button>
                             </div>
                             <div className="part-1 gtc-1">
                                 {/* <NavLink to='/add-proposal' className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add New Proposal</NavLink> */}
@@ -66,13 +109,14 @@ const ActiveOverview = () => {
                         </div>
 
                         <div className="pt-4">
-                            <DataTable onDelete={onDelete} />
+                            <DataTable onDelete={onDelete} searchQuery={searchQuery} proposalDetail={filteredProposals()} />
                         </div>
                     </div>
                 </div>
             </div>
         </section>
         <DeleteProposalModal proposalData={selectedProposal} />
+        <Filter applyFilters={applyFilters} type={"activeOverview"} />
     </>
   )
 }
