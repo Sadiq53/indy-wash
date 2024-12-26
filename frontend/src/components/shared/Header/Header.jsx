@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { handleSidebar } from "../../../redux/AdminDataSlice";
 import { ToastContainer } from "react-toastify";
 
@@ -9,8 +9,14 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [previousRoute, setPreviousRoute] = useState(null);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
 
+  
   const manageSidebar = useSelector((state) => state.AdminDataSlice.manageSidebar);
+  
+  const togglePanel = () => {
+    setIsPanelOpen((prev) => !prev);
+  };
 
   // Track previous route on location change
   useEffect(() => {
@@ -90,22 +96,45 @@ const Header = () => {
                       <img src="/assets/img/bell.svg" alt="" />
                     </button>
                   </div> */}
-                  <button
-                    className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}
-                  >
-                    <div className="profile-btn">
-                      <div className="profile">
-                        <img src="/assets/img/head-profile.svg" alt="" />
+                  <div style={{ position: "relative" }}>
+                    {/* Profile Button */}
+                    <button
+                      className={`btn ${window.innerWidth > 767 ? "" : "btn-sm"}`}
+                      onClick={togglePanel}
+                    >
+                      <div className="profile-btn">
+                        <div className="profile">
+                          <img src="/assets/img/head-profile.svg" alt="" />
+                        </div>
+                        <div className="name mob-hide">
+                          <h5>Moni Roy</h5>
+                          <small>Admin</small>
+                        </div>
+                        <div className="arrow mob-hide">
+                          <img src="/assets/img/head-arrow.svg" alt="" />
+                        </div>
                       </div>
-                      <div className="name mob-hide">
-                        <h5>Moni Roy</h5>
-                        <small>Admin</small>
+                    </button>
+
+                    {/* Panel */}
+                    {isPanelOpen && (
+                      <div
+                        className="header-panel"
+                      >
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                          <li style={{ padding: "5px 0", borderBottom: "1px solid #ddd" }}>
+                            <NavLink className='btn' to="/profile">View Profile</NavLink>
+                          </li>
+                          <li style={{ padding: "5px 0", borderBottom: "1px solid #ddd" }}>
+                            <NavLink className='btn' to="/settings">Settings</NavLink>
+                          </li>
+                          <li style={{ padding: "5px 0" }}>
+                            <NavLink className='btn' to="/logout">Logout</NavLink>
+                          </li>
+                        </ul>
                       </div>
-                      <div className="arrow mob-hide">
-                        <img src="/assets/img/head-arrow.svg" alt="" />
-                      </div>
-                    </div>
-                  </button>
+                    )}
+                  </div>
                 </div>
                 </div>
               </div>

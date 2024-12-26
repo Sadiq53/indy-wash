@@ -269,4 +269,8 @@
     .flex-col-rev{
         flex-direction: column-reverse;
     }
+    .header-panel {
+        left: -25px;
+        width: 132px;
+    }
 }
