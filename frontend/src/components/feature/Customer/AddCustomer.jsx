@@ -61,8 +61,6 @@ const AddCustomer = () => {
         additionalNotes: "",
         },
         onSubmit: async (formData) => {
-          console.log(formData)
-          return
           setLoading(true)
           if(customerid) {
             const response = await editCustomer(formData)
