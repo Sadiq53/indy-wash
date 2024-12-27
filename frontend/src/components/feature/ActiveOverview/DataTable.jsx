@@ -15,7 +15,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
     // const proposalDetail = useSelector((state) => state.ServiceDataSlice.proposal) || [];
 
     const [displayData, setDisplayData] = useState([]);
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState({state: false, id: ''})
 
     useEffect(() => {
         if (proposalDetail?.length > 0) {
@@ -48,7 +48,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
     });
 
     const changeStatus = async (status, proposalid) => {
-        setLoading(true)
+        setLoading({state: true, id: proposalid})
         const dataObject = {
             status: status === "active",
             proposalid,
@@ -57,7 +57,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
         const response = await toggleStatus(dataObject);
         if (response?.success) {
             dispatch(handleToggleStatus(dataObject));
-            setLoading(false)
+            setLoading({state: false, id: ''})
             toast.success("Proposal has Draft Successfully!")
         }
     };
@@ -120,7 +120,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                                                 <p>{value?.status?.type || "N/A"}</p>
                                             </div>
                                         </td>
-                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">{loading ? (<Spinner />) : 'Draft'}</button></td>
+                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">{loading?.state && loading?.id === value?.uniqueid ? (<Spinner />) : 'Draft'}</button></td>
                                         <td>
                                             <div className="table-profile gap-0">
                                                 <div>
