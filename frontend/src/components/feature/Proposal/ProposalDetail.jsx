@@ -34,9 +34,11 @@ const ProposalDetail = () => {
   const [selectedFrequency, setSelectedFrequency] = useState({})
   const [tabHeader, setTabHeader] = useState({next: '', prev: ''})
   const [historyIndex, setHistoryIndex] = useState(0)
+  const [loading, setLoading] = useState(false)
 
   const confirmation = async(state) => {
     if (state) {
+      setLoading(true)
       const dataObject = {
         status: state,
         proposalid,
@@ -44,6 +46,7 @@ const ProposalDetail = () => {
       }
       const response = await toggleStatus(dataObject)
       if(response?.success) {
+        setLoading(false)
         dispatch(hanldeStatusActive(true))
         dispatch(handleToggleStatus(dataObject))
         toast.success(`Your Proposal is Active and Added to Active Overview`);
@@ -322,7 +325,7 @@ const navigateRoute = () => {
         </div>
       </section>
 
-      {popup && <AgreedModal onConfirmation={confirmation} />}
+      {popup && <AgreedModal onConfirmation={confirmation} loading={loading} />}
         <div ref={agreementRef} style={{position : 'absolute', left : '-260%', top : '28%' }}>
         <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
         </div>

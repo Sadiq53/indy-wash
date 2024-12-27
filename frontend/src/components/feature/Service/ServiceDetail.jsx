@@ -9,6 +9,9 @@ import { updateServices } from "../../../services/ServicesService";
 import { handleUpdateServices } from "../../../redux/ServiceDataSlice";
 import DeleteServiceModal from "./Helper/DeleteServiceModal";
 import Spinner from "../../shared/Loader/Spinner";
+import DownloadAgreement from "../../shared/Agreement/DownloadAgreement";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const ServiceDetail = () => {
 
@@ -16,6 +19,7 @@ const ServiceDetail = () => {
     const { proposalid } = param;
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const agreementRef = useRef()
 
     const rawServiceData = useSelector(state => state.ServiceDataSlice.services)
     const rawProposalData = useSelector(state => state.ServiceDataSlice.proposal)
@@ -69,6 +73,24 @@ const ServiceDetail = () => {
         setDeleteServiceId(id)
     }
 
+    const handleDownloadAgreement = () => {
+        const input = agreementRef.current;
+    
+        if (input) {
+          html2canvas(input).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            pdf.save("agreement.pdf");
+          }).catch((error) => {
+            console.error("Error generating PDF:", error);
+          });
+        }
+      };
+
     // useEffect(()=>{
     //     console.log(serviceData)
     //     console.log(customerData)
@@ -87,7 +109,7 @@ return (
                                 <h4 className="font-1 fw-700">{propertyData?.propertyName}</h4>
                             </div>
                             <div className="part-1 gtc-equal mob">
-                            <button className="filter-btn bg-theme-7"><i class="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} /> &nbsp; Download Agreement</button>
+                            <button onClick={handleDownloadAgreement} className="filter-btn bg-theme-7"><i class="fa-thin fa-lg fa-download" style={{ color: "#ffffff" }} /> &nbsp; Download Agreement</button>
                             <button onClick={submitUpdatedServices} className="filter-btn txt-deco-none bg-theme-1"><i class="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal { loading && (<Spinner />) }</button>
                             </div>
                         </div>
@@ -123,7 +145,7 @@ return (
                                             )
                                         }
                                         <div className="flex-cs cs-justify-end">
-                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" className="filter-btn bg-theme-1"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> Add Service</button>
+                                            <button data-bs-toggle="modal" data-bs-target="#exampleModal" className="filter-btn bg-theme-7"><i class="fa-light fa-lg fa-circle-plus" style={{ color: "#ffffff" }} /> Add Service</button>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +163,9 @@ return (
         </section>
         <DeleteServiceModal proposalid={proposalid} serviceid={deleteServiceId} />
         <AddServiceModal proposalId={proposalid} customerId={proposalData?.customer} propertyId={proposalData?.property} />
-        
+        <div ref={agreementRef} style={{position : 'absolute', left : '-260%', top : '28%' }}>
+            <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
+        </div>
     </>
 )
 }

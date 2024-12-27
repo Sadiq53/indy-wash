@@ -65,7 +65,7 @@ const ProposalCard = ({  customerid }) => {
                                 <div className="part-1 gtc-1">
                                     <button
                                         className="btn text-light"
-                                        onClick={() => navigate(`/add-proposal/${customerid}/${value.uniqueid}`)}
+                                        onClick={() => navigate(`/proposal-detail/${value.uniqueid}`)}
                                     >
                                         <div className="flex-cs">
                                             {value?.status?.type === 'draft' ? (

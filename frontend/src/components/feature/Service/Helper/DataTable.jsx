@@ -38,14 +38,11 @@ const DataTable = ({ title, onDelete }) => {
                         <NavLink className="txt-deco-none" to={`/add-service/${value.uniqueid}/${'view'}`}>
                         <div className="table-profile">
                             <div>
-                            <img src="/assets/img/person.svg" alt="Profile" />
+                            <img className="support-icon" src="/assets/img/support.svg" alt="Profile" />
                             <p className="fw-700 text-start">{value.name || "N/A"}</p>
                             </div>
-                            <div>
-                            <img src="/assets/img/location-2.svg" alt="Location" />
-                            <p className="text-start">Best Management Company Inc</p>
-                            </div>
                         </div>
+                            {/* <p className="fw-700 text-start">{value.name || "N/A"}</p> */}
                         </NavLink>
                     </td>
                     <td>

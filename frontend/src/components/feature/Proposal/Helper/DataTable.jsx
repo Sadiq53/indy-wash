@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { formatDate } from '../../../../utils/formatDate';
 import { useEffect, useState } from "react";
+import { extractCustomerDetail, extractPropertyDetail } from "../../../../utils/Extractor";
 
 const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Accept searchQuery as a prop
 
@@ -16,22 +17,18 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
         }
     }, [proposalDetail, customerDetail]);
 
-    const extractCustomerDetail = (proposal) => {
-        if (customerDetail?.length >= 1 && proposal?.customer) {
-            return customerDetail?.find(value => value.uniqueid === proposal?.customer) || {};
-        }
-        return {};
-    };
-
     const filteredData = displayData.filter((proposal) => {
-        const customerData = extractCustomerDetail(proposal);
+        const customerData = extractCustomerDetail(customerDetail, proposal);
+        const propertyData = extractPropertyDetail(customerData, proposal?.property)
         const { personalDetails } = customerData;
+        const { propertyName } = propertyData
 
         // Check if searchQuery matches name, company, or property
         return (
             personalDetails?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) // Replace with actual company logic
-            // proposal.uniqueid?.toLowerCase().includes(searchQuery.toLowerCase())
+            personalDetails?.email?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||// Replace with actual company logic
+            propertyName?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     });
 
@@ -43,10 +40,10 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                     <thead>
                         <tr>
                             <th>Name/Company</th>
+                            <th>Property</th>
                             <th>Created Date</th>
                             <th>Proposal ID</th>
                             <th>Email Address</th>
-                            <th>Status</th>
                             <th>Status</th>
                             <th>Edits</th>
                         </tr>
@@ -54,7 +51,8 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                     <tbody>
                         {filteredData?.length > 0 ? (
                             filteredData.map((value, index) => {
-                                const customerData = extractCustomerDetail(value);
+                                const customerData = extractCustomerDetail(customerDetail, value);
+                                const propertyData = extractPropertyDetail(customerData, value?.property)
                                 const { personalDetails } = customerData;
 
                                 return (
@@ -72,6 +70,9 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                                                     </div>
                                                 </div>
                                             </NavLink>
+                                        </td>
+                                        <td>
+                                            <p>{propertyData ? propertyData?.propertyName : "N/A"}</p>
                                         </td>
                                         <td>
                                             <p>{value.createDate ? formatDate(value.createDate) : "N/A"}</p>

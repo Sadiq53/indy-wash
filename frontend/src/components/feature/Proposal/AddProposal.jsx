@@ -27,7 +27,7 @@ const AddProposal = () => {
   const [services, setServices] = useState([])
   const [image, setImage] = useState([]);
   const [propertyData, setPropertyData] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [createDate, setCreateDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -87,6 +87,12 @@ const AddProposal = () => {
     validationSchema,
     initialValues,
     onSubmit: async (formData) => {
+      setLoading(true);
+      formData.frequency = formData?.frequency?.map(value => ({
+        ...value,
+        frequencyDigit: value?.frequencyDigit || frequencyDigitConverter[value.name],
+      }));
+    
       // Attach images to formData
       const formDataWithImages = {
         ...formData,
@@ -94,7 +100,6 @@ const AddProposal = () => {
       };
 
       const response = await addProposal(formDataWithImages); // Call your API
-      setLoading(true);
 
       if (response?.success) {
         const { proposal, service } = response;
@@ -224,7 +229,6 @@ const AddProposal = () => {
     setImage((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-    
 
   return (
     <>
@@ -240,7 +244,7 @@ const AddProposal = () => {
                             <div className="part-1 gtc-equal mob">
                             <button type='button' className="filter-btn bg-theme-2"><i class="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Reset All Fields</button>
                             <button type="submit" className="filter-btn txt-deco-none bg-theme-1">
-                              {loading ? (
+                              {!loading ? (
                                 <>
                                   <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} /> &nbsp; Save Proposal
                                 </>
@@ -317,18 +321,23 @@ const AddProposal = () => {
                                       />
                                     ) : (
                                       <select
-                                        className={`${proposalForm.errors.property && proposalForm.touched.property && 'is-invalid'}`}
-                                        value={proposalForm.values.property} // Directly bind to the uniqueid stored in Formik
+                                        className={`${proposalForm.errors.property && proposalForm.touched.property ? 'is-invalid' : ''}`}
+                                        value={proposalForm.values.property} // Bind directly to the uniqueid stored in Formik
                                         onChange={(e) => proposalForm.setFieldValue("property", e.target.value)} // Update only the uniqueid in Formik
                                         name="property"
                                       >
                                         <option value="">Select Property</option>
                                         {propertyData &&
-                                          propertyData.map((value, index) => (
-                                            <option value={value?.uniqueid} key={index}>
-                                              {value?.propertyName}
-                                            </option>
-                                          ))}
+                                          propertyData.map((value, index) => {
+                                            if (value.proposal?.length === 0) {
+                                              return (
+                                                <option value={value?.uniqueid} key={index}>
+                                                  {value?.propertyName}
+                                                </option>
+                                              );
+                                            }
+                                            return null; // Ensure nothing is returned if the condition isn't met
+                                          })}
                                       </select>
                                     )}
                                   </div>

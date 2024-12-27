@@ -486,7 +486,7 @@ box-shadow: none;
 
 
 .box-cs .input-section input, .box-cs .input-section textarea, .box-cs .input-section select{
-	/* background: #F5F6FA;  */
+	background: transparent; 
 	border-radius: 6px;
 	border: 1px solid #97979782;
 	display: flex;
@@ -1336,4 +1336,15 @@ margin: 0;
 	letter-spacing: -0.114px;
 	text-decoration: none;
 	margin: 0;
+}
+.header-panel li:hover{
+	background-color: #F1F4F9 ;
+}
+.header-panel li{
+	transition: 0.3s;
+}
+.support-icon{
+	width: 20px;
+	height: 20px;
+	object-fit: cover;
 }

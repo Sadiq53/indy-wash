@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { handleToggleStatus } from "../../../redux/ServiceDataSlice";
 import { toggleStatus } from "../../../services/ProposalService";
 import { toast } from "react-toastify";
+import { extractCustomerDetail, extractPropertyDetail } from "../../../utils/Extractor";
+import Spinner from "../../shared/Loader/Spinner";
 
 const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
     const dispatch = useDispatch();
@@ -13,6 +15,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
     // const proposalDetail = useSelector((state) => state.ServiceDataSlice.proposal) || [];
 
     const [displayData, setDisplayData] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (proposalDetail?.length > 0) {
@@ -22,26 +25,30 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
         }
     }, [proposalDetail, customerDetail]);
 
-    const extractCustomerDetail = (proposal) => {
-        if (customerDetail?.length >= 1 && proposal?.customer) {
-            return customerDetail?.find((value) => value.uniqueid === proposal?.customer) || {};
-        }
-        return {};
-    };
+    // const extractCustomerDetail = (proposal) => {
+    //     if (customerDetail?.length >= 1 && proposal?.customer) {
+    //         return customerDetail?.find((value) => value.uniqueid === proposal?.customer) || {};
+    //     }
+    //     return {};
+    // };
 
     const filteredData = displayData.filter((proposal) => {
-        const customerData = extractCustomerDetail(proposal);
+        const customerData = extractCustomerDetail(customerDetail, proposal);
+        const propertyData = extractPropertyDetail(customerData, proposal?.property)
         const { personalDetails } = customerData;
+        const { propertyName } = propertyData
 
         // Check if searchQuery matches name, email, or proposal ID
         return (
             personalDetails?.firstName?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
             personalDetails?.email?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
-            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) 
+            personalDetails?.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            propertyName?.toLowerCase().includes(searchQuery?.toLowerCase()) 
         );
     });
 
     const changeStatus = async (status, proposalid) => {
+        setLoading(true)
         const dataObject = {
             status: status === "active",
             proposalid,
@@ -50,6 +57,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
         const response = await toggleStatus(dataObject);
         if (response?.success) {
             dispatch(handleToggleStatus(dataObject));
+            setLoading(false)
             toast.success("Proposal has Draft Successfully!")
         }
     };
@@ -62,6 +70,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                     <thead>
                         <tr>
                             <th>Name/Company</th>
+                            <th>Property</th>
                             <th>Created Date</th>
                             <th>Proposal ID</th>
                             <th>Email Address</th>
@@ -73,7 +82,8 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                     <tbody>
                         {filteredData?.length > 0 ? (
                             filteredData.map((value, index) => {
-                                const customerData = extractCustomerDetail(value);
+                                const customerData = extractCustomerDetail(customerDetail, value);
+                                const propertyData = extractPropertyDetail(customerData, value.property)
                                 const { personalDetails } = customerData;
 
                                 return (
@@ -93,6 +103,9 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                                             </NavLink>
                                         </td>
                                         <td>
+                                            <p>{propertyData ? propertyData?.propertyName  : "N/A"}</p>
+                                        </td>
+                                        <td>
                                             <p>{value.createDate ? formatDate(value.createDate) : "N/A"}</p>
                                         </td>
                                         <td>
@@ -107,7 +120,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                                                 <p>{value?.status?.type || "N/A"}</p>
                                             </div>
                                         </td>
-                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">Draft</button></td>
+                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">{loading ? (<Spinner />) : 'Draft'}</button></td>
                                         <td>
                                             <div className="table-profile gap-0">
                                                 <div>

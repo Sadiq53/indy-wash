@@ -7,6 +7,7 @@ import { validationSchema } from '../../../schemas/addCustomerSchema'
 import { handleAddCustomerDetail, handleUpdateCustomer } from "../../../redux/AdminDataSlice";
 import { addCustomer, editCustomer } from "../../../services/CustomerService";
 import { generateUniqueId } from '../../../utils/UniqueIdGenerator'
+import Spinner from "../../shared/Loader/Spinner";
 
 const AddCustomer = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AddCustomer = () => {
 
   const [image, setImage] = useState({ image1: "", image2: "" });
   const [getPropertyData, setGetPropertyData] = useState([])
+  const [loading, setLoading] = useState(false)
   const [createDate, setCreateDate] = useState(() => {
     const today = new Date();
     const yyyy = today.getFullYear();
@@ -27,7 +29,7 @@ const AddCustomer = () => {
   });
 
     const addCustomerForm = useFormik({
-      // validationSchema,
+      // validationSchema : validationSchema,
         initialValues: {
           uniqueid: '',
         createDate,
@@ -59,17 +61,21 @@ const AddCustomer = () => {
         additionalNotes: "",
         },
         onSubmit: async (formData) => {
-            if(customerid) {
-              const response = await editCustomer(formData)
-              if(response.success) {
-                console.dir(response.result, {depth: null})
-                dispatch(handleUpdateCustomer(response.result))
-                navigate(`/customer-detail/${response.result?.uniqueid}`); 
-              }
-            } else {
-              formData.uniqueid = generateUniqueId()
-              const response = await addCustomer(formData)
-              if(response.success) {
+          console.log(formData)
+          return
+          setLoading(true)
+          if(customerid) {
+            const response = await editCustomer(formData)
+            if(response.success) {
+              setLoading(false)
+              dispatch(handleUpdateCustomer(response.result))
+              navigate(`/customer-detail/${response.result?.uniqueid}`); 
+            }
+          } else {
+            formData.uniqueid = generateUniqueId()
+            const response = await addCustomer(formData)
+            if(response.success) {
+                setLoading(false)
                 dispatch(handleAddCustomerDetail(response.result))
                 navigate(`/customer-detail/${response.result?.uniqueid}`); 
               }
@@ -158,11 +164,17 @@ useEffect(() => {
                       type="submit"
                       className="filter-btn txt-deco-none bg-theme-1"
                     >
-                      <i
-                        className="fa-light fa-circle-check fa-lg"
-                        style={{ color: "#ffffff" }}
-                      />{" "}
-                      &nbsp; Save Customer
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <>
+                          <i
+                            className="fa-light fa-circle-check fa-lg"
+                            style={{ color: "#ffffff" }}
+                          /> 
+                          &nbsp; Save Customer
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
