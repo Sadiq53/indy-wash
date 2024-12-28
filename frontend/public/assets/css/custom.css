@@ -392,6 +392,7 @@ margin: 0;
     border: none;
     line-height: 28px;
     padding: 10px 10px;
+	text-align: center;
 }
 
 .filter-btn.bg-theme-1:hover{
@@ -1347,4 +1348,9 @@ margin: 0;
 	width: 20px;
 	height: 20px;
 	object-fit: cover;
+}
+.menu ul li a img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
 }

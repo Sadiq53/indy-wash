@@ -7,9 +7,10 @@ const TotalEarning = ({ proposalData, serviceData }) => {
 
     useEffect(()=>{
         if(proposalData?.length >= 1) {
-            const extractServiceIds = proposalData?.filter(value => value.status?.type !== "draft")?.map(value => value.service)?.flat()
+            const extractServiceIds = proposalData?.filter(value => value.status?.type === "active")?.map(value => value.service)?.flat()
             const extractServiceData = serviceData?.filter(value => extractServiceIds?.includes(value.uniqueid))
             const totalOverallAmount = getSumOfTotalCostYearly(extractServiceData)
+            console.log(totalOverallAmount)
             setTotalEarning(totalOverallAmount)
         }
     }, [proposalData, serviceData])

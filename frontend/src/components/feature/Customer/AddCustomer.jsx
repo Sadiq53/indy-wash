@@ -40,7 +40,8 @@ const AddCustomer = () => {
             lastName: "",
             email: "",
             phone: "",
-            company: ""
+            company: "",
+            status: ""
         },
         property: [],
         additionalContact: {
@@ -275,9 +276,9 @@ useEffect(() => {
                         Personal Details :
                       </h5>
                     </div>
-                    <div className="input-section gtc-5 my-2">
+                    <div className="input-section gtc-3 my-2">
                     {["firstName", "lastName", "email", "phone", "company"].map((field) => (
-                      <div key={field} className="form-group mb-3">
+                      <div key={field} className="form-group ">
                         <input
                           type={field === "phone" ? "number" : "text"}
                           className={`form-control ${addCustomerForm.errors.personalDetails?.[field] && addCustomerForm.touched.personalDetails?.[field] && 'is-invalid'}`}
@@ -305,6 +306,12 @@ useEffect(() => {
                           )}
                       </div>
                     ))}
+                    <select name="status" value={addCustomerForm?.values?.personalDetails?.status} onChange={(e) => {addCustomerForm.setFieldValue("personalDetails.status", e.target.value)}} id="">
+                      <option value="">Select Customer Status</option>
+                      <option value="lead">Lead</option>
+                      <option value="current customer">Current Customer</option>
+                      <option value="past customer">Past Customer</option>
+                    </select>
                   </div>
                   </div>
                 </div>

@@ -9,7 +9,7 @@ const proposalSchema = new mongoose.Schema({
     customer: { type: String, default: '' },
     property: { type: String, default: '' },
     status: {
-        type: { type: String, default: 'draft' },
+        type: { type: String, default: 'created' },
         date: { type: Date, default: Date.now() }
     },
     service: { type: Array, default: [] },

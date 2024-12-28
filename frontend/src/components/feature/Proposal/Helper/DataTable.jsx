@@ -1,15 +1,21 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { formatDate } from '../../../../utils/formatDate';
 import { useEffect, useState } from "react";
 import { extractCustomerDetail, extractPropertyDetail } from "../../../../utils/Extractor";
+import { toggleStatus } from "../../../../services/ProposalService";
+import { handleToggleStatus } from "../../../../redux/ServiceDataSlice";
+import { toast } from "react-toastify";
 
 const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Accept searchQuery as a prop
+
+    const dispatch = useDispatch()
 
     const customerDetail = useSelector((state) => state.AdminDataSlice.customers) || [];
     // const proposalDetail = useSelector((state) => state.ServiceDataSlice.proposal) || [];
 
     const [displayData, setDisplayData] = useState([]);
+    const [loading, setLoading] = useState({state: false, type: ''});
 
     useEffect(() => {
         if (proposalDetail?.length >= 0) {
@@ -31,6 +37,21 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
             propertyName?.toLowerCase().includes(searchQuery?.toLowerCase())
         );
     });
+
+    const changeStatus = async (status, proposalid) => {
+        setLoading({state: true, id: proposalid})
+        const dataObject = {
+            status: status,
+            proposalid,
+            date: Date.now(),
+        };
+        const response = await toggleStatus(dataObject);
+        if (response?.success) {
+            dispatch(handleToggleStatus(dataObject));
+            setLoading({state: false, id: ''})
+            toast.success("Proposal has Draft Successfully!")
+        }
+    };
 
     return (
         <div className="box-cs">
@@ -84,9 +105,14 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => { // Acc
                                             <p>{personalDetails?.email || "N/A"}</p>
                                         </td>
                                         <td>
-                                        <div className="flex-cs">
-                                                <div className={`cs-status status-bg-${value?.status?.type === 'draft' ? 'draft' : 'active'}`}></div>
-                                                <p>{value?.status?.type || "N/A"}</p>
+                                            <div className="input-section gtc-1">
+                                                <select value={value?.status?.type} onChange={(e)=>changeStatus(e.target.value, value.uniqueid)} name="" id="">
+                                                    <option value="created">created</option>
+                                                    <option value="active">active</option>
+                                                    <option value="sent">sent</option>
+                                                    <option value="past">past</option>
+                                                    <option value="not accepted">not accepted</option>
+                                                </select>   
                                             </div>
                                         </td>
                                         <td>

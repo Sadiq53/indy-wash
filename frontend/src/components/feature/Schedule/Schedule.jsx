@@ -13,19 +13,19 @@ const Schedule = () => {
           // Clean up the script when the component unmounts
           document.body.removeChild(script);
         };
-      }, []);
+    }, []);
     
-      return (
-        <iframe
-        className='p-0'
-          src="https://api.leadconnectorhq.com/widget/booking/SysY8UteId3o59W40uQC"
-          style={{ width: "100%", border: "none", overflow: "hidden" }}
-          scrolling="no"
-          id="SysY8UteId3o59W40uQC_1734801608340"
-          title="Booking Widget"
-        ></iframe>
-      );
-    
-}
+    return (
+        <>
+            <iframe
+                src="https://api.leadconnectorhq.com/widget/group/qQR9lPsAjNtDBl6sYNUP"
+                style={{ width: "100%", border: "none", overflow: "hidden" }}
+                scrolling="no"
+                id="qQR9lPsAjNtDBl6sYNUP_1735311920333"
+                title="Booking Widget"
+            ></iframe>
+        </>
+    );
+};
 
-export default Schedule
+export default Schedule;

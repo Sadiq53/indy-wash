@@ -30,6 +30,7 @@ personalDetails: {
     email: { type: String, default: '' },
     phone: { type: Number, default: 0 },
     company: { type: String, default: '' },
+    status: { type: String, default: '' },
 },
 property: [propertySchema],
 additionalContact: {

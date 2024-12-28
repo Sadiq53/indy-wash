@@ -40,7 +40,7 @@ const ProposalDetail = () => {
     if (state) {
       setLoading(true)
       const dataObject = {
-        status: state,
+        status: 'active',
         proposalid,
         date: Date.now()
       }
@@ -183,7 +183,7 @@ const navigateRoute = () => {
           <div className="row">
             <div className="col-md-12">
               <div className="head-filters">
-                <div className="part-1 gtc-equal">
+                <div className="part-1 gtc-1">
                   <h4 className="font-1 fw-700">{propertyData?.propertyName || "N/A"}</h4>
                   {window.innerWidth < 767 && (<button data-bs-toggle='modal' data-bs-target='#showDetail' className="filter-btn bg-theme-1">Service Overview</button>)}
                 </div>
@@ -208,8 +208,8 @@ const navigateRoute = () => {
                         &nbsp; Download Agreement
                       </button>
                       <NavLink to={`/service-detail/${proposalid}`} className="filter-btn txt-deco-none bg-theme-2">
-                        <i className="fa-regular fa-arrows-rotate-reverse fa-lg" style={{ color: "#ffffff" }} />
-                        &nbsp; Contract Overview
+                        <i class="fa-light fa-pen-to-square fa-lg" style={{ color: "#ffffff" }} />
+                        &nbsp; Edit / Overview
                       </NavLink>
                       <button onClick={navigateRoute}  className="filter-btn txt-deco-none bg-theme-1">
                         <i className="fa-light fa-circle-check fa-lg" style={{ color: "#ffffff" }} />

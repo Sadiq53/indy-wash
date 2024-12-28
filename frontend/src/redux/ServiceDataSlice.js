@@ -112,7 +112,7 @@ const ServiceDataSlice = createSlice({
                             ...proposal,
                             status: {
                                 ...proposal.status,
-                                type: status ? "active" : "draft",
+                                type: status,
                                 date,
                             },
                         }
@@ -120,7 +120,6 @@ const ServiceDataSlice = createSlice({
                 );
             }
         },
-        
         handleDeleteService: (state, action) => {
             const { serviceid, proposalid } = action.payload;
         

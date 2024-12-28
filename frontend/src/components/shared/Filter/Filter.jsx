@@ -5,7 +5,7 @@ const Filter = ({ applyFilters, type }) => {
 
   let filters = [];
 
-  if (type === "activeOverview" || type === "customer") {
+  if (type === "activeOverview") {
     filters = [
       { id: "az", label: "A-Z", group: "Name Sorting" },
       { id: "za", label: "Z-A", group: "Name Sorting" },
@@ -20,6 +20,16 @@ const Filter = ({ applyFilters, type }) => {
       { id: "dateDesc", label: "Date Descending", group: "Date Sorting" },
       { id: "active", label: "Active Proposals", group: "Status Filters" },
       { id: "draft", label: "Draft Proposals", group: "Status Filters" },
+    ];
+  } else if(type === "customer") {
+    filters = [
+      { id: "az", label: "A-Z", group: "Name Sorting" },
+      { id: "za", label: "Z-A", group: "Name Sorting" },
+      { id: "dateAsc", label: "Date Ascending", group: "Date Sorting" },
+      { id: "dateDesc", label: "Date Descending", group: "Date Sorting" },
+      { id: "lead", label: "Lead", group: "status" },
+      { id: "current customer", label: "Current Customer", group: "status" },
+      { id: "past customer", label: "Past Customer", group: "status" },
     ];
   }
 

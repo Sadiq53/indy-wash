@@ -48,7 +48,7 @@ const AddProposal = () => {
     description: '',
     additionalInfo: [],
     frequency: [],
-    status: 'draft'  
+    status: 'created'  
   })
   const [frequencies, setFrequencies] = useState([
     {

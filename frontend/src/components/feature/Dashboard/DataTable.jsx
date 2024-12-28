@@ -20,6 +20,7 @@ const DataTable = ({ title, onDelete, customerDetail }) => {
               <th>Created Date</th>
               <th>Property</th>
               <th>Phone No.</th>
+              <th>Status</th>
               <th>Email Address</th>
               <th>Edits</th>
             </tr>
@@ -54,6 +55,9 @@ const DataTable = ({ title, onDelete, customerDetail }) => {
                   </td>
                   <td>
                     <p>{value.personalDetails?.phone || "N/A"}</p>
+                  </td>
+                  <td>
+                    <p>{value.personalDetails?.status || "N/A"}</p>
                   </td>
                   <td>
                     <p>{value.personalDetails?.email || "N/A"}</p>

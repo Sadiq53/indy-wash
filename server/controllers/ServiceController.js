@@ -353,14 +353,13 @@ route.put('/status', async (req, res) => {
     //     return res.status(400).send({ message: 'Invalid input data', success: false });
     // }
     
-    const getStatus = status ? 'active' : 'draft';
     // console.log(getStatus)
 
     try {
         // Update the proposal status in the database
         const result = await proposalModel.updateOne(
             { uniqueid: proposalid },
-            { $set: { 'status.type': getStatus, 'status.date': date } }
+            { $set: { 'status.type': status, 'status.date': date } }
         );
 
         // Check if any document was updated

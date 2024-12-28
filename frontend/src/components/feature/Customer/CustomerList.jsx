@@ -56,10 +56,11 @@ const CustomerList = () => {
   // Filter and sort customer data based on active filters
   const filteredCustomers = customerDetail
   ?.filter((customer) => {
-    // Search filter
-    const searchLower = searchQuery.toLowerCase();
+    if (!customer) return false; // Ensure customer object exists
 
-    // Check both firstName and companyName for the search query
+    const searchLower = searchQuery?.toLowerCase();
+
+    // Check for search matches in firstName, companyName, or status
     const matchesFirstName = customer?.personalDetails?.firstName
       ?.toLowerCase()
       ?.includes(searchLower);
@@ -68,7 +69,12 @@ const CustomerList = () => {
       ?.toLowerCase()
       ?.includes(searchLower);
 
-    if (searchQuery && !(matchesFirstName || matchesCompanyName)) {
+    const matchesStatus = customer?.personalDetails?.status
+      ?.toLowerCase()
+      ?.includes(searchLower);
+
+    // If searchQuery exists, ensure at least one match
+    if (searchQuery && !(matchesFirstName || matchesCompanyName || matchesStatus)) {
       return false;
     }
     return true;
@@ -81,6 +87,7 @@ const CustomerList = () => {
         ) || 0
       );
     }
+
     if (activeFilters.includes("za")) {
       return (
         b.personalDetails?.firstName?.localeCompare(
@@ -88,14 +95,30 @@ const CustomerList = () => {
         ) || 0
       );
     }
+
+    if (activeFilters.includes("lead")) {
+      return a?.personalDetails?.status?.toLowerCase() === "lead" ? -1 : 1;
+    }
+
+    if (activeFilters.includes("current customer")) {
+      return a?.personalDetails?.status?.toLowerCase() === "current customer" ? -1 : 1;
+    }
+
+    if (activeFilters.includes("past customer")) {
+      return a?.personalDetails?.status?.toLowerCase() === "past customer" ? -1 : 1;
+    }
+
     if (activeFilters.includes("dateAsc")) {
       return new Date(a.createDate) - new Date(b.createDate);
     }
+
     if (activeFilters.includes("dateDesc")) {
       return new Date(b.createDate) - new Date(a.createDate);
     }
-    return 0;
+
+    return 0; // Default return for sorting
   });
+
 
   return (
     <>

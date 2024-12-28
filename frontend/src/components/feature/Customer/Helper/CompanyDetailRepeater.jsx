@@ -15,9 +15,9 @@ const CompanyDetailRepeater = ({ data, customerId }) => {
                             <div className="part-1">
                                 <h4 className="font-1 fw-700">{value.propertyName}</h4>
                             </div>
-                            <div className="part-1  gtc-1">
+                            {/* <div className="part-1  gtc-1">
                                 <button className="btn edit-btn"><i className="fa-solid  fa-sm fa-pen" style={{ color: "#fff" }} /></button>
-                            </div>
+                            </div> */}
                         </div> 
 
                         <div className="data py-4">

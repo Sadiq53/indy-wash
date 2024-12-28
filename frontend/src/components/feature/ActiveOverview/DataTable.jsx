@@ -50,7 +50,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
     const changeStatus = async (status, proposalid) => {
         setLoading({state: true, id: proposalid})
         const dataObject = {
-            status: status === "active",
+            status: status,
             proposalid,
             date: Date.now(),
         };
@@ -120,7 +120,7 @@ const DataTable = ({ title, onDelete, searchQuery, proposalDetail }) => {
                                                 <p>{value?.status?.type || "N/A"}</p>
                                             </div>
                                         </td>
-                                        <td><button onClick={() => changeStatus("draft", value?.uniqueid)} className="btn btn-secondary">{loading?.state && loading?.id === value?.uniqueid ? (<Spinner />) : 'Draft'}</button></td>
+                                        <td><button onClick={() => changeStatus("past", value?.uniqueid)} className="btn btn-secondary">{loading?.state && loading?.id === value?.uniqueid ? (<Spinner />) : 'Draft'}</button></td>
                                         <td>
                                             <div className="table-profile gap-0">
                                                 <div>
