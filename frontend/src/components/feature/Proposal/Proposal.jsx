@@ -81,9 +81,21 @@ import Filter from '../../shared/Filter/Filter';
             proposals = proposals.filter((proposal) => proposal.status?.type === 'active');
         }
     
-        if (activeFilters.includes('draft')) {
-            proposals = proposals.filter((proposal) => proposal.status?.type === 'draft');
+        if (activeFilters.includes('sent')) {
+            proposals = proposals.filter((proposal) => proposal.status?.type === 'sent');
         }
+        
+        if (activeFilters.includes('past')) {
+            proposals = proposals.filter((proposal) => proposal.status?.type === 'past');
+        }
+        if (activeFilters.includes('created')) {
+            proposals = proposals.filter((proposal) => proposal.status?.type === 'created');
+        }
+
+        if (activeFilters.includes('not accepted')) {
+            proposals = proposals.filter((proposal) => proposal.status?.type === 'not accepted');
+        }
+
     
         return proposals;
     };

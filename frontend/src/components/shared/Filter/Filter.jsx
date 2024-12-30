@@ -19,7 +19,10 @@ const Filter = ({ applyFilters, type }) => {
       { id: "dateAsc", label: "Date Ascending", group: "Date Sorting" },
       { id: "dateDesc", label: "Date Descending", group: "Date Sorting" },
       { id: "active", label: "Active Proposals", group: "Status Filters" },
-      { id: "draft", label: "Draft Proposals", group: "Status Filters" },
+      { id: "not accepted", label: "Not Accepted Proposals", group: "Status Filters" },
+      { id: "sent", label: "Sent Proposals", group: "Status Filters" },
+      { id: "created", label: "Created Proposals", group: "Status Filters" },
+      { id: "past", label: "Past Proposals", group: "Status Filters" },
     ];
   } else if(type === "customer") {
     filters = [
