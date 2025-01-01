@@ -107,17 +107,17 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                     </tr>
                                     <tr>
                                       <td style={{ padding: '10px 0px' }}>
-                                        <p className="color-202224" style={{ fontSize: '18.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{customerData?.personalDetails?.firstName}</p>
+                                        <p className="color-202224" style={{ fontSize: '16.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{customerData?.personalDetails?.firstName}</p>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td style={{padding: '10px 0px'}}>
-                                        <p className="color-202224" style={{ fontSize: '18.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{customerData?.personalDetails?.phone}</p>
+                                        <p className="color-202224" style={{ fontSize: '16.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{customerData?.personalDetails?.phone}</p>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td style={{padding: '10px 0px'}}>
-                                        <p className="color-202224" style={{ fontSize: '18.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>Management Company</p>
+                                        <p className="color-202224" style={{ fontSize: '16.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>Management Company</p>
                                       </td>
                                     </tr>
                                   </table>
@@ -126,12 +126,12 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                   <table cellPadding="0" cellSpacing="0" border="0" role="presentation" width="100%" style={{ width: '100%', borderSpacing: 0 }}>
                                     <tr>
                                       <td style={{ paddingBottom: '11.44px' }}>
-                                        <p className="color-202224" style={{ fontSize: '18.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{propertyData?.serviceAddress}</p>
+                                        <p className="color-202224" style={{ fontSize: '14.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '20px' }}>{propertyData?.serviceAddress}</p>
                                       </td>
                                     </tr>
                                     <tr>
                                       <td style={{ paddingTop: '11.44px' }}>
-                                        <p className="color-202224" style={{ fontSize: '18.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '13px' }}>{propertyData?.billingAddress}</p>
+                                        <p className="color-202224" style={{ fontSize: '14.25px', fontWeight: 400, letterSpacing: '-0.06px', color: '#202224', margin: 0, padding: 0, lineHeight: '20px' }}>{propertyData?.billingAddress}</p>
                                       </td>
                                     </tr>
                                   </table>
@@ -156,36 +156,36 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                 <td align="left" valign="middle" height="19.98" style={{ paddingLeft: '6.91px', verticalAlign: 'middle', height: '19.98px' }}>
                                   <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                     <tr>
-                                      <td valign="top" width="57.36" style={{ padding: '10px 30.79px', width: '57.36px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Service Item</p>
+                                      <td valign="top" width="137" style={{ padding: '10px 30.79px', width: '137px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>Service Item</p>
                                       </td>
-                                      <td valign="top" width="41.63" style={{ padding: '10px 8px', width: '41.63px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Quantity</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 8px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>Quantity</p>
                                       </td>
-                                      <td valign="top" width="15.73" style={{ padding: '10px 13.73px', width: '15.73px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Year</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 13.73px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>Year</p>
                                       </td>
-                                      <td valign="top" width="45.79" style={{ padding: '10px 8px', width: '45.79px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Months</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 8px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>Months</p>
                                       </td>
-                                      <td valign="top" width="34.55" style={{ padding: '10px 0px', width: '34.55px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>SQFT</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 0px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>SQFT</p>
                                       </td>
-                                      <td valign="top" width="44.54" style={{ padding: '10px 0px', width: '44.54px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Frequency</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 0px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '15px', lineHeight: '15px' }}>Frequency</p>
                                       </td>
-                                      <td valign="top" width="50.37" style={{ padding: '10px 0px', width: '50.37px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Price/SQFT</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 0px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '15px', lineHeight: '15px' }}>Price/SQFT</p>
                                       </td>
-                                      <td valign="top" width="57.36" style={{ padding: '10px 0px', width: '57.36px', verticalAlign: 'top' }}>
-                                        <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Price Per Clean</p>
+                                      <td valign="top" width="65" style={{ padding: '10px 0px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-202224" style={{ fontSize: '12.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, textAlign: 'center', paddingLeft: '8px', lineHeight: '15px' }}>Price Per Clean</p>
                                       </td>
-                                      <td valign="top" width="64.02" style={{ padding: '10px 3.41px', width: '64.02px', verticalAlign: 'top' }}>
+                                      {/* <td valign="top" width="64.02" style={{ padding: '10px 3.41px', width: '64.02px', verticalAlign: 'top' }}>
                                         <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Annual Investment</p>
                                       </td>
                                       <td valign="top" width="66.77" style={{ padding: '10px 2.16px', paddingLeft: '15px', width: '66.77px', verticalAlign: 'top' }}>
                                         <p className="color-202224" style={{ fontSize: '14.83px', fontWeight: 700, color: '#202224', margin: 0, padding: 0, lineHeight: '15px' }}>Price Per Door/Month</p>
-                                      </td>
+                                      </td> */}
                                     </tr>
                                   </table>
                                 </td>
@@ -207,47 +207,47 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                                 <td align="left" style={{ paddingTop: '16.62px', paddingBottom: '10.31px', paddingLeft: '21.89px' }}>
                                   <table cellPadding="0" cellSpacing="0" border="0" role="presentation" style={{ margin: 0, borderSpacing: 0 }}>
                                     <tr>
-                                      <td valign="top" width="98.65" style={{ paddingTop: '2.33px', width: '98.65px', verticalAlign: 'top' }}>
+                                      <td valign="top" width="137" style={{ paddingTop: '2.33px', width: '137px', verticalAlign: 'top' }}>
                                         <table cellPadding="0" cellSpacing="0" border="0" role="presentation" width="100%" style={{ width: '100%', borderSpacing: 0 }}>
                                           <tr>
                                             <td valign="top" height="10.74" style={{ height: '10.74px', verticalAlign: 'top' }}>
                                               <p className="color-979797" style={{ fontSize: '14.66px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '18px' }}>{value?.name}</p>
                                             </td>
                                           </tr>
-                                          <tr>
+                                          {/* <tr>
                                             <td align="left" style={{ paddingTop: '1.74px', paddingLeft: '1.25px' }}>
                                               <p className="color-979797" style={{ fontSize: '14.99px', fontWeight: 400, textAlign: 'left', color: '#979797', margin: 0, padding: 0 }}>{value?.description}</p>
                                             </td>
-                                          </tr>
+                                          </tr> */}
                                         </table>
                                       </td>
-                                      <td valign="top" width="31.46" style={{ paddingTop: '3px', width: '57.46px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>{value.quantity}</p>
+                                      <td valign="top" width="65" style={{ paddingTop: '3px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>{value.quantity}</p>
                                       </td>
-                                      <td valign="top" width="30" style={{ paddingTop: '3px', paddingLeft: '8px', width: '30px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>{extractYear(value.createDate)}</p>
+                                      <td valign="top" width="65" style={{ paddingTop: '3px', paddingLeft: '8px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>{extractYear(value.createDate)}</p>
                                       </td>
-                                      <td valign="top" width="37" style={{ paddingLeft: '8px', width: '37px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, textAlign: 'left', color: '#979797', margin: 0, padding: 0 }}>{value?.months?.map(value => value)?.join(', ')}</p>
+                                      <td valign="top" width="65" style={{ paddingLeft: '8px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, textAlign: 'center', color: '#979797', margin: 0, padding: 0 }}>{value?.months?.map(value => value)?.join(', ')}</p>
                                       </td>
-                                      <td valign="top" width="29" style={{ paddingTop: '4px', paddingLeft: '8px', width: '29px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>{value.sqft}</p>
+                                      <td valign="top" width="65" style={{ paddingTop: '4px', paddingLeft: '8px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>{value.sqft}</p>
                                       </td>
-                                      <td valign="top" width="47" style={{ paddingLeft: '5px', width: '47px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>{value.activePlan}</p>
+                                      <td valign="top" width="65" style={{ paddingLeft: '5px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>{value.activePlan}</p>
                                       </td>
-                                      <td valign="top" width="41.54" style={{ width: '41.54px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>${price}</p>
+                                      <td valign="top" width="65" style={{ width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>${price}</p>
                                       </td>
-                                      <td valign="top" width="41.54" style={{ paddingLeft: '5.46px', paddingRight: '12.46px', width: '41.54px', verticalAlign: 'top' }}>
-                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>${perCleanCost}</p>
+                                      <td valign="top" width="65" style={{ paddingLeft: '5.46px', paddingRight: '12.46px', width: '65px', verticalAlign: 'top' }}>
+                                        <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, textAlign: 'center', lineHeight: '9px' }}>${perCleanCost}</p>
                                       </td>
-                                      <td valign="top" width="41.54" style={{ paddingTop: '3px', paddingLeft: '8px', paddingRight: '12.46px', width: '41.54px', verticalAlign: 'top' }}>
+                                      {/* <td valign="top" width="41.54" style={{ paddingTop: '3px', paddingLeft: '8px', paddingRight: '12.46px', width: '41.54px', verticalAlign: 'top' }}>
                                         <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>${annualCost}</p>
                                       </td>
                                       <td valign="top" width="41.54" style={{ paddingTop: '4px', paddingLeft: '8px', width: '41.54px', verticalAlign: 'top' }}>
                                         <p className="color-979797" style={{ fontSize: '14.19px', fontWeight: 700, color: '#979797', margin: 0, padding: 0, lineHeight: '9px' }}>${unitPerMonth}</p>
-                                      </td>
+                                      </td> */}
                                     </tr>
                                   </table>
                                 </td>
