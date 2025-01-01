@@ -71,8 +71,8 @@ const Sidebar = () => {
                     </li>
                     </ul>
                     <ul className="other-menu">
-                    <li className={active === '/settings' && 'active'}>
-                        <NavLink onClick={closeSidebar} to="/settings">
+                    <li className={active === '/setting' && 'active'}>
+                        <NavLink onClick={closeSidebar} to="/setting">
                         <img src="assets/img/setting.svg" />
                         Settings
                         </NavLink>

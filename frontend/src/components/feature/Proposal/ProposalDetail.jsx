@@ -5,13 +5,14 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from '../../../utils/formatDate'
 import ServiceViewCrad from "./Helper/ServiceViewCrad";
-import { toggleStatus } from '../../../services/ProposalService'
+import { activeProposal } from '../../../services/ProposalService'
 import { handleToggleStatus, hanldeStatusActive } from "../../../redux/ServiceDataSlice";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import DownloadAgreement from "../../shared/Agreement/DownloadAgreement";
 import MoreDetailModal from "./Helper/MoreDetailModal";
+import LightBox from "./Helper/LightBox";
 
 const ProposalDetail = () => {
   const { proposalid } = useParams();
@@ -24,6 +25,8 @@ const ProposalDetail = () => {
   const rawCustomerData = useSelector(state => state.AdminDataSlice.customers);
 
   const [popup, setPopup] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [serviceData, setServiceData] = useState([]);
   const [selectedServiceData, setSelectedServiceData] = useState({})
   const [propertyData, setPropertyData] = useState({});
@@ -39,20 +42,8 @@ const ProposalDetail = () => {
   const confirmation = async(state) => {
     if (state) {
       setLoading(true)
-      const dataObject = {
-        status: 'active',
-        proposalid,
-        date: Date.now()
-      }
-      const response = await toggleStatus(dataObject)
-      if(response?.success) {
-        setLoading(false)
-        dispatch(hanldeStatusActive(true))
-        dispatch(handleToggleStatus(dataObject))
-        toast.success(`Your Proposal is Active and Added to Active Overview`);
-      }
+      toggleStatus_pdf()
     }
-    setPopup(false);
   };
 
   useEffect(() => {
@@ -134,6 +125,56 @@ let getIndex = serviceData.findIndex(service => service.uniqueid === selectedSer
     }
   };
 
+  const toggleStatus_pdf = async () => {
+    try {
+        const input = agreementRef.current;
+
+        if (!input) {
+            throw new Error("Agreement element not found.");
+        }
+
+        // Generate the PDF using html2canvas and jsPDF
+        const canvas = await html2canvas(input);
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+        // Convert the PDF to a Blob
+        const pdfBlob = pdf.output("blob");
+
+        // Prepare FormData
+        const formData = new FormData();
+        formData.append('pdf', new File([pdfBlob], 'agreement.pdf', { type: 'application/pdf' }));
+        formData.append('status', 'active');
+        formData.append('proposalid', proposalid);
+        formData.append('date', new Date().toISOString());
+        formData.append('email', customerData?.personalDetails?.email);
+
+        // Send the FormData to the server
+        const response = await activeProposal(formData);
+
+        const dataObject = {
+          date: new Date(),
+          proposalid,
+          status: 'active'
+        }
+
+        if (response?.success) {
+          dispatch(hanldeStatusActive(true));
+          dispatch(handleToggleStatus(dataObject));
+          setLoading(false);
+          setPopup(false);
+          toast.success(`Your Proposal is Active and Added to Active Overview`);
+        }
+    } catch (error) {
+        console.error("Error sending agreement to server:", error.response?.data || error.message);
+    }
+};
+
+
 const handleNextService = () => {
   // Increment index and loop back to the beginning if at the last item
   getIndex = (getIndex + 1) % serviceData.length;
@@ -169,6 +210,16 @@ const handlePreviousService = () => {
   // Update the selected service based on the new index
   const prevService = serviceData[getIndex];
   setSelectedServiceData(prevService);
+};
+
+const openLightbox = (index) => {
+  console.log(index)
+  setCurrentImageIndex(index);
+  setIsLightboxOpen(true);
+};
+
+const closeLightbox = () => {
+  setIsLightboxOpen(false);
 };
 
 const navigateRoute = () => {
@@ -281,7 +332,7 @@ const navigateRoute = () => {
                     <div className="col-md-8">
                       <ProposalTagCard service={selectedServiceData} units={propertyData?.units}/>
                       <div className="pt-4">
-                        <ServiceViewCrad header={tabHeader} handlePreviousService={handlePreviousService} handleNextService={handleNextService} proposalid={proposalid} selectedServiceData={selectedServiceData} />
+                        <ServiceViewCrad header={tabHeader} openLightbox={openLightbox} handlePreviousService={handlePreviousService} handleNextService={handleNextService} proposalid={proposalid} selectedServiceData={selectedServiceData} />
                           {
                             window.innerWidth < 767 && (
                               <div className="mt-2">
@@ -330,6 +381,9 @@ const navigateRoute = () => {
         <DownloadAgreement serviceData={serviceData} propertyData={propertyData} customerData={customerData} />
         </div>
         <MoreDetailModal selectedServiceData={selectedServiceData} totalSqft={totalSqft} yearCost={perCleaning * selectedFrequency?.frequencyDigit} />
+        {
+          isLightboxOpen && (<LightBox closeLightbox={closeLightbox} initialIndex={currentImageIndex} selectedServiceData={selectedServiceData} />)
+        }
     </>
   );
 };

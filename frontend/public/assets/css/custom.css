@@ -125,6 +125,11 @@ li.active::after {
     align-items: flex-start;
     justify-content: center;
 }
+.main-header .head-section .profile-btn .profile img{
+    width: 50px;
+    height: 50px;
+	object-fit: cover;
+}
 .main-header .head-section .profile-btn .name small{
 	color: #565656;
 	font-family: "Nunito Sans";
@@ -484,6 +489,9 @@ box-shadow: none;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr !important;
 }
 
+.width-max{
+	width: max-content;
+}
 
 
 .box-cs .input-section input, .box-cs .input-section textarea, .box-cs .input-section select{
@@ -501,15 +509,27 @@ box-shadow: none;
 	font-weight: 500;
 	line-height: normal;
 }
-
-.box-cs .input-section select{
+.box-cs .input-section input::placeholder, .box-cs .input-section textarea::placeholder, .box-cs .input-section select{
 	color: #979797;
-	text-align: center;
 	font-family: "DM Sans";
 	font-size: 16px;
 	font-style: normal;
 	font-weight: 500;
 	line-height: normal;
+}
+
+.box-cs .input-section select{
+	color: #979797;
+	text-align: left;
+	font-family: "DM Sans";
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+.text-left{
+	text-align: left !important;
 }
 .box-cs .input-section input:focus-visible, .box-cs .input-section textarea:focus-visible, .box-cs .input-section select:focus-visible{
 	box-shadow: none !important;
@@ -934,6 +954,7 @@ margin: 0;
 	border-radius: 11px;
 	height: 120px;
 	object-fit: cover;
+	cursor: pointer;
 }
 .services-view-card .gallery .cs-hieght{
 	width: 100%;
@@ -1218,6 +1239,7 @@ margin: 0;
 
 .input-disabled{
 	cursor: no-drop;
+	background-color: rgba(231, 231, 231, 0.37) !important;
 }
 
 .modal-dialog.width-800{
@@ -1354,3 +1376,117 @@ margin: 0;
     height: 18px;
     object-fit: contain;
 }
+.input-container-box{
+	background: transparent;
+    border-radius: 6px;
+    border: 1px solid #97979782;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 11px;
+}
+.input-container-box input, .input-container-box input:focus-visible{
+	border: none;
+	outline: none;
+	color: #979797;
+    font-family: "DM Sans";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.input-container-box i{
+	color: #979797;
+}
+.admin-profile{
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+.profile-img{
+	position: relative;
+}
+.profile-img img{
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+.profile-img button img {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    top: 0;
+    right: 18px;
+}
+
+/* light box */
+
+/* Lightbox Modal */
+.lightbox-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.8);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+  }
+  
+  .lightbox-content {
+	position: relative;
+	background-color: white;
+	padding: 20px;
+	max-width: 90%;
+	max-height: 90%;
+  }
+  
+  .lightbox-image-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 20px;
+  }
+  
+  .lightbox-image {
+	max-width: 100%;
+	max-height: 80vh;
+  }
+  
+  .lightbox-nav {
+	position: absolute;
+	top: 50%;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	padding: 10px;
+	cursor: pointer;
+	border: none;
+	font-size: 24px;
+	z-index: 10;
+  }
+  
+  .lightbox-nav.left {
+	left: 10px;
+  }
+  
+  .lightbox-nav.right {
+	right: 10px;
+  }
+  
+  .lightbox-close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: rgba(255, 0, 0, 0.7);
+	color: white;
+	border: none;
+	padding: 10px;
+	cursor: pointer;
+  }
+  
+
+/* light box */

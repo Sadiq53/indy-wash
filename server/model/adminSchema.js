@@ -17,8 +17,18 @@ const serviceSchema = new mongoose.Schema({
 
 const adminSchema = new mongoose.Schema({
 
-username: { type: String, default: '' },
+firstName: { type: String, default: '' },
+lastName: { type: String, default: '' },
+address: { type: String, default: '' },
+shirtSize: { type: String, default: '' },
+phone: { type: Number, default: 0 },
 email: { type: String, default: '' },
+otp: { type: Number, default: 0 },
+stage: { type: Number, default: 0 },
+profileImage: {
+    s3Url: { type: String, default: '' },
+    s3Key: { type: String, default: '' },
+},
 password: { type: String, default: '' },
 customServices: [serviceSchema]
 

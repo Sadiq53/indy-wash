@@ -216,9 +216,24 @@ const AdminDataSlice = createSlice({
                     service.uniqueid === uniqueid ? { ...service, ...updatedService } : service
                 );
             }
-        }                                         
+        },                                  
+        handleUpdateProfile: (state, action) => {
+            const profileData = action.payload;
+            state.admin = {
+                ...state.admin, // Spread existing admin data
+                ...profileData  // Update with new data from the payload
+            };
+        },                                       
+        handleUpdateProfileImage: (state, action) => {
+            const {profileImage} = action.payload;
+            console.log(action.payload)
+            state.admin = {
+                ...state.admin, // Spread existing admin data
+                profileImage  // Update with new data from the payload
+            };
+        }                                          
     }
 })
 
 export default AdminDataSlice.reducer;
-export const { resetState, handleAddCustomerDetail, handleUpdateCustomService, handleUpdateCustomer, handleAddProperty, handleDeleteProposalFromCustomer, handleDeleteCustomer, handleDeleteCustomService, handleDeleteServiceFromCustomer, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions
+export const { resetState, handleAddCustomerDetail, handleUpdateProfileImage, handleUpdateProfile, handleUpdateCustomService, handleUpdateCustomer, handleAddProperty, handleDeleteProposalFromCustomer, handleDeleteCustomer, handleDeleteCustomService, handleDeleteServiceFromCustomer, handleAddService, handleAddCustomService, handleGetAdmin,handleUpdateCustomerProperty, handleSidebar, handleGetCustomer } = AdminDataSlice.actions

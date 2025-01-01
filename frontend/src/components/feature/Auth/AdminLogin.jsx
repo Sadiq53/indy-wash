@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { toast, ToastContainer } from "react-toastify"
 import Spinner from '../../shared/Loader/Spinner'
+import ForgotPassModal from "./helper/ForgotPassModal"
 
 const AdminLogin = () => {
 
@@ -28,11 +29,13 @@ const AdminLogin = () => {
         navigate('/')
       } else {
         if(response.type === 'email') {
+          setLoading(false)
           setErrMsg({state: true, message: 'Email is Invalid!'})
           setTimeout(()=>{
             setErrMsg({state: false, message: ''})
           }, 2000)
         } else if(response.type === 'password') {
+          setLoading(false)
           setErrMsg({state: true, message: 'Password is Incorrect!'})
           setTimeout(()=>{
             setErrMsg({state: false, message: ''})
@@ -59,8 +62,9 @@ const AdminLogin = () => {
                       <div className="input-section w-90 gtc-1">
                         <input type="email" className="cs-placeholder" required placeholder="Enter Email Address" name="email" id="" onChange={loginForm.handleChange} />
                         <input type="text" placeholder="Enter Password" className="cs-placeholder" name="password" id="" onChange={loginForm.handleChange} />
+                        <button type="button" data-bs-toggle='modal' data-bs-target='#forgotPass' className="btn text-primary text-end">Forgot Password</button>
                       </div>
-                      <div className="pt-3 w-90 flex-cs ">
+                      <div className=" w-90 flex-cs ">
                         <button type="submit" className="filter-btn w-25 bg-theme-1">Login {loading && <Spinner />}</button>
                       </div>
                     
@@ -76,6 +80,7 @@ const AdminLogin = () => {
           </div>
         </div>
 <ToastContainer />
+<ForgotPassModal getEmail={loginForm?.values?.email} />
     </>
   )
 }

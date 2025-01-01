@@ -42,6 +42,13 @@ const getServiceAndProposal = async() => {
     return response.data
 }
 
+const activeProposal = async(formData) => {
+    // const response = await axios.put(`${API_URL}/service/status`, formData)
+    const response = await axios.post(`${API_URL}/service/status`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data
+}
 const toggleStatus = async(formData) => {
     const response = await axios.put(`${API_URL}/service/status`, formData)
     return response.data
@@ -52,4 +59,4 @@ const deleteProposal = async(formData) => {
     return response.data
 }
 
-export { addProposal, getServiceAndProposal, toggleStatus, deleteProposal }
+export { addProposal, getServiceAndProposal, toggleStatus, deleteProposal, activeProposal }

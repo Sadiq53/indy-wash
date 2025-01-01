@@ -13,6 +13,7 @@ const Header = () => {
 
   
   const manageSidebar = useSelector((state) => state.AdminDataSlice.manageSidebar);
+  const adminProfile = useSelector((state) => state.AdminDataSlice.admin);
   
   const togglePanel = () => {
     setIsPanelOpen((prev) => !prev);
@@ -104,10 +105,10 @@ const Header = () => {
                     >
                       <div className="profile-btn">
                         <div className="profile">
-                          <img src="/assets/img/head-profile.svg" alt="" />
+                          <img src={adminProfile?.profileImage?.s3Url} alt="" />
                         </div>
                         <div className="name mob-hide">
-                          <h5>Moni Roy</h5>
+                          <h5>{adminProfile?.firstName} {adminProfile?.lastName}</h5>
                           <small>Admin</small>
                         </div>
                         <div className="arrow mob-hide">
@@ -126,7 +127,7 @@ const Header = () => {
                             <NavLink className='btn' to="/profile">View Profile</NavLink>
                           </li>
                           <li style={{ padding: "5px 0", borderBottom: "1px solid #ddd" }}>
-                            <NavLink className='btn' to="/settings">Settings</NavLink>
+                            <NavLink className='btn' to="/setting">Settings</NavLink>
                           </li>
                           <li style={{ padding: "5px 0" }}>
                             <NavLink className='btn' to="/logout">Logout</NavLink>

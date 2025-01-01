@@ -2,22 +2,61 @@ const route = require('express').Router();
 const customerModel = require('../model/customerSchema')
 const proposalModel = require('../model/proposalSchema')
 const serviceModel = require('../model/serviceSchema')
+require('dotenv').config()
+const nodemailer = require('nodemailer')
 
 route.get('/', async(req, res) => {
     const customer = await customerModel.find({})
     res.send({ success: true, result: customer })
 })
 
-route.post('/', async(req, res) => {
-    
+route.post('/', async (req, res) => {
     const customerDetail = req.body;
-    await customerModel.create(customerDetail)
+    const { email } = customerDetail?.personalDetails;
 
-    res.status(200).send({ result: customerDetail, success: true })
-    // if(req.headers.authorization) {
-        
-    // } else res.status(401).send({message: 'Unauthorised !'})
-})
+    if (!email) {
+        return res.status(400).send({ success: false, message: 'Email is required.' });
+    }
+
+    try {
+        // Create customer in database
+        const newCustomer = await customerModel.create(customerDetail);
+
+        // Nodemailer transporter setup
+        const transporter = nodemailer.createTransport({
+            host: "smtp-relay.brevo.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.BREVO_SMTP_MAIL,
+                pass: process.env.BREVO_SMTP_API_KEY
+            },
+            tls: {
+                rejectUnauthorized: false,
+            },
+        });
+
+        // Email content
+        const htmlContent = `
+            <p>We are delighted to welcome you to Indy Soft Wash!</p>
+            <p>Your account has been successfully created, and you are now part of our valued community.</p>
+        `;
+
+        // Send email
+        await transporter.sendMail({
+            from: `<${process.env.BREVO_SENDER_MAIL}>`,
+            to: email,
+            subject: `Greetings from Indy Soft Wash! 🎉`,
+            html: htmlContent,
+        });
+
+        // Send success response
+        res.status(200).send({ result: newCustomer, success: true, message: 'Customer created and email sent successfully.' });
+    } catch (error) {
+        console.error("Error creating customer or sending email: ", error);
+        res.status(500).send({ success: false, message: 'An error occurred while creating customer or sending email.' });
+    }
+});
 
 route.post('/property', async (req, res) => {
     try {

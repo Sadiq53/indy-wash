@@ -4,7 +4,7 @@ const Tags = ({ customerData, proposalData }) => {
   // Count draft and active proposals
   const proposalStatusCount = proposalData.reduce(
     (acc, proposal) => {
-      if (proposal.status?.type === 'draft') {
+      if (proposal.status?.type !== 'active') {
         acc.draft += 1;
       } else if (proposal.status?.type === 'active') {
         acc.active += 1;
