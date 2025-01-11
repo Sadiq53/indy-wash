@@ -10,6 +10,7 @@ import { frequencyDigitConverter } from '../../../utils/frequencyDigitConverter'
 import Spinner from '../../shared/Loader/Spinner';
 import { toast } from 'react-toastify';
 import { validationSchema } from '../../../schemas/addProposalSchema'
+import MultiSelector from '../Service/Helper/MultiSelector';
 
 const AddProposal = () => {
 
@@ -24,8 +25,6 @@ const AddProposal = () => {
   
   const [displayData, setDisplayData] = useState({customer: {}, property: {}})
   const [isParam, setIsParam] = useState(false)
-  const [services, setServices] = useState([])
-  const [image, setImage] = useState([]);
   const [propertyData, setPropertyData] = useState([])
   const [loading, setLoading] = useState(false)
   const [createDate, setCreateDate] = useState(() => {
@@ -39,74 +38,31 @@ const AddProposal = () => {
     createDate,
     uniqueid: generateUniqueId(),
     customer: '',
+    status: 'created',
     property: '',
-    serviceItem: '',
-    serviceUniqueid: generateUniqueId(),
-    type: '',
-    quantity: '',
-    sqft: '',
-    description: '',
-    additionalInfo: [],
-    frequency: [],
-    status: 'created'  
+    serviceData : [],
   })
-  const [frequencies, setFrequencies] = useState([
-    {
-      name: 'one-off',
-      price: 0
-    },
-    {
-      name: 'annual',
-      price: 0
-    },
-    {
-      name: 'bi-annual',
-      price: 0
-    },
-    {
-      name: 'bi-quarterly',
-      price: 0
-    },
-    {
-      name: 'monthly',
-      price: 0
-    },
-    {
-      name: 'bi-weekly',
-      price: 0
-    },
-    {
-      name: 'quarterly',
-      price: 0
-    }
-  ])
-
-
 
   const proposalForm = useFormik({
-    validationSchema,
+    // validationSchema,
     initialValues,
     onSubmit: async (formData) => {
       setLoading(true);
-      formData.frequency = formData?.frequency?.map(value => ({
-        ...value,
-        frequencyDigit: value?.frequencyDigit || frequencyDigitConverter[value.name],
-      }));
-    
-      // Attach images to formData
-      const formDataWithImages = {
-        ...formData,
-        additionalInfo: image, // Include images in the form data
-      };
 
-      const response = await addProposal(formDataWithImages); // Call your API
+      // Clean serviceData
+      formData.serviceData = formData.serviceData.map((service) => ({
+        ...service,
+        frequency: service.frequency.filter((freq) => freq.price !== null),
+      }));
+
+      const response = await addProposal(formData); // Call your API
 
       if (response?.success) {
         const { proposal, service } = response;
         dispatch(handleAddProposal(proposal));
         dispatch(handleAddServices(service));
         const dataObject = {
-          serviceid: service?.uniqueid,
+          serviceid: service?.map(service => service?.uniqueid),
           proposalid: proposal?.uniqueid,
           propertyid: proposal?.property,
           customerid: proposal?.customer,
@@ -119,55 +75,6 @@ const AddProposal = () => {
     },
   });
 
-  const handleFrequencyChange = (name, value) => {
-    const updatedFrequencies = frequencies.map((freq) =>
-      freq.name === name ? { ...freq, price: parseFloat(value) || 0, frequencyDigit: frequencyDigitConverter[name] } : freq
-    );
-  // console.log(updatedFrequencies)
-    // Filter frequencies where price is greater than 0
-    const validFrequencies = updatedFrequencies.filter((freq) => freq.price > 0);
-  
-    // Update the form field with valid frequencies only
-    proposalForm.setFieldValue("frequency", validFrequencies);
-  
-    // Update the state with all frequencies
-    setFrequencies(updatedFrequencies);
-  };
-  
-  // useEffect(()=>{
-  //   if(customerId && propertyId && type) {
-  //     if(type === 'edit') {
-  //       setIsParam(true)
-  //       const customer = customerData.find((value) => value.uniqueid === customerId);
-  //       const property = customer?.property?.find((value) => value.uniqueid === propertyId);
-  //       const proposalId = property?.proposal[0]
-  //       const proposal = rawProposalData?.find((value) => value.uniqueid === proposalId);
-  //       console.log(proposal)
-  //       setDisplayData({customer, property});
-        
-  //     } else {
-  //       setIsParam(true)
-  //       const customer = customerData.find((value) => value.uniqueid === customerId);
-  //       const property = customer?.property?.find((value) => value.uniqueid === propertyId);
-  //       setDisplayData({customer, property});
-  //       proposalForm.setFieldValue('customer', customer?.uniqueid)
-  //       proposalForm.setFieldValue('property', property?.uniqueid)
-  //       setInitialValues((prev) => ({
-  //         ...prev,
-  //         customer: customer?.personalDetails?.firstName || "",
-  //         property: property?.name || "",
-  //       }));
-  //     }
-  //   }
-  // }, [type, customerId, propertyId, customerData, rawProposalData])
-
-
-  useEffect(()=>{
-    if(adminData) {
-      setServices(adminData?.customServices)
-    }
-  }, [adminData])
-  
   useEffect(() => {
     if (customerId && propertyId) {
       setIsParam(true)
@@ -190,43 +97,10 @@ const AddProposal = () => {
       setPropertyData(customerData?.find(value => value.uniqueid === event)?.property)
     }
   }
-  
-  const toggleService = (event) => {
-    if (adminData) {
-      const data = services?.find((service) => service.name === event);
-      if (data) {
-        
-  
-        // Map through frequencies and update `price` for matching frequencies in `data.frequency`
-        const updatedFrequencies = frequencies.map((freq) => {
-          const matchedFrequency = data?.frequency?.find((item) => item.name === freq.name);
-          return {
-            ...freq,
-            price: matchedFrequency ? matchedFrequency.price : freq.price,
-          };
-        });
-        // console.log(data?.frequency)
-        proposalForm.setFieldValue('type', data?.type)
-        proposalForm.setFieldValue('description', data?.description )
-        proposalForm.setFieldValue("frequency", data?.frequency);
-  
-        // Optionally update `frequencies` in state if needed
-        setFrequencies(updatedFrequencies);
-      }
-    }
-  };
-  
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files); // Get all selected files
-    const newImageFiles = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file), // Generate a preview URL for the image
-    }));
-    setImage((prevImages) => [...prevImages, ...newImageFiles]); // Add to existing images
-  };
 
-  const handleRemoveImage = (index) => {
-    setImage((prevImages) => prevImages.filter((_, i) => i !== index));
+  const handleMultiSelectorChange = (serviceData) => {
+    proposalForm.setFieldValue("serviceData", serviceData);
+    console.log(serviceData)
   };
 
 
@@ -256,8 +130,7 @@ const AddProposal = () => {
                         </div>
                         <div className="box-cs mt-4">
                           <div className="row gap-20">
-                            <div className="col-md-8">
-                              
+                            <div className="col-md-12">
                               <div className="gtc-3 grid-cs">
                                 <div>
                                   <div className="header">
@@ -344,255 +217,10 @@ const AddProposal = () => {
 
                                 </div>
                               </div>
-
-                              <div className="grid-cs gtc-1 pt-3">
-                                <div className="gtc-3 cs-align-end grid-cs">
-                                  <div>
-                                    <div className="header">
-                                      <h5 className="font-1 fw-700 font-size-16">Details :</h5>
-                                      {
-                                        proposalForm.errors.serviceItem && proposalForm.touched.serviceItem && (<small className='text-danger'>{proposalForm.errors.serviceItem}</small>)
-                                      }
-                                    </div>
-                                    <div className="input-section gtc-1 my-2">
-                                      <select onChange={(event)=>{proposalForm.handleChange(event), toggleService(event.target.value)}} className={`${proposalForm.errors.serviceItem && proposalForm.touched.serviceItem && 'is-invalid'}`}  name="serviceItem" id="">
-                                        <option value="">Service item</option>
-                                        {
-                                          services && services?.map((value, index) => {
-                                            return (
-                                              <option key={index}>{value.name}</option>
-                                            )
-                                          })
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    <div className="input-section gtc-1 my-2">
-                                        <input type="text" onChange={proposalForm.handleChange} disabled className='input-disabled' value={proposalForm.values.type} placeholder='Type' name="type" id="" />
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    {
-                                      proposalForm.errors.quantity && proposalForm.touched.quantity && (<small className='text-danger'>{proposalForm.errors.quantity}</small>)
-                                    }
-                                    <div className="input-section gtc-1 my-2">
-                                        <input type="text" className={`${proposalForm.errors.quantity && proposalForm.touched.quantity && 'is-invalid'}`} onChange={proposalForm.handleChange} placeholder='Quantity' name="quantity" id="" />
-                                    </div>
-                                  </div>
-                                </div>
-                                  {
-                                    proposalForm.errors.sqft && proposalForm.touched.sqft && (<small className='text-danger'>{proposalForm.errors.sqft}</small>)
-                                  }
-                                <div className="grid-cs gtc-1-2">
-                                  <div className="input-section gtc-1 my-2">
-                                    <input type="text" className={`${proposalForm.errors.sqft && proposalForm.touched.sqft && 'is-invalid'}`} onChange={proposalForm.handleChange} placeholder='SQFT' name="sqft" id="" />
-                                  </div>
-                                  <div className="input-section gtc-1 my-2">
-                                    <input type="text" onChange={proposalForm.handleChange} disabled className='input-disabled' value={proposalForm.values.description} placeholder='Description' name="description" id="" />
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* <div className="pt-3">
-                                <div className="grid-cs gtc-3 cs-align-end">
-                                  <div>
-                                      <div className="header">
-                                          <h5 className="font-1 fw-700 font-size-16">Additional info :</h5>
-                                      </div>
-                                      <div className="input-section mt-2 gtc-1">
-                                          <div className="upload-box" onClick={()=>document.getElementById('file-upload1').click()}>
-                                              {image.image1 ? (
-
-                                                  <img src={image.image1} alt="Uploaded" />
-                                      
-                                                  ) : (
-                                                  <>
-                                                      <img 
-                                                      src="/assets/img/camera.svg"
-                                                      alt="Camera Icon"
-                                                      className="camera-icon"
-                                                      />
-                                                      <p>Upload Photos</p>
-                                                  </>
-                                                  )
-                                              }
-                                          </div>
-                                          <input
-                                              id="file-upload1"
-                                              type="file"
-                                              accept="image/*"
-                                              onChange={(e)=>{handleImageUpload(e, 'image1')}}
-                                              className="file-input"
-                                          />
-                                      </div>
-                                  </div>
-                                  <div>
-                                    <div className="input-section gtc-1">
-                                      <div className="upload-box" onClick={()=>document.getElementById('file-upload2').click()}>
-                                              {image.image2 ? (
-
-                                                  <img src={image.image2} alt="Uploaded" />
-                                      
-                                                  ) : (
-                                                  <>
-                                                      <img
-                                                      src="/assets/img/camera.svg"
-                                                      alt="Camera Icon"
-                                                      className="camera-icon"
-                                                      />
-                                                      <p>Upload Blue Print</p>
-                                                  </>
-                                                  )
-                                              }
-                                          </div>
-                                          <input
-                                              id="file-upload2"
-                                              type="file"
-                                              accept="image/*"
-                                              onChange={(e)=>{handleImageUpload(e, 'image2')}}
-                                              className="file-input"
-                                          />
-                                      </div>
-                                  </div>
-                                </div>
-                              </div> */}
-
-                            <div className="pt-3">
-                              <div className="">
-                                  <div className="header">
-                                    <h5 className="font-1 fw-700 font-size-16">Additional info :</h5>
-                                  </div>
-                                  <div className="input-section grid-cs gtc-3 cs-align-end mt-2">
-                                    {image?.length > 0 ? 
-                                        image?.map((image, index) => (
-                                    <div
-                                      className="upload-box"
-                                      onClick={() => document.getElementById('file-upload').click()}
-                                    >
-                                        <div className="image-preview-container">
-                                            <div key={index} className="image-preview">
-                                              <img src={image.preview} alt="Uploaded" />
-                                              <button
-                                                type="button"
-                                                className="btn btn-danger btn-sm cs-absolute"
-                                                onClick={() => handleRemoveImage(index)}
-                                              >
-                                                Remove
-                                              </button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                          )) : (
-                                            <>
-                                            <div
-                                              className="upload-box"
-                                              onClick={() => document.getElementById('file-upload').click()}
-                                            >
-                                              <img
-                                                src="/assets/img/camera.svg"
-                                                alt="Camera Icon"
-                                                className="camera-icon"
-                                              />
-                                              <p>Upload Photos</p>
-                                            </div>
-                                        </>
-                                      )}
-                                    </div>
-                                    <input
-                                      id="file-upload"
-                                      type="file"
-                                      accept="image/*"
-                                      multiple // Allow selecting multiple files
-                                      onChange={handleImageUpload}
-                                      className="file-input"
-                                    />
-                                </div>
-                            </div>
-
-                            </div>
-                            <div className="col-md-4">
-                              {/* <div className="frequency-layout ">
-                                <div className='content'>
-                                  <div className='gtc-3-1 width-100'>
-                                      <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
-                                      <h4 className="font-1 font-size-16 fw-700">Price</h4>
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>One-Off</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="one-off" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Annual</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="annual" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Bi-Annual</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="bi-annual" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Quarterly</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="quarterly" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Bi-Quarterly</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="bi-quarterly" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Monthly</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="monthly" id="" />
-                                  </div>
-                                  <div>
-                                    <div className="property">
-                                      <p>Bi-weekly</p>
-                                    </div>
-                                    <input type="text" placeholder='$' name="bi-weekly" id="" />
-                                  </div>
-                                </div>
-                              <button className="filter-btn bg-theme-2" >
-                                <i className="fa-light fa-xl fa-circle-plus" style={{ color: "#ffffff" }} /> &nbsp; Add More Property
-                              </button>
-                              </div> */}
-                              <div className="frequency-layout">
-                                <div className="content">
-                                  <div className="gtc-3-1 width-100">
-                                    <h4 className="font-1 font-size-16 fw-700">Frequency Options</h4>
-                                    <h4 className="font-1 font-size-16 fw-700">Price</h4>
-                                  </div>
-                                  {frequencies?.map((freq) => (
-                                    <div key={freq}>
-                                      <div className="property">
-                                        <p>{freq?.name?.replace(/([A-Z])/g, ' $1')?.replace(/^./, str => str.toUpperCase())}</p>
-                                      </div>
-                                      <input
-                                        type="number"
-                                        placeholder="$"
-                                        name={freq.name}
-                                        value={freq.price || ''}
-                                        onChange={(e) => handleFrequencyChange(freq.name, e.target.value)}
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-
                             </div>
                           </div>
                         </div>
+                        <MultiSelector onDataChange={handleMultiSelectorChange} />
                       </div>
                     </form>
                 </div>

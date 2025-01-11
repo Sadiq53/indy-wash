@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import DownloadAgreement from "../../shared/Agreement/DownloadAgreement";
 import MoreDetailModal from "./Helper/MoreDetailModal";
 import LightBox from "./Helper/LightBox";
+import { getPerCleaningCost } from "../../../utils/ArithematicCalculation";
 
 const ProposalDetail = () => {
   const { proposalid } = useParams();
@@ -89,7 +90,7 @@ const ProposalDetail = () => {
     if(selectedServiceData) {
       const getFrequency = selectedServiceData?.frequency?.find(value => value.name === selectedServiceData?.activePlan)
       setSelectedFrequency(getFrequency)
-      setPerCleaning(getFrequency?.price * selectedServiceData?.sqft)
+      setPerCleaning(getPerCleaningCost(getFrequency?.price, selectedServiceData?.sqft, selectedServiceData?.quantity))
     }
   }, [selectedServiceData]);
 
@@ -346,12 +347,40 @@ const navigateRoute = () => {
                     </div>
                     <div className="col-md-4 ">
                       <div className="proposal-data ">
-                        <div><p>Date </p>: <p>{formatDate(proposalData?.createDate)}</p></div>
-                        <div><p>No. of Units </p>: <p>{propertyData?.units}</p></div>
-                        <div><p>Company</p>: <p>{propertyData?.propertyName || "N/A"}</p></div>
-                        <div><p>Contact Name</p>: <p>{customerData?.personalDetails?.firstName}</p></div>
-                        <div><p>Contact No</p>: <p>{customerData?.personalDetails?.phone}</p></div>
-                        <div><p>Property Address</p>: <p>{propertyData?.billingAddress || "N/A"}</p></div>
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td><p>Date</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{formatDate(proposalData?.createDate)}</p></td>
+                            </tr>
+                            <tr>
+                              <td><p>No. of Units</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{propertyData?.units}</p></td>
+                            </tr>
+                            <tr>
+                              <td><p>Company</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{propertyData?.propertyName || "N/A"}</p></td>
+                            </tr>
+                            <tr>
+                              <td><p>Contact Name</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{customerData?.personalDetails?.firstName}</p></td>
+                            </tr>
+                            <tr>
+                              <td><p>Contact No</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{customerData?.personalDetails?.phone}</p></td>
+                            </tr>
+                            <tr>
+                              <td><p>Property Address</p></td>
+                              <td><p>:</p></td>
+                              <td><p>{propertyData?.serviceAddress || "N/A"}</p></td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                       <div className="pt-4">
                         <div className="service-overview-card desk-show">
@@ -362,7 +391,7 @@ const navigateRoute = () => {
                             </p>
                           </div>
                           <div className="grid-cs gtc-equal mob">
-                            <div className="tab-cs">{totalSqft} SQFT</div>
+                            <div className="tab-cs">{selectedServiceData?.sqft} SQFT</div>
                             <div className="tab-cs">${perCleaning * selectedFrequency?.frequencyDigit}/Yr</div>
                           </div>
                         </div>

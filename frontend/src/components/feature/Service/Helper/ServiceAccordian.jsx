@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { frequencyDigit, frequencyDigitConverter } from '../../../../utils/frequencyDigitConverter'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';  // Import the default CSS for Toastify
+import { getPerCleaningCost } from "../../../../utils/ArithematicCalculation";
 
 
 const ServiceAccordian = ({ property, service, onChangeData, getServiceid }) => {
@@ -118,7 +119,7 @@ const handleFrequencyChange = (e, frequency, serviceUniqueId, field) => {
                 if (item.name === frequency) {
                     return {
                         ...item,
-                        [field]: Number(value), // Convert the value to a number before storing
+                        [field]: parseFloat(value), // Convert the value to a number before storing
                     };
                 }
                 return item;
@@ -164,7 +165,7 @@ useEffect(()=>{
     <div className="accordion" id="servicesAccordion">
       {displayData?.map((value) => {
         const getFrequency = servicesData[value?.uniqueid]?.frequency?.find((item) => item.name === servicesData[value?.uniqueid]?.activePlan);
-        const perCleaning = servicesData[value?.uniqueid]?.sqft * getFrequency?.price;
+        const perCleaning = getPerCleaningCost(servicesData[value?.uniqueid]?.sqft, getFrequency?.price, servicesData[value?.uniqueid]?.quantity)
         const perMonth = ((perCleaning * getFrequency?.frequencyDigit) / 12 / property?.units).toFixed(2);
         return (
           <div className="accordion-item cs-accordian" key={value.uniqueid}>
@@ -258,8 +259,8 @@ useEffect(()=>{
                         <input
                           className="width-100 input-"
                           type="number"
-                          placeholder="$0.06"
-                          value={getFrequency?.price || ""}
+                          placeholder="$"
+                          value={getFrequency?.price}
                           onChange={(e) => handleFrequencyChange(e, servicesData[value.uniqueid]?.activePlan, value.uniqueid, "price")}
                           
                         />
@@ -282,24 +283,24 @@ useEffect(()=>{
                           <input
                             className="width-100 input-disabled"
                             disabled
-                            type="text"
-                            placeholder="$0.06"
+                            type="number"
+                            placeholder="$"
                             
                             value={perCleaning || ""}
                           />
                           <input
                             className="width-100 input-disabled"
                             disabled
-                            type="text"
-                            placeholder="$0.06"
+                            type="number"
+                            placeholder="$"
                             
                             value={perCleaning * getFrequency?.frequencyDigit || ""}
                           />
                           <input
                             className="width-100 input-disabled"
                             disabled
-                            type="text"
-                            placeholder="$0.06"
+                            type="number"
+                            placeholder="$"
                             
                             value={perMonth || ""}
                           />

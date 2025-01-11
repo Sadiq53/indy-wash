@@ -34,39 +34,46 @@ const AdminDataSlice = createSlice({
             // Return a new customers array with updated customer properties
             state.customers = state.customers?.map(customer => {
                 if (customer.uniqueid === customerid) {
-                    // Find the property inside the customer
-                    const updatedProperty = customer.property?.map(property => {
+                    // Update the property inside the customer
+                    const updatedProperties = customer.property?.map(property => {
                         if (property.uniqueid === propertyid) {
-                            // Ensure services and proposals arrays exist before pushing values
-                            const updatedServices = property.services || [];
-                            const updatedProposals = property.proposals || [];
+                            // Initialize services and proposals if they don't exist
+                            const updatedServices = property.services ? [...property.services] : [];
+                            const updatedProposals = property.proposals ? [...property.proposals] : [];
         
-                            // Push the new serviceid and proposalid if they are provided
-                            if (serviceid && !updatedServices.includes(serviceid)) {
-                                updatedServices.push(serviceid);
+                            // Add serviceid to services array if it's provided and unique
+                            if (Array.isArray(serviceid)) {
+                                serviceid.forEach(service => {
+                                    if (service && !updatedServices.includes(service)) {
+                                        updatedServices.push(service);
+                                    }
+                                });
                             }
+        
+                            // Add proposalid to proposals array if it's provided and unique
                             if (proposalid && !updatedProposals.includes(proposalid)) {
                                 updatedProposals.push(proposalid);
                             }
         
+                            // Return the updated property
                             return {
-                                ...property,  // Copy the existing property
+                                ...property,
                                 services: updatedServices,
-                                proposals: updatedProposals
+                                proposal: updatedProposals,
                             };
                         }
-                        return property;  // Return the unchanged property
+                        return property; // Return the unchanged property
                     });
         
-                    // Return the updated customer object with the updated property
+                    // Return the updated customer object
                     return {
-                        ...customer,  // Copy the existing customer object
-                        property: updatedProperty
+                        ...customer,
+                        property: updatedProperties,
                     };
                 }
-                return customer;  // Return the unchanged customer
+                return customer; // Return the unchanged customer
             });
-        },
+        },        
         handleAddCustomService : (state, action) => {
             state.admin?.customServices?.push(action.payload)
         },

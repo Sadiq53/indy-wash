@@ -9,6 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const nodemailer = require('nodemailer')
+const fs = require('fs')
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 // AWS SDK Configuration
@@ -81,30 +82,40 @@ route.get('/', async(req, res) => {
 })
 
 // route.post('/', upload.any(), async (req, res) => {
+//     // console.log(req.body)
 //     const rawData = req.body;
 
-//     // Create serviceClone object
-//     const serviceClone = {
-//         uniqueid: rawData?.serviceUniqueid,
-//         createDate: rawData?.createDate,
-//         name: rawData?.serviceItem,
-//         type: rawData?.type,
-//         description: rawData?.description,
-//         quantity: rawData?.quantity,
-//         sqft: rawData?.sqft,
-//         frequency: rawData?.frequency,
-//     };
-
-//     // Create proposalClone object
-//     const proposalClone = {
-//         uniqueid: rawData?.uniqueid,
-//         createDate: rawData?.createDate,
-//         customer: rawData?.customer,
-//         property: rawData?.property,
-//         service: [rawData?.serviceUniqueid],
-//     };
-
 //     try {
+//         // Process uploaded files (images in additionalInfo)
+//         const images = req.files.map(file => ({
+//             uniqueid: uuidv4(),
+//             s3Url: file.location, // Public URL of the file
+//             s3Key: file.key, // S3 Key of the file
+//         }));
+
+
+//         // Create serviceClone object
+//         const serviceClone = {
+//             uniqueid: rawData?.serviceUniqueid,
+//             createDate: rawData?.createDate,
+//             name: rawData?.serviceItem,
+//             type: rawData?.type,
+//             description: rawData?.description,
+//             quantity: rawData?.quantity,
+//             sqft: rawData?.sqft,
+//             frequency: JSON.parse(rawData?.frequency),
+//             images: images, // Attach the uploaded images
+//         };
+
+//         // Create proposalClone object
+//         const proposalClone = {
+//             uniqueid: rawData?.uniqueid,
+//             createDate: rawData?.createDate,
+//             customer: rawData?.customer,
+//             property: rawData?.property,
+//             service: [rawData?.serviceUniqueid],
+//         };
+
 //         // Create proposal in the database
 //         await proposalModel.create(proposalClone);
 
@@ -117,6 +128,8 @@ route.get('/', async(req, res) => {
 //         if (!customer) {
 //             return res.status(404).send({ message: 'Customer not found' });
 //         }
+
+//         const { email, firstName, lastName } = customer?.personalDetails
 
 //         // Find the property inside the customer object
 //         const property = customer.property.find(prop => prop.uniqueid === rawData?.property);
@@ -132,7 +145,83 @@ route.get('/', async(req, res) => {
 //         // Save the updated customer object
 //         await customer.save();
 
-//         res.status(200).send({ message: 'Service and Proposal added successfully', success: true, service: serviceClone, proposal: proposalClone });
+
+//         // Nodemailer transporter setup
+//         const transporter = nodemailer.createTransport({
+//             host: "smtp-relay.brevo.com",
+//             port: 587,
+//             secure: false,
+//             auth: {
+//                 user: process.env.BREVO_SMTP_MAIL,
+//                 pass: process.env.BREVO_SMTP_API_KEY
+//             },
+//             tls: {
+//                 rejectUnauthorized: false,
+//             },
+//         });
+    
+//         // Email content
+//         const htmlContent = `<html>
+//                                 <head>
+//                                     <style>
+//                                         body {
+//                                             font-family: Arial, sans-serif;
+//                                             line-height: 1.6;
+//                                         }
+//                                         .container {
+//                                             padding: 20px;
+//                                             max-width: 600px;
+//                                             margin: auto;
+//                                             border: 1px solid #ddd;
+//                                             border-radius: 8px;
+//                                             background-color: #f9f9f9;
+//                                         }
+//                                         .header {
+//                                             text-align: center;
+//                                             color: #4CAF50;
+//                                         }
+//                                         .content {
+//                                             margin-top: 20px;
+//                                         }
+//                                         .footer {
+//                                             margin-top: 20px;
+//                                             text-align: center;
+//                                             color: #777;
+//                                             font-size: 12px;
+//                                         }
+//                                     </style>
+//                                 </head>
+//                                 <body>
+//                                     <div class="container">
+//                                         <h2 class="header">Your Proposal is Ready!</h2>
+//                                         <div class="content">
+//                                             <p>Dear <strong>${firstName} ${lastName}</strong>,</p>
+//                                             <p>We are excited to inform you that your proposal has been successfully created. You can now review the details and take the next steps towards achieving your goals with us.</p>
+//                                             <p><strong>Proposal ID:</strong> ${proposalClone?.uniqueid}</p>
+//                                             <p>We look forward to assisting you further!</p>
+//                                         </div>
+//                                         <div class="footer">
+//                                             <p>Thank you for choosing Indy Soft Wash.</p>
+//                                         </div>
+//                                     </div>
+//                                 </body>
+//                             </html>`;
+    
+//         // Send email
+//         await transporter.sendMail({
+//             from: `<${process.env.BREVO_SENDER_MAIL}>`,
+//             to: email,
+//             subject: `Your Proposal is Ready – Let's Move Forward!`,
+//             html: htmlContent,
+//         });
+
+
+//         res.status(200).send({
+//             message: 'Service and Proposal added successfully',
+//             success: true,
+//             service: serviceClone,
+//             proposal: proposalClone,
+//         });
 //     } catch (error) {
 //         console.error('Error in adding service and proposal:', error);
 //         res.status(500).send({ message: 'Internal Server Error' });
@@ -140,69 +229,95 @@ route.get('/', async(req, res) => {
 // });
 
 route.post('/', upload.any(), async (req, res) => {
-    // console.log(req.body)
     const rawData = req.body;
 
     try {
-        // Process uploaded files (images in additionalInfo)
-        const images = req.files.map(file => ({
-            uniqueid: uuidv4(),
-            s3Url: file.location, // Public URL of the file
-            s3Key: file.key, // S3 Key of the file
+        const serviceIds = [];
+
+        // Parse the `serviceData` field from rawData
+        let serviceData = rawData.serviceData.map(item => JSON.parse(item));
+
+        // Process each service item
+        serviceData = await Promise.all(serviceData.map(async (serviceItem, i) => {
+            const {
+                serviceItem: name,
+                serviceUniqueid,
+                type,
+                quantity,
+                sqft,
+                description,
+                frequency
+            } = serviceItem;
+
+            // Extract and process images for the current service item
+            const serviceImages = req.files
+                .filter(file => file.fieldname.startsWith(`serviceData[${i}].additionalInfo`)) // Match all additionalInfo files for the current service
+                .map(file => {
+                    const matches = file.fieldname.match(/serviceData\[\d+\]\.additionalInfo\[(\d+)\]\.file/);
+                    const additionalInfoIndex = matches ? parseInt(matches[1], 10) : null;
+
+                    return {
+                        uniqueid: uuidv4(),
+                        s3Url: file.location || file.path, // Use S3 location or local file path
+                        s3Key: file.key || file.filename, // Use S3 key or local filename
+                        additionalInfoIndex, // Optional: Include the index for additional grouping if needed
+                    };
+                });
+
+            // Create the service clone object
+            const serviceClone = {
+                uniqueid: serviceUniqueid,
+                createDate: rawData?.createDate,
+                name: name,
+                type: type,
+                description: description,
+                quantity: quantity,
+                sqft: sqft,
+                frequency: frequency,
+                images: serviceImages, // Attach processed images here
+            };
+
+            // Save the service to the database
+            await serviceModel.create(serviceClone);
+
+            // Add the serviceUniqueid to the array for later use
+            serviceIds.push(serviceUniqueid);
+
+            return serviceClone;
         }));
 
-
-        // Create serviceClone object
-        const serviceClone = {
-            uniqueid: rawData?.serviceUniqueid,
-            createDate: rawData?.createDate,
-            name: rawData?.serviceItem,
-            type: rawData?.type,
-            description: rawData?.description,
-            quantity: rawData?.quantity,
-            sqft: rawData?.sqft,
-            frequency: JSON.parse(rawData?.frequency),
-            images: images, // Attach the uploaded images
-        };
-
-        // Create proposalClone object
+        // Create a proposalClone object
         const proposalClone = {
-            uniqueid: rawData?.uniqueid,
-            createDate: rawData?.createDate,
-            customer: rawData?.customer,
-            property: rawData?.property,
-            service: [rawData?.serviceUniqueid],
+            uniqueid: rawData.uniqueid,
+            createDate: rawData.createDate,
+            customer: rawData.customer,
+            property: rawData.property,
+            service: serviceIds
         };
 
-        // Create proposal in the database
+        // Save the proposal to the database
         await proposalModel.create(proposalClone);
 
-        // Create service in the database
-        await serviceModel.create(serviceClone);
-
-        // Find customer by uniqueid
-        const customer = await customerModel.findOne({ uniqueid: rawData?.customer });
+        // Update the customer object
+        const customer = await customerModel.findOne({ uniqueid: rawData.customer });
 
         if (!customer) {
             return res.status(404).send({ message: 'Customer not found' });
         }
 
-        const { email, firstName, lastName } = customer?.personalDetails
+        const { email, firstName, lastName } = customer.personalDetails;
 
-        // Find the property inside the customer object
-        const property = customer.property.find(prop => prop.uniqueid === rawData?.property);
+        // Update the property with services and proposal
+        const property = customer.property.find(prop => prop.uniqueid === rawData.property);
 
         if (property) {
-            // Push the serviceUniqueid and proposalClone.uniqueid into the respective arrays
-            property.services.push(rawData?.serviceUniqueid);
-            property.proposal.push(rawData?.uniqueid);
+            property.services.push(...serviceIds);
+            property.proposal.push(rawData.uniqueid);
         } else {
             return res.status(404).send({ message: 'Property not found' });
         }
 
-        // Save the updated customer object
         await customer.save();
-
 
         // Nodemailer transporter setup
         const transporter = nodemailer.createTransport({
@@ -213,72 +328,50 @@ route.post('/', upload.any(), async (req, res) => {
                 user: process.env.BREVO_SMTP_MAIL,
                 pass: process.env.BREVO_SMTP_API_KEY
             },
-            tls: {
-                rejectUnauthorized: false,
-            },
+            tls: { rejectUnauthorized: false }
         });
-    
+
         // Email content
-        const htmlContent = `<html>
-                                <head>
-                                    <style>
-                                        body {
-                                            font-family: Arial, sans-serif;
-                                            line-height: 1.6;
-                                        }
-                                        .container {
-                                            padding: 20px;
-                                            max-width: 600px;
-                                            margin: auto;
-                                            border: 1px solid #ddd;
-                                            border-radius: 8px;
-                                            background-color: #f9f9f9;
-                                        }
-                                        .header {
-                                            text-align: center;
-                                            color: #4CAF50;
-                                        }
-                                        .content {
-                                            margin-top: 20px;
-                                        }
-                                        .footer {
-                                            margin-top: 20px;
-                                            text-align: center;
-                                            color: #777;
-                                            font-size: 12px;
-                                        }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class="container">
-                                        <h2 class="header">Your Proposal is Ready!</h2>
-                                        <div class="content">
-                                            <p>Dear <strong>${firstName} ${lastName}</strong>,</p>
-                                            <p>We are excited to inform you that your proposal has been successfully created. You can now review the details and take the next steps towards achieving your goals with us.</p>
-                                            <p><strong>Proposal ID:</strong> ${proposalClone?.uniqueid}</p>
-                                            <p>We look forward to assisting you further!</p>
-                                        </div>
-                                        <div class="footer">
-                                            <p>Thank you for choosing Indy Soft Wash.</p>
-                                        </div>
-                                    </div>
-                                </body>
-                            </html>`;
-    
+        const htmlContent = `
+            <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; }
+                        .container { padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                        .header { text-align: center; color: #4CAF50; }
+                        .content { margin-top: 20px; }
+                        .footer { margin-top: 20px; text-align: center; color: #777; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <h2 class="header">Your Proposal is Ready!</h2>
+                        <div class="content">
+                            <p>Dear <strong>${firstName} ${lastName}</strong>,</p>
+                            <p>We are excited to inform you that your proposal has been successfully created. You can now review the details and take the next steps towards achieving your goals with us.</p>
+                            <p><strong>Proposal ID:</strong> ${proposalClone.uniqueid}</p>
+                            <p>We look forward to assisting you further!</p>
+                        </div>
+                        <div class="footer">
+                            <p>Thank you for choosing Indy Soft Wash.</p>
+                        </div>
+                    </div>
+                </body>
+            </html>`;
+
         // Send email
         await transporter.sendMail({
             from: `<${process.env.BREVO_SENDER_MAIL}>`,
             to: email,
             subject: `Your Proposal is Ready – Let's Move Forward!`,
-            html: htmlContent,
+            html: htmlContent
         });
-
 
         res.status(200).send({
             message: 'Service and Proposal added successfully',
             success: true,
-            service: serviceClone,
-            proposal: proposalClone,
+            service: serviceData,
+            proposal: proposalClone
         });
     } catch (error) {
         console.error('Error in adding service and proposal:', error);
@@ -508,7 +601,7 @@ route.post("/status", uploadPdf.single("pdf"), async (req, res) => {
         await transporter.sendMail(mailOptions);
 
         // Clean up the uploaded PDF file
-        // fs.unlinkSync(pdfFilePath);
+        fs.unlinkSync(pdfFilePath);
 
         res.status(200).send({ message: "Proposal status updated and email sent successfully", success: true });
     } catch (error) {

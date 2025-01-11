@@ -328,12 +328,12 @@ useEffect(() => {
                         <div>
                         <div className="header">
                             <h5 className="font-1 fw-700 font-size-16">
-                            Additional Contact info :
+                            Additional Contact Info :
                             </h5>
                         </div>
                         <div className="input-section my-2">
                             {["detail1", "detail2"].map((detailKey) =>
-                            ["fullname", "title", "email", "phone"].map(
+                            ["full Name", "title", "email", "phone"].map(
                                 (field) => (
                                 <input
                                     key={`${detailKey}-${field}`}
@@ -351,7 +351,7 @@ useEffect(() => {
                                     }
                                     onChange={(e) =>
                                     addCustomerForm.setFieldValue(
-                                        `additionalContact.${detailKey}.${field}`,
+                                        `additionalContact.${detailKey}.${field === 'full Name' ? 'fullname' : field}`,
                                         e.target.value
                                     )
                                     }

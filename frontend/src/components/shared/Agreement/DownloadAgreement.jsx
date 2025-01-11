@@ -198,7 +198,7 @@ const DownloadAgreement = ({ serviceData, propertyData, customerData }) => {
                           serviceData?.map((value, index) => {
                             const price = extractPrice(value, 'price')
                             const digit = extractPrice(value, 'frequencyDigit')
-                            const perCleanCost = getPerCleaningCost(price, value.sqft)
+                            const perCleanCost = getPerCleaningCost(price, value.sqft, value.quantity)
                             const annualCost = getOverallCost(perCleanCost, digit)
                             const unitPerMonth = ((perCleanCost) * (digit) / 12 / propertyData?.units).toFixed(2);
                             return (

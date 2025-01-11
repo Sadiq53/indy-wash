@@ -2,15 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { frequencyDigit, frequencyDigitConverter } from "../../../../utils/frequencyDigitConverter";
 import { generateUniqueId } from '../../../../utils/UniqueIdGenerator'
 import { addExtraService } from '../../../../services/ServicesService'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleAddExtraService } from '../../../../redux/ServiceDataSlice'
 import { handleAddService } from "../../../../redux/AdminDataSlice";
 import Spinner from "../../../shared/Loader/Spinner";
+import { formatNumberInput } from '../../../../utils/Formatter'
+import ToggleButton from "../../../shared/Buttons/ToggleButton";
 
 const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
 
     const dispatch = useDispatch()
     const clsModal = useRef()
+
+    const adminData = useSelector(state => state.AdminDataSlice.admin)
 
     const [createDate] = useState(() => {
         const today = new Date();
@@ -20,7 +24,9 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         return `${yyyy}-${mm}-${dd}`;
     });
     const [loading, setLoading] = useState(false)
+    const [serviceToggle, setServiceToggle] = useState(true)
     const [image, setImage] = useState([]);
+    const [services, setServices] = useState([])
 
     const [formValues, setFormValues] = useState({
         uniqueid: generateUniqueId(),
@@ -42,6 +48,12 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
             setFormValues({...formValues, propertyid: propertyId, proposalid: proposalId, customerid: customerId})
         }
     }, [proposalId, customerId, propertyId])
+
+    useEffect(()=>{
+        if(adminData) {
+            setServices(adminData?.customServices)
+        }
+    }, [adminData])
 
 
     // Handle input changes for text inputs
@@ -87,7 +99,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                 if (item.name === frequencyName) {
                     return {
                         ...item,
-                        price: Number(value), // Ensure the price is stored as a number
+                        price: parseFloat(value), // Ensure the price is stored as a number
                     };
                 }
                 return item;
@@ -137,16 +149,44 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
         }
     }
 
+    const toggleService = (event) => {
+        if (adminData) {
+            const data = services?.find((service) => service.name === event);
+            if (data) {
+            
+                setFormValues((prev) => ({
+                    ...prev,
+                    type: data?.type,
+                    description: data?.description,
+                }));
+        
+            }
+        }
+    };
+
+    const getToggle = (value) => {
+        setServiceToggle(value === 'auto' ? true : false)
+        setFormValues((prev) => ({
+            ...prev,
+            type: '',
+            description: '',
+        }));
+    }
+
+
     return (
         <>
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog width-800 modal-dialog-centered">
                     <div className="modal-content box-cs">
-                        <div className="modal-header">
+                        <div className="modal-header service-header-repeater">
                             <h1 className="modal-title fs-5" id="exampleModalLabel">
                                 Add New Service
                             </h1>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div className="toggle-section">
+                                <ToggleButton toggle={getToggle} />
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
                         </div>
                         <div className="modal-body">
                             <div className="accordian-content">
@@ -160,15 +200,41 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                     </div>
                                     <div className="body">
                                         <div className="part-1 input-section">
-                                            <input
+                                            {/* <input
+                                                autoComplete="off"
                                                 className="width-100"
                                                 type="text"
                                                 placeholder="Service Name"
                                                 name="name"
                                                 value={formValues.name}
                                                 onChange={handleInputChange}
-                                            />
+                                            /> */}
+                                            {
+                                                serviceToggle ? (
+                                                <select onChange={(event)=>{handleInputChange, toggleService(event.target.value)}} className="w-100" name="name" id="">
+                                                    <option value="">Service item</option>
+                                                    {
+                                                    services && services?.map((value, index) => {
+                                                        return (
+                                                        <option key={index}>{value.name}</option>
+                                                        )
+                                                    })
+                                                    }
+                                                </select>
+                                                ) : (
+                                                    <input
+                                                        autoComplete="off"
+                                                        className="width-100"
+                                                        type="text"
+                                                        placeholder="Service Name"
+                                                        name="name"
+                                                        value={formValues.name}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                )
+                                            }
                                             <input
+                                                autoComplete="off"
                                                 className="width-100"
                                                 type="text"
                                                 placeholder="Quantity"
@@ -177,6 +243,7 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                                 onChange={handleInputChange}
                                             />
                                             <input
+                                                autoComplete="off"
                                                 className="width-100"
                                                 type="text"
                                                 placeholder="SQFT"
@@ -197,14 +264,16 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                                 ))}
                                             </select>
                                             <input
+                                                autoComplete="off"
                                                 className="width-100"
-                                                type="text"
+                                                type="number"
                                                 placeholder="$"
+                                                onBlur={(e)=>formatNumberInput(e)}
                                                 name="price"
                                                 value={
                                                     formValues.frequency.find(
                                                         (item) => item.name === formValues.activePlan
-                                                    )?.price || ""
+                                                    )?.price 
                                                 }
                                                 onChange={(e) =>
                                                     handlePriceChange(e, formValues.activePlan)
@@ -214,7 +283,9 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                         <div className="part-2 gtc-equal input-section">
                                             <div className="flex-cs cs-flex-column">
                                                 <input
-                                                    className="width-100"
+                                                    autoComplete="off"
+                                                    className={`width-100 ${serviceToggle && 'input-disabled'}`}
+                                                    disabled={serviceToggle}
                                                     type="text"
                                                     placeholder="Type"
                                                     name="type"
@@ -222,124 +293,60 @@ const AddServiceModal = ({ proposalId, customerId, propertyId }) => {
                                                     onChange={handleInputChange}
                                                 />
                                                 <textarea
+                                                    autoComplete="off"
                                                     rows={2}
                                                     placeholder="Service Overview"
                                                     name="description"
                                                     value={formValues.description}
-                                                    className="width-100"
+                                                    className={`width-100 ${serviceToggle && 'input-disabled'}`}
+                                                    disabled={serviceToggle}
                                                     onChange={handleInputChange}
                                                 ></textarea>
                                             </div>
-                                            {/* <div className="grid-cs gtc-equal cs-align-end">
-                                                <div>
-                                                    <div
-                                                        className="input-section mt-2 gtc-1"
-                                                        onClick={() =>
-                                                            document.getElementById("file-upload1").click()
-                                                        }
-                                                    >
-                                                        <div className="upload-box">
-                                                            {image.image1 ? (
-                                                                <img src={image.image1} alt="Uploaded" />
-                                                            ) : (
-                                                                <>
-                                                                    <img
-                                                                        src="/assets/img/camera.svg"
-                                                                        alt="Camera Icon"
-                                                                        className="camera-icon"
-                                                                    />
-                                                                    <p>Upload Photos</p>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                        <input
-                                                            id="file-upload1"
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={(e) =>
-                                                                handleImageUpload(e, "image1")
-                                                            }
-                                                            className="file-input"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div
-                                                        className="input-section gtc-1"
-                                                        onClick={() =>
-                                                            document.getElementById("file-upload2").click()
-                                                        }
-                                                    >
-                                                        <div className="upload-box">
-                                                            {image.image2 ? (
-                                                                <img src={image.image2} alt="Uploaded" />
-                                                            ) : (
-                                                                <>
-                                                                    <img
-                                                                        src="/assets/img/camera.svg"
-                                                                        alt="Camera Icon"
-                                                                        className="camera-icon"
-                                                                    />
-                                                                    <p>Upload Blue Print</p>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                        <input
-                                                            id="file-upload2"
-                                                            type="file"
-                                                            accept="image/*"
-                                                            onChange={(e) =>
-                                                                handleImageUpload(e, "image2")
-                                                            }
-                                                            className="file-input"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div> */}
                                             <div className="input-section grid-cs gtc-equal cs-align-end">
-                                    {image?.length > 0 ? 
-                                        image?.map((image, index) => (
-                                    <div
-                                      className="upload-box"
-                                      onClick={() => document.getElementById('file-upload').click()}
-                                    >
-                                        <div className="image-preview-container">
-                                            <div key={index} className="image-preview">
-                                              <img src={image.preview} alt="Uploaded" />
-                                              <button
-                                                type="button"
-                                                className="btn btn-danger btn-sm cs-absolute"
-                                                onClick={() => handleRemoveImage(index)}
-                                              >
-                                                Remove
-                                              </button>
+                                                {image?.length > 0 ? 
+                                                    image?.map((image, index) => (
+                                                <div
+                                                className="upload-box"
+                                                onClick={() => document.getElementById('file-upload').click()}
+                                                >
+                                                    <div className="image-preview-container">
+                                                        <div key={index} className="image-preview">
+                                                        <img src={image.preview} alt="Uploaded" />
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger btn-sm cs-absolute"
+                                                            onClick={() => handleRemoveImage(index)}
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    )) : (
+                                                        <>
+                                                        <div
+                                                        className="upload-box"
+                                                        onClick={() => document.getElementById('file-upload').click()}
+                                                        >
+                                                        <img
+                                                            src="/assets/img/camera.svg"
+                                                            alt="Camera Icon"
+                                                            className="camera-icon"
+                                                        />
+                                                        <p>Upload Photos</p>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
-                                            </div>
-                                        </div>
-                                          )) : (
-                                            <>
-                                            <div
-                                              className="upload-box"
-                                              onClick={() => document.getElementById('file-upload').click()}
-                                            >
-                                              <img
-                                                src="/assets/img/camera.svg"
-                                                alt="Camera Icon"
-                                                className="camera-icon"
-                                              />
-                                              <p>Upload Photos</p>
-                                            </div>
-                                        </>
-                                      )}
-                                    </div>
-                                    <input
-                                      id="file-upload"
-                                      type="file"
-                                      accept="image/*"
-                                      multiple // Allow selecting multiple files
-                                      onChange={handleImageUpload}
-                                      className="file-input"
-                                    />
+                                            <input
+                                            id="file-upload"
+                                            type="file"
+                                            accept="image/*"
+                                            multiple // Allow selecting multiple files
+                                            onChange={handleImageUpload}
+                                            className="file-input"
+                                            />
                                         </div>
                                     </div>
                                 </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { toggleActivePlan } from "../../../../services/ServicesService";
 import { useDispatch } from "react-redux";
 import { handleToggleActivePlan } from "../../../../redux/ServiceDataSlice";
+import { getPerCleaningCost } from "../../../../utils/ArithematicCalculation";
 
 const ProposalTagCard = ({service, units}) => {
 
@@ -85,7 +86,7 @@ const ProposalTagCard = ({service, units}) => {
         >
         {
             frequencies?.map((value, index) => {
-                const perCleaning = value.price * service?.sqft;
+                const perCleaning = getPerCleaningCost(value.price, service?.sqft, service?.quantity);
                 const unitPerMonth = ((perCleaning) * (value.frequencyDigit) / 12 / units).toFixed(2);
 
                 // Dynamically assign the card background class (1, 2, 3)

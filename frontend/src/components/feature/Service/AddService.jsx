@@ -8,6 +8,7 @@ import { handleAddCustomService, handleUpdateCustomService } from "../../../redu
 import Spinner from "../../shared/Loader/Spinner";
 import { toast } from "react-toastify";
 import { validationSchema } from '../../../schemas/addServiceSchema'
+import { formatNumberInput } from "../../../utils/Formatter";
 
 const AddService = () => {
   const dispatch = useDispatch();
@@ -261,12 +262,13 @@ const AddService = () => {
                                             <p>One-Off</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'one-off'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('one-off', e.target.value)} placeholder='$' name="one-off" id="" 
                                         />
@@ -276,12 +278,13 @@ const AddService = () => {
                                             <p>Annual</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'annual'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('annual', e.target.value)} placeholder='$' name="annual" id="" 
                                         />
@@ -291,12 +294,13 @@ const AddService = () => {
                                                 <p>Bi-Annual</p>
                                             </div>
                                             <input type="number"
+                                                onBlur={(e)=>formatNumberInput(e)}
                                                 disabled={!isEditable}
                                                 className={`${!isEditable ? 'input-disabled' : ''}`}
                                                 value={
                                                     serviceForm.values.frequency.find(
                                                     (item) => item.name === 'bi-annual'
-                                                    )?.price || ""
+                                                    )?.price
                                                 } 
                                                 onChange={(e)=>handleFrequencyChange('bi-annual', e.target.value)} placeholder='$' name="bi-annual" id="" 
                                             />
@@ -314,12 +318,13 @@ const AddService = () => {
                                             <p>Quarterly</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'quarterly'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('quarterly', e.target.value)} placeholder='$' name="quarterly" id="" 
                                         />
@@ -329,12 +334,13 @@ const AddService = () => {
                                             <p>Bi-Quarterly</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'bi-quarterly'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('bi-quarterly', e.target.value)} placeholder='$' name="bi-quarterly" id="" 
                                         />
@@ -344,12 +350,13 @@ const AddService = () => {
                                             <p>Monthly</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'monthly'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('monthly', e.target.value)} placeholder='$' name="monthly" id="" 
                                         />
@@ -367,12 +374,13 @@ const AddService = () => {
                                             <p>Bi-weekly</p>
                                         </div>
                                         <input type="number"
+                                            onBlur={(e)=>formatNumberInput(e)}
                                             disabled={!isEditable}
                                             className={`${!isEditable ? 'input-disabled' : ''}`}
                                             value={
                                                 serviceForm.values.frequency.find(
                                                 (item) => item.name === 'bi-weekly'
-                                                )?.price || ""
+                                                )?.price
                                             } 
                                             onChange={(e)=>handleFrequencyChange('bi-weekly', e.target.value)} placeholder='$' name="bi-weekly" id="" 
                                         />

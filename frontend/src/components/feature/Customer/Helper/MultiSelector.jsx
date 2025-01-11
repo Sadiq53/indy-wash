@@ -122,7 +122,7 @@ const MultiSelector = ({ onDataChange, paramData }) => {
             )}
             <div>
               <div className="header">
-                <h5 className="font-1 fw-700 font-size-16">property Details :</h5>
+                <h5 className="font-1 fw-700 font-size-16">Property Details :</h5>
               </div>
               <div className="input-section my-2">
                 <input

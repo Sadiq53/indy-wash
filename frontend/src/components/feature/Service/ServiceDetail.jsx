@@ -118,16 +118,52 @@ return (
                             <div className="box-cs">
                                 <div className="grid-cs gtc-3">
                                     <div className="proposal-data">
-                                        <div><p>Apartments </p> : <span>{propertyData?.units} Units</span></div>
-                                        <div><p>Company</p> : <span>{propertyData?.propertyName || "N/A"}</span></div>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td><p>Apartments</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{propertyData?.units} Units</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><p>Company</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{propertyData?.propertyName || "N/A"}</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div className="proposal-data">
-                                        <div><p>Contact Name</p> : <span>{customerData?.personalDetails?.firstName}</span></div>
-                                        <div><p>Property Address</p> : <span>{propertyData?.billingAddress || "N/A"}</span></div>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td><p>Contact Name</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{customerData?.personalDetails?.firstName}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><p>Property Address</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{propertyData?.billingAddress || "N/A"}</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div className="proposal-data">
-                                        <div><p>Date </p> : <span>{formatDate(proposalData?.createDate)}</span></div>
-                                        <div><p>Contact No</p> : <span>{customerData?.personalDetails?.phone}</span></div>
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td><p>Date</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{formatDate(proposalData?.createDate)}</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><p>Contact No</p></td>
+                                                    <td><p>:</p></td>
+                                                    <td><span>{customerData?.personalDetails?.phone}</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                                 

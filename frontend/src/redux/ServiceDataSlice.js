@@ -23,9 +23,13 @@ const ServiceDataSlice = createSlice({
         handleGetProposal : (state, action) => {
             state.proposal = action.payload
         },
-        handleAddServices : (state, action) => {
-            state.services.push(action.payload)
-        },
+        handleAddServices: (state, action) => {
+            if (Array.isArray(action.payload)) {
+                state.services = [...state.services, ...action.payload]; // Merge the new services immutably
+            } else if (action.payload) {
+                state.services = [...state.services, action.payload]; // Add a single service immutably
+            }
+        },        
         handleAddProposal : (state, action) => {
             state.proposal.push(action.payload)
         },
