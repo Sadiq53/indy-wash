@@ -43,15 +43,22 @@ const ServiceViewCard = ({ handlePreviousService, openLightbox, handleNextServic
 
         <div className="gallery">
           <div className="grid-cs gtc-3">
-            {selectedServiceData?.images?.length >= 1 &&
-              selectedServiceData.images.map((value, index) => (
+            {selectedServiceData?.images?.length !== 0 ?
+              selectedServiceData?.images?.map((value, index) => (
                 <img
                   key={index}
                   src={value.s3Url}
                   alt=""
                   onClick={() => openLightbox(index)} // Open lightbox on image click
                 />
-              ))}
+              )) : (
+                <>
+                <img src="/assets/img/no-image.jpg" alt="" />
+                <img src="/assets/img/no-image.jpg" alt="" />
+                <img src="/assets/img/no-image.jpg" alt="" />
+                </>
+              )
+            }
           </div>
         </div>
       </div>

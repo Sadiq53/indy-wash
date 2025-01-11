@@ -391,7 +391,7 @@ const navigateRoute = () => {
                             </p>
                           </div>
                           <div className="grid-cs gtc-equal mob">
-                            <div className="tab-cs">{selectedServiceData?.sqft} SQFT</div>
+                            <div className="tab-cs">{selectedServiceData?.sqft} SQFT * <br></br>{selectedServiceData?.quantity} Quantity</div>
                             <div className="tab-cs">${perCleaning * selectedFrequency?.frequencyDigit}/Yr</div>
                           </div>
                         </div>

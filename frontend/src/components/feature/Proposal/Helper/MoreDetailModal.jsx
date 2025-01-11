@@ -30,7 +30,7 @@ const MoreDetailModal = ({ selectedServiceData, yearCost, totalSqft }) => {
                                 </p>
                             </div>
                             <div className="grid-cs gtc-equal mob">
-                                <div className="tab-cs">{totalSqft} SQFT</div>
+                                <div className="tab-cs">{selectedServiceData?.sqft} SQFT + {selectedServiceData?.quantity} Quantity</div>
                                 <div className="tab-cs">${yearCost}/Yr</div>
                             </div>
                         </div>
